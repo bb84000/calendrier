@@ -1,0 +1,287 @@
+object FCalendrier: TFCalendrier
+  Left = 380
+  Height = 688
+  Top = 124
+  Width = 1248
+  Caption = 'FCalendrier'
+  ClientHeight = 688
+  ClientWidth = 1248
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  LCLVersion = '2.0.12.0'
+  object PanStatus: TPanel
+    Left = 0
+    Height = 45
+    Top = 643
+    Width = 1248
+    Align = alBottom
+    BevelInner = bvLowered
+    ClientHeight = 45
+    ClientWidth = 1248
+    TabOrder = 0
+    object EYear: TEdit
+      Left = 589
+      Height = 23
+      Top = 12
+      Width = 40
+      Alignment = taCenter
+      TabOrder = 0
+      Text = '2020'
+    end
+    object CBLune: TCheckBoxX
+      Left = 464
+      Height = 19
+      Top = 14
+      Width = 112
+      Alignment = taLeftJustify
+      AllowGrayed = True
+      Caption = 'Phases de la lune'
+      CheckBoxType = cbBMP
+      CheckColor = clRed
+      Checked = False
+      Color = clDefault
+      ParentFont = False
+      State = cbUnchecked
+      TabOrder = 1
+      TabStop = True
+      Bitmap.Data = {
+        AE040000424DAE0400000000000036040000280000000A0000000A0000000100
+        08000000000078000000130B0000130B00000000000000000000000000000101
+        0100020202000303030004040400050505000606060007070700080808000909
+        09000A0A0A000B0B0B000C0C0C000D0D0D000E0E0E000F0F0F00101010001111
+        1100121212001313130014141400151515001616160017171700181818001919
+        19001A1A1A001B1B1B001C1C1C001D1D1D001E1E1E001F1F1F00202020002121
+        2100222222002323230024242400252525002626260027272700282828002929
+        29002A2A2A002B2B2B002C2C2C002D2D2D002E2E2E002F2F2F00303030003131
+        3100323232003333330034343400353535003636360037373700383838003939
+        39003A3A3A003B3B3B003C3C3C003D3D3D003E3E3E003F3F3F00404040004141
+        4100424242004343430044444400454545004646460047474700484848004949
+        49004A4A4A004B4B4B004C4C4C004D4D4D004E4E4E004F4F4F00505050005151
+        5100525252005353530054545400555555005656560057575700585858005959
+        59005A5A5A005B5B5B005C5C5C005D5D5D005E5E5E005F5F5F00606060006161
+        6100626262006363630064646400656565006666660067676700686868006969
+        69006A6A6A006B6B6B006C6C6C006D6D6D006E6E6E006F6F6F00707070007171
+        7100727272007373730074747400757575007676760077777700787878007979
+        79007A7A7A007B7B7B007C7C7C007D7D7D007E7E7E007F7F7F00808080008181
+        8100828282008383830084848400858585008686860087878700888888008989
+        89008A8A8A008B8B8B008C8C8C008D8D8D008E8E8E008F8F8F00909090009191
+        9100929292009393930094949400959595009696960097979700989898009999
+        99009A9A9A009B9B9B009C9C9C009D9D9D009E9E9E009F9F9F00A0A0A000A1A1
+        A100A2A2A200A3A3A300A4A4A400A5A5A500A6A6A600A7A7A700A8A8A800A9A9
+        A900AAAAAA00ABABAB00ACACAC00ADADAD00AEAEAE00AFAFAF00B0B0B000B1B1
+        B100B2B2B200B3B3B300B4B4B400B5B5B500B6B6B600B7B7B700B8B8B800B9B9
+        B900BABABA00BBBBBB00BCBCBC00BDBDBD00BEBEBE00BFBFBF00C0C0C000C1C1
+        C100C2C2C200C3C3C300C4C4C400C5C5C500C6C6C600C7C7C700C8C8C800C9C9
+        C900CACACA00CBCBCB00CCCCCC00CDCDCD00CECECE00CFCFCF00D0D0D000D1D1
+        D100D2D2D200D3D3D300D4D4D400D5D5D500D6D6D600D7D7D700D8D8D800D9D9
+        D900DADADA00DBDBDB00DCDCDC00DDDDDD00DEDEDE00DFDFDF00E0E0E000E1E1
+        E100E2E2E200E3E3E300E4E4E400E5E5E500E6E6E600E7E7E700E8E8E800E9E9
+        E900EAEAEA00EBEBEB00ECECEC00EDEDED00EEEEEE00EFEFEF00F0F0F000F1F1
+        F100F2F2F200F3F3F300F4F4F400F5F5F500F6F6F600F7F7F700F8F8F800F9F9
+        F900FAFAFA00FBFBFB00FCFCFC00FDFDFD00FEFEFE00FFFFFF00FFFFE31F0000
+        0FD6FFFF0000FFAA1FFEFEFEFE6096FF0000E375FECC0000B9FE85B9000089FE
+        E375FEFE85D6FE7C000081FEFEFEFEFEFEFEFEA4000081FEFEFEFEFEFEFEFEA4
+        000089FEAA4BFEFE6096FE7C0000E375FEFEFEFEFEFE85B90000FFAA1FFEFEFE
+        FE6096FF0000FFFFE31F00000FD6FFFF0000
+      }
+    end
+    object CBVA: TCheckBoxX
+      Left = 672
+      Height = 17
+      Top = 12
+      Width = 113
+      Alignment = taRightJustify
+      AllowGrayed = False
+      Caption = 'Vacances zone A'
+      CheckBoxType = cbRect
+      CheckColor = 4227327
+      Checked = False
+      Color = clDefault
+      State = cbUnchecked
+      TabOrder = 2
+      TabStop = True
+    end
+    object CBVB: TCheckBoxX
+      Left = 814
+      Height = 17
+      Top = 12
+      Width = 114
+      Alignment = taRightJustify
+      AllowGrayed = False
+      Caption = 'Vacances zone B'
+      CheckBoxType = cbRect
+      CheckColor = clRed
+      Checked = False
+      Color = clDefault
+      State = cbUnchecked
+      TabOrder = 3
+      TabStop = True
+    end
+    object CBVC: TCheckBoxX
+      Left = 968
+      Height = 17
+      Top = 12
+      Width = 113
+      Alignment = taRightJustify
+      AllowGrayed = False
+      Caption = 'Vacances zone C'
+      CheckBoxType = cbRect
+      CheckColor = clGreen
+      Checked = False
+      Color = clDefault
+      State = cbUnchecked
+      TabOrder = 4
+      TabStop = True
+    end
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 643
+    Top = 0
+    Width = 1248
+    ActivePage = TS1
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 1
+    object TS1: TTabSheet
+      Caption = '1er semestre'
+      ClientHeight = 615
+      ClientWidth = 1240
+      object ScrollBox1: TScrollBox
+        Left = 0
+        Height = 615
+        Top = 0
+        Width = 1240
+        HorzScrollBar.Page = 1231
+        VertScrollBar.Page = 610
+        Align = alClient
+        BorderStyle = bsNone
+        ClientHeight = 615
+        ClientWidth = 1240
+        TabOrder = 0
+        object SG1: TStringGrid
+          Left = 0
+          Height = 610
+          Top = 0
+          Width = 333
+          AutoEdit = False
+          ColCount = 3
+          DefaultColWidth = 110
+          DefaultRowHeight = 19
+          ExtendedSelect = False
+          FixedCols = 0
+          Font.Height = -12
+          Font.Name = 'Arial Narrow'
+          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goSmoothScroll, goFixedRowNumbering, goFixedColSizing]
+          ParentFont = False
+          ParentShowHint = False
+          RowCount = 32
+          ScrollBars = ssNone
+          ShowHint = True
+          TabOrder = 0
+          OnDrawCell = SGDrawCell
+        end
+        object SG2: TStringGrid
+          Left = 898
+          Height = 610
+          Top = 0
+          Width = 333
+          AutoEdit = False
+          ColCount = 3
+          DefaultColWidth = 110
+          DefaultRowHeight = 19
+          ExtendedSelect = False
+          FixedCols = 0
+          Font.Height = -12
+          Font.Name = 'Arial Narrow'
+          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goSmoothScroll, goFixedRowNumbering, goFixedColSizing]
+          ParentFont = False
+          ParentShowHint = False
+          RowCount = 32
+          ScrollBars = ssNone
+          ShowHint = True
+          TabOrder = 1
+          OnDrawCell = SGDrawCell
+        end
+        object PanImg1: TPanel
+          Left = 336
+          Height = 420
+          Top = 0
+          Width = 560
+          BevelInner = bvLowered
+          TabOrder = 2
+        end
+      end
+    end
+    object TS2: TTabSheet
+      Caption = '2ème semestre'
+      ClientHeight = 615
+      ClientWidth = 1240
+      object ScrollBox2: TScrollBox
+        Left = 0
+        Height = 615
+        Top = 0
+        Width = 1240
+        HorzScrollBar.Page = 1231
+        VertScrollBar.Page = 610
+        Align = alClient
+        BorderStyle = bsNone
+        ClientHeight = 615
+        ClientWidth = 1240
+        TabOrder = 0
+        object SG3: TStringGrid
+          Left = 0
+          Height = 610
+          Top = 0
+          Width = 333
+          AutoEdit = False
+          ColCount = 3
+          DefaultColWidth = 110
+          DefaultRowHeight = 19
+          ExtendedSelect = False
+          FixedCols = 0
+          Font.Height = -12
+          Font.Name = 'Arial Narrow'
+          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goSmoothScroll, goFixedRowNumbering, goFixedColSizing]
+          ParentFont = False
+          ParentShowHint = False
+          RowCount = 32
+          ScrollBars = ssNone
+          ShowHint = True
+          TabOrder = 0
+          OnDrawCell = SGDrawCell
+        end
+        object SG4: TStringGrid
+          Left = 898
+          Height = 610
+          Top = 0
+          Width = 333
+          AutoEdit = False
+          ColCount = 3
+          DefaultColWidth = 110
+          DefaultRowHeight = 19
+          ExtendedSelect = False
+          FixedCols = 0
+          Font.Height = -12
+          Font.Name = 'Arial Narrow'
+          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goSmoothScroll, goFixedRowNumbering, goFixedColSizing]
+          ParentFont = False
+          ParentShowHint = False
+          RowCount = 32
+          ScrollBars = ssNone
+          ShowHint = True
+          TabOrder = 1
+          OnDrawCell = SGDrawCell
+        end
+        object PanImg2: TPanel
+          Left = 336
+          Height = 420
+          Top = 0
+          Width = 560
+          BevelInner = bvLowered
+          TabOrder = 2
+        end
+      end
+    end
+  end
+end
