@@ -8,6 +8,7 @@ object FCalendrier: TFCalendrier
   ClientWidth = 1248
   OnActivate = FormActivate
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   LCLVersion = '2.0.12.0'
   object PanStatus: TPanel
     Left = 0

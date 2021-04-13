@@ -1,0 +1,3 @@
+// Store lists in resource
+SAINTSLIST_FR  RCDATA "fr_saints.csv"
+FERIESLIST_FR  RCDATA "fr_ferie.csv"

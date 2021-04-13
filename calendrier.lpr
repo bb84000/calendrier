@@ -11,6 +11,7 @@ uses
   { you can add units after this };
 
 {$R *.res}
+{$R calendrierres.rc}
 
 begin
   RequireDerivedFormResource:=True;
