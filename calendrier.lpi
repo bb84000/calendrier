@@ -17,8 +17,8 @@
     </General>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
-      <MinorVersionNr Value="5"/>
-      <StringTable Comments="Calendrier universel français" CompanyName="sdtp - bb - April 2021" FileDescription="Calendrier universel" InternalName="calendrier" LegalCopyright="sdtp - bb -April 2021" LegalTrademarks="sdtp - bb -April 2021" OriginalFilename="calendrier.exe" ProductName="calendrier" ProductVersion="0.5.0.0"/>
+      <MinorVersionNr Value="6"/>
+      <StringTable Comments="Calendrier universel français" CompanyName="sdtp - bb - April 2021" FileDescription="Calendrier universel" InternalName="calendrier" LegalCopyright="sdtp - bb -April 2021" LegalTrademarks="sdtp - bb -April 2021" OriginalFilename="calendrier.exe" ProductName="calendrier" ProductVersion="0.6.0.0"/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
@@ -39,7 +39,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="6">
       <Unit0>
         <Filename Value="calendrier.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -55,16 +55,34 @@
         <Filename Value="calendrierres.rc"/>
         <IsPartOfProject Value="True"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="..\lazbbunits\lazbbastro.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="settings1.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FSettings"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Settings1"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="sunrisesetunit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="sunRiseSetUnit"/>
+      </Unit5>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="calendrier"/>
+      <Filename Value="calendrier$(TargetOS)"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
+      <OtherUnitFiles Value="..\lazbbunits"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>

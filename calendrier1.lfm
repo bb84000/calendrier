@@ -1,10 +1,10 @@
 object FCalendrier: TFCalendrier
-  Left = 380
-  Height = 688
-  Top = 124
+  Left = 447
+  Height = 729
+  Top = 151
   Width = 1248
   Caption = 'FCalendrier'
-  ClientHeight = 688
+  ClientHeight = 729
   ClientWidth = 1248
   OnActivate = FormActivate
   OnCreate = FormCreate
@@ -13,7 +13,7 @@ object FCalendrier: TFCalendrier
   object PanStatus: TPanel
     Left = 0
     Height = 45
-    Top = 643
+    Top = 684
     Width = 1248
     Align = alBottom
     BevelInner = bvLowered
@@ -29,83 +29,27 @@ object FCalendrier: TFCalendrier
       TabOrder = 0
       Text = '2020'
     end
-    object CBLune: TCheckBoxX
-      Left = 464
-      Height = 19
-      Top = 14
-      Width = 112
-      Alignment = taLeftJustify
-      AllowGrayed = True
-      Caption = 'Phases de la lune'
-      CheckBoxType = cbBMP
-      CheckColor = clRed
-      Checked = False
-      Color = clDefault
-      ParentFont = False
-      State = cbUnchecked
-      TabOrder = 1
-      TabStop = True
-      Bitmap.Data = {
-        AE040000424DAE0400000000000036040000280000000A0000000A0000000100
-        08000000000078000000130B0000130B00000000000000000000000000000101
-        0100020202000303030004040400050505000606060007070700080808000909
-        09000A0A0A000B0B0B000C0C0C000D0D0D000E0E0E000F0F0F00101010001111
-        1100121212001313130014141400151515001616160017171700181818001919
-        19001A1A1A001B1B1B001C1C1C001D1D1D001E1E1E001F1F1F00202020002121
-        2100222222002323230024242400252525002626260027272700282828002929
-        29002A2A2A002B2B2B002C2C2C002D2D2D002E2E2E002F2F2F00303030003131
-        3100323232003333330034343400353535003636360037373700383838003939
-        39003A3A3A003B3B3B003C3C3C003D3D3D003E3E3E003F3F3F00404040004141
-        4100424242004343430044444400454545004646460047474700484848004949
-        49004A4A4A004B4B4B004C4C4C004D4D4D004E4E4E004F4F4F00505050005151
-        5100525252005353530054545400555555005656560057575700585858005959
-        59005A5A5A005B5B5B005C5C5C005D5D5D005E5E5E005F5F5F00606060006161
-        6100626262006363630064646400656565006666660067676700686868006969
-        69006A6A6A006B6B6B006C6C6C006D6D6D006E6E6E006F6F6F00707070007171
-        7100727272007373730074747400757575007676760077777700787878007979
-        79007A7A7A007B7B7B007C7C7C007D7D7D007E7E7E007F7F7F00808080008181
-        8100828282008383830084848400858585008686860087878700888888008989
-        89008A8A8A008B8B8B008C8C8C008D8D8D008E8E8E008F8F8F00909090009191
-        9100929292009393930094949400959595009696960097979700989898009999
-        99009A9A9A009B9B9B009C9C9C009D9D9D009E9E9E009F9F9F00A0A0A000A1A1
-        A100A2A2A200A3A3A300A4A4A400A5A5A500A6A6A600A7A7A700A8A8A800A9A9
-        A900AAAAAA00ABABAB00ACACAC00ADADAD00AEAEAE00AFAFAF00B0B0B000B1B1
-        B100B2B2B200B3B3B300B4B4B400B5B5B500B6B6B600B7B7B700B8B8B800B9B9
-        B900BABABA00BBBBBB00BCBCBC00BDBDBD00BEBEBE00BFBFBF00C0C0C000C1C1
-        C100C2C2C200C3C3C300C4C4C400C5C5C500C6C6C600C7C7C700C8C8C800C9C9
-        C900CACACA00CBCBCB00CCCCCC00CDCDCD00CECECE00CFCFCF00D0D0D000D1D1
-        D100D2D2D200D3D3D300D4D4D400D5D5D500D6D6D600D7D7D700D8D8D800D9D9
-        D900DADADA00DBDBDB00DCDCDC00DDDDDD00DEDEDE00DFDFDF00E0E0E000E1E1
-        E100E2E2E200E3E3E300E4E4E400E5E5E500E6E6E600E7E7E700E8E8E800E9E9
-        E900EAEAEA00EBEBEB00ECECEC00EDEDED00EEEEEE00EFEFEF00F0F0F000F1F1
-        F100F2F2F200F3F3F300F4F4F400F5F5F500F6F6F600F7F7F700F8F8F800F9F9
-        F900FAFAFA00FBFBFB00FCFCFC00FDFDFD00FEFEFE00FFFFFF00FFFFE31F0000
-        0FD6FFFF0000FFAA1FFEFEFEFE6096FF0000E375FECC0000B9FE85B9000089FE
-        E375FEFE85D6FE7C000081FEFEFEFEFEFEFEFEA4000081FEFEFEFEFEFEFEFEA4
-        000089FEAA4BFEFE6096FE7C0000E375FEFEFEFEFEFE85B90000FFAA1FFEFEFE
-        FE6096FF0000FFFFE31F00000FD6FFFF0000
-      }
-    end
     object CBVA: TCheckBoxX
-      Left = 672
+      Left = 682
       Height = 17
-      Top = 12
+      Top = 13
       Width = 113
       Alignment = taRightJustify
       AllowGrayed = False
       Caption = 'Vacances zone A'
       CheckBoxType = cbRect
-      CheckColor = 4227327
+      CheckColor = 4705528
       Checked = False
       Color = clDefault
       State = cbUnchecked
-      TabOrder = 2
+      TabOrder = 1
       TabStop = True
+      OnClick = CBXClick
     end
     object CBVB: TCheckBoxX
-      Left = 814
+      Left = 802
       Height = 17
-      Top = 12
+      Top = 14
       Width = 114
       Alignment = taRightJustify
       AllowGrayed = False
@@ -115,13 +59,14 @@ object FCalendrier: TFCalendrier
       Checked = False
       Color = clDefault
       State = cbUnchecked
-      TabOrder = 3
+      TabOrder = 2
       TabStop = True
+      OnClick = CBXClick
     end
     object CBVC: TCheckBoxX
-      Left = 968
+      Left = 922
       Height = 17
-      Top = 12
+      Top = 14
       Width = 113
       Alignment = taRightJustify
       AllowGrayed = False
@@ -131,33 +76,173 @@ object FCalendrier: TFCalendrier
       Checked = False
       Color = clDefault
       State = cbUnchecked
+      TabOrder = 3
+      TabStop = True
+      OnClick = CBXClick
+    end
+    object SBNextQ: TSpeedButton
+      Left = 640
+      Height = 18
+      Top = 14
+      Width = 23
+      Glyph.Data = {
+        36040000424D3604000000000000360000002800000010000000100000000100
+        2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00000000FF000000FFFFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00000000FF0000FFFF000000FF0000
+        00FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00000000FF0000FFFF0000FFFF0000
+        FFFF000000FF000000FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00000000FF0000
+        00FF000000FF000000FF000000FF000000FF000000FF0000FFFF0000FFFF0000
+        FFFF0000FFFF0000FFFF000000FF000000FFFFFFFF00FFFFFF00000000FF0000
+        FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000
+        FFFF0000FFFF0000FFFF0000FFFF0000FFFF000000FF000000FF000000FF0000
+        00FF000000FF000000FF000000FF000000FF000000FF0000FFFF0000FFFF0000
+        FFFF0000FFFF0000FFFF000000FF000000FFFFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00000000FF0000FFFF0000FFFF0000
+        FFFF000000FF000000FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00000000FF0000FFFF000000FF0000
+        00FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00000000FF000000FFFFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
+      }
+      OnClick = SBNextQClick
+    end
+    object SBPrevQ: TSpeedButton
+      Left = 554
+      Height = 18
+      Top = 13
+      Width = 23
+      Glyph.Data = {
+        36040000424D3604000000000000360000002800000010000000100000000100
+        2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00000000FF0000
+        00FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00000000FF000000FF0000FFFF0000
+        00FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00000000FF000000FF0000FFFF0000FFFF0000FFFF0000
+        00FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00000000FF000000FF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000
+        00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+        00FF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000
+        FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF000000FFFFFFFF00FFFF
+        FF00000000FF000000FF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000
+        00FF000000FF000000FF000000FF000000FF000000FF000000FFFFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00000000FF000000FF0000FFFF0000FFFF0000FFFF0000
+        00FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00000000FF000000FF0000FFFF0000
+        00FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00000000FF0000
+        00FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
+      }
+      OnClick = SBPrevQClick
+    end
+    object CBVK: TCheckBoxX
+      Left = 1040
+      Height = 17
+      Top = 14
+      Width = 105
+      Alignment = taRightJustify
+      AllowGrayed = False
+      Caption = 'Vacances  Corse'
+      CheckBoxType = cbRect
+      CheckColor = clMenuHighlight
+      Checked = False
+      Color = clDefault
+      State = cbUnchecked
       TabOrder = 4
       TabStop = True
+      OnClick = CBXClick
+    end
+    object CBLune: TCheckBoxX
+      Left = 416
+      Height = 17
+      Top = 13
+      Width = 113
+      Alignment = taLeftJustify
+      AllowGrayed = False
+      Caption = 'Phases de la lune'
+      CheckBoxType = cbBMP
+      CheckColor = clBlack
+      Checked = False
+      Color = clDefault
+      State = cbUnchecked
+      TabOrder = 5
+      TabStop = True
+      OnClick = CBXClick
+      Bitmap.Data = {
+        C6010000424DC60100000000000036000000280000000A0000000A0000000100
+        2000000000009001000064000000640000000000000000000000FFFFFF00FFFF
+        FF00FFFFFF001F1F1FFF000000FF000000FF0F0F0FFFFFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00AAAAAAFF1F1F1FFFFEFEFEFFFEFEFEFFFEFEFEFFFEFEFEFF6060
+        60FF969696FFFFFFFF00FFFFFF00757575FFFEFEFEFFCCCCCCFF000000FF0000
+        00FFB9B9B9FFFEFEFEFF858585FFB9B9B9FF898989FFFEFEFEFFE3E3E3FF7575
+        75FFFEFEFEFFFEFEFEFF858585FFD6D6D6FFFEFEFEFF7C7C7CFF818181FFFEFE
+        FEFFFEFEFEFFFEFEFEFFFEFEFEFFFEFEFEFFFEFEFEFFFEFEFEFFFEFEFEFFA4A4
+        A4FF818181FFFEFEFEFFFEFEFEFFFEFEFEFFFEFEFEFFFEFEFEFFFEFEFEFFFEFE
+        FEFFFEFEFEFFA4A4A4FF898989FFFEFEFEFFAAAAAAFF4B4B4BFFFEFEFEFFFEFE
+        FEFF606060FF969696FFFEFEFEFF7C7C7CFFFFFFFF00757575FFFEFEFEFFFEFE
+        FEFFFEFEFEFFFEFEFEFFFEFEFEFFFEFEFEFF858585FFFFFFFF00FFFFFF00AAAA
+        AAFF1F1F1FFFFEFEFEFFFEFEFEFFFEFEFEFFFEFEFEFF606060FF969696FFFFFF
+        FF00FFFFFF00FFFFFF00FFFFFF001F1F1FFF000000FF000000FF0F0F0FFFFFFF
+        FF00FFFFFF00FFFFFF00
+      }
     end
   end
   object PageControl1: TPageControl
     Left = 0
-    Height = 643
+    Height = 684
     Top = 0
     Width = 1248
     ActivePage = TS1
     Align = alClient
+    Font.Style = [fsBold]
+    ParentFont = False
     TabIndex = 0
     TabOrder = 1
     object TS1: TTabSheet
       Caption = '1er semestre'
-      ClientHeight = 615
+      ClientHeight = 656
       ClientWidth = 1240
       object ScrollBox1: TScrollBox
         Left = 0
-        Height = 615
+        Height = 656
         Top = 0
         Width = 1240
         HorzScrollBar.Page = 1231
-        VertScrollBar.Page = 610
+        VertScrollBar.Page = 614
         Align = alClient
         BorderStyle = bsNone
-        ClientHeight = 615
+        ClientHeight = 656
         ClientWidth = 1240
         TabOrder = 0
         object SG1: TStringGrid
@@ -181,6 +266,8 @@ object FCalendrier: TFCalendrier
           ShowHint = True
           TabOrder = 0
           OnDrawCell = SGDrawCell
+          OnMouseMove = SGMouseMove
+          OnSelectCell = SGSelectCell
         end
         object SG2: TStringGrid
           Left = 898
@@ -203,6 +290,8 @@ object FCalendrier: TFCalendrier
           ShowHint = True
           TabOrder = 1
           OnDrawCell = SGDrawCell
+          OnMouseMove = SGMouseMove
+          OnSelectCell = SGSelectCell
         end
         object PanImg1: TPanel
           Left = 336
@@ -210,24 +299,147 @@ object FCalendrier: TFCalendrier
           Top = 0
           Width = 560
           BevelInner = bvLowered
+          Enabled = False
           TabOrder = 2
+        end
+        object PanInfos1: TPanel
+          Left = 336
+          Height = 190
+          Top = 424
+          Width = 560
+          Alignment = taLeftJustify
+          BevelOuter = bvNone
+          ClientHeight = 190
+          ClientWidth = 560
+          Color = clNone
+          ParentColor = False
+          TabOrder = 3
+          object PanToday1: TTitlePanel
+            Left = 1
+            Height = 128
+            Top = 1
+            Width = 275
+            Alignment = taLeftJustify
+            BorderLine = bsSingle
+            BorderColor = clActiveBorder
+            Caption = 'Aujourd''hui'
+            ClientHeight = 128
+            ClientWidth = 275
+            Font.Style = [fsBold]
+            ParentFont = False
+            TabOrder = 0
+            object ETodayTime1: TEdit
+              Left = 8
+              Height = 15
+              Top = 18
+              Width = 264
+              BorderStyle = bsNone
+              OnChange = ETodayTimeChange
+              ParentFont = False
+              TabOrder = 0
+            end
+            object MemoToday1: TMemo
+              Left = 5
+              Height = 80
+              Top = 33
+              Width = 264
+              BorderStyle = bsNone
+              Lines.Strings = (
+                'MemoToday1'
+              )
+              OnChange = MemoTodayChange
+              ParentFont = False
+              ReadOnly = True
+              TabOrder = 1
+            end
+          end
+          object PanSelDay1: TTitlePanel
+            Left = 285
+            Height = 128
+            Top = 1
+            Width = 275
+            Alignment = taLeftJustify
+            BorderLine = bsSingle
+            BorderColor = clActiveBorder
+            Caption = 'Jour sélectionné'
+            ClientHeight = 128
+            ClientWidth = 275
+            Font.Style = [fsBold]
+            ParentFont = False
+            TabOrder = 1
+            object MemoCurDay1: TMemo
+              Left = 4
+              Height = 95
+              Top = 18
+              Width = 264
+              BorderStyle = bsNone
+              Lines.Strings = (
+                'MemoToday1'
+              )
+              OnChange = MemoCurDayChange
+              ParentFont = False
+              ReadOnly = True
+              TabOrder = 0
+            end
+          end
+          object PanSeasons1: TTitlePanel
+            Left = 1
+            Height = 52
+            Top = 134
+            Width = 560
+            Alignment = taLeftJustify
+            BorderLine = bsSingle
+            BorderColor = clActiveBorder
+            Caption = 'Saisons'
+            ClientHeight = 52
+            ClientWidth = 560
+            TabOrder = 2
+            object MemoSeasons11: TMemo
+              Left = 8
+              Height = 33
+              Top = 15
+              Width = 264
+              BorderStyle = bsNone
+              Lines.Strings = (
+                'MemoSeasons11'
+              )
+              OnChange = MemoSeasons1Change
+              ParentFont = False
+              ReadOnly = True
+              TabOrder = 0
+            end
+            object MemoSeasons21: TMemo
+              Left = 288
+              Height = 33
+              Top = 15
+              Width = 264
+              BorderStyle = bsNone
+              Lines.Strings = (
+                'MemoSeasons11'
+              )
+              OnChange = MemoSeasons2Change
+              ParentFont = False
+              ReadOnly = True
+              TabOrder = 1
+            end
+          end
         end
       end
     end
     object TS2: TTabSheet
       Caption = '2ème semestre'
-      ClientHeight = 615
+      ClientHeight = 656
       ClientWidth = 1240
       object ScrollBox2: TScrollBox
         Left = 0
-        Height = 615
+        Height = 656
         Top = 0
         Width = 1240
         HorzScrollBar.Page = 1231
-        VertScrollBar.Page = 610
+        VertScrollBar.Page = 614
         Align = alClient
         BorderStyle = bsNone
-        ClientHeight = 615
+        ClientHeight = 656
         ClientWidth = 1240
         TabOrder = 0
         object SG3: TStringGrid
@@ -251,6 +463,8 @@ object FCalendrier: TFCalendrier
           ShowHint = True
           TabOrder = 0
           OnDrawCell = SGDrawCell
+          OnMouseMove = SGMouseMove
+          OnSelectCell = SGSelectCell
         end
         object SG4: TStringGrid
           Left = 898
@@ -273,6 +487,8 @@ object FCalendrier: TFCalendrier
           ShowHint = True
           TabOrder = 1
           OnDrawCell = SGDrawCell
+          OnMouseMove = SGMouseMove
+          OnSelectCell = SGSelectCell
         end
         object PanImg2: TPanel
           Left = 336
@@ -282,7 +498,193 @@ object FCalendrier: TFCalendrier
           BevelInner = bvLowered
           TabOrder = 2
         end
+        object PanInfos2: TPanel
+          Left = 336
+          Height = 190
+          Top = 424
+          Width = 560
+          Alignment = taLeftJustify
+          BevelOuter = bvNone
+          ClientHeight = 190
+          ClientWidth = 560
+          Color = clNone
+          ParentColor = False
+          TabOrder = 3
+          object PanSelDay2: TTitlePanel
+            Left = 285
+            Height = 128
+            Top = 1
+            Width = 275
+            Alignment = taLeftJustify
+            BorderLine = bsSingle
+            BorderColor = clActiveBorder
+            Caption = 'Jour sélectionné'
+            ClientHeight = 128
+            ClientWidth = 275
+            Font.Style = [fsBold]
+            ParentFont = False
+            TabOrder = 0
+            object MemoCurDay2: TMemo
+              Left = 4
+              Height = 95
+              Top = 18
+              Width = 264
+              BorderStyle = bsNone
+              Lines.Strings = (
+                'MemoToday1'
+              )
+              OnChange = MemoTodayChange
+              ParentFont = False
+              ReadOnly = True
+              TabOrder = 0
+            end
+          end
+          object PanSeasons2: TTitlePanel
+            Left = 1
+            Height = 52
+            Top = 134
+            Width = 560
+            Alignment = taLeftJustify
+            BorderLine = bsSingle
+            BorderColor = clActiveBorder
+            Caption = 'Saisons'
+            ClientHeight = 52
+            ClientWidth = 560
+            TabOrder = 1
+            object MemoSeasons12: TMemo
+              Left = 8
+              Height = 33
+              Top = 15
+              Width = 264
+              BorderStyle = bsNone
+              Lines.Strings = (
+                'MemoSeasons11'
+              )
+              ParentFont = False
+              ReadOnly = True
+              TabOrder = 0
+            end
+            object MemoSeasons22: TMemo
+              Left = 288
+              Height = 33
+              Top = 15
+              Width = 264
+              BorderStyle = bsNone
+              Lines.Strings = (
+                'MemoSeasons11'
+              )
+              ParentFont = False
+              TabOrder = 1
+            end
+          end
+          object PanToday2: TTitlePanel
+            Left = 1
+            Height = 128
+            Top = 1
+            Width = 275
+            Alignment = taLeftJustify
+            BorderLine = bsSingle
+            BorderColor = clActiveBorder
+            Caption = 'Aujourd''hui'
+            ClientHeight = 128
+            ClientWidth = 275
+            Font.Style = [fsBold]
+            ParentFont = False
+            TabOrder = 2
+            object ETodayTime2: TEdit
+              Left = 8
+              Height = 15
+              Top = 18
+              Width = 264
+              BorderStyle = bsNone
+              ParentFont = False
+              TabOrder = 0
+            end
+            object MemoToday2: TMemo
+              Left = 5
+              Height = 80
+              Top = 33
+              Width = 264
+              BorderStyle = bsNone
+              Lines.Strings = (
+                'MemoToday1'
+              )
+              ParentFont = False
+              ReadOnly = True
+              TabOrder = 1
+            end
+          end
+        end
       end
     end
+  end
+  object ImgLMoon: TImageList
+    Height = 10
+    Width = 11
+    Left = 374
+    Top = 40
+    Bitmap = {
+      4C69040000000B0000000A000000FFFFFF00FFFFFF00FFFFFF00858585FF0000
+      00FF000000FF000000FF4B4B4BFFFFFFFF00FFFFFF00FFFFFF00FFFFFF00D6D6
+      D6FF363636FF000000FF000000FF000000FF000000FF000000FF0F0F0FFFD6D6
+      D6FFFFFFFF00FFFFFF00606060FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF4B4B4BFFFFFFFF00E3E3E3FF1F1F1FFF1D1D1DFFFEFE
+      FEFF858585FF000000FF4B4B4BFFFEFEFEFF606060FF000000FFB9B9B9FFCCCC
+      CCFF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF969696FFCCCCCCFF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF969696FFE3E3E3FF1F1F1FFF0000
+      00FFB5B5B5FF606060FF000000FF1D1D1DFFD5D5D5FF1F1F1FFF000000FFB9B9
+      B9FFFFFFFF00858585FF000000FF0F0F0FFFD6D6D6FFFEFEFEFFFEFEFEFF3636
+      36FF000000FF4B4B4BFFFFFFFF00FFFFFF00D6D6D6FF363636FF000000FF0000
+      00FF000000FF000000FF000000FF0F0F0FFFD6D6D6FFFFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00AAAAAAFF000000FF000000FF000000FF707070FFFFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00858585FF000000FF000000FF0000
+      00FF0F0F0FFFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00363636FF0000
+      00FF000000FF000000FFFEFEFEFFFEFEFEFF606060FF969696FFFFFFFF00FFFF
+      FF00606060FF000000FF000000FF000000FF000000FFFEFEFEFFFEFEFEFFFEFE
+      FEFF858585FFFFFFFF00E3E3E3FF1F1F1FFF1D1D1DFFF4F4F4FF858585FF0000
+      00FFFEFEFEFF606060FF969696FFFEFEFEFF7C7C7CFFCCCCCCFF000000FF0000
+      00FF000000FF000000FF000000FFFEFEFEFFFEFEFEFFFEFEFEFFFEFEFEFFA4A4
+      A4FFCCCCCCFF000000FF000000FF000000FF000000FF000000FFFEFEFEFFFEFE
+      FEFFFEFEFEFFFEFEFEFFA4A4A4FFE3E3E3FF1F1F1FFF000000FFB5B5B5FF6060
+      60FF000000FFFEFEFEFF878787FFD6D6D6FFFEFEFEFF7C7C7CFFFFFFFF008585
+      85FF000000FF0F0F0FFFD6D6D6FFFEFEFEFF000000FFB9B9B9FFFEFEFEFF8585
+      85FFFFFFFF00FFFFFF00FFFFFF00363636FF000000FF000000FF000000FFFEFE
+      FEFFFEFEFEFF606060FF969696FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00AAAA
+      AAFF000000FF000000FF000000FF0F0F0FFFFFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00402020FF000000FF000000FF000000FF404040FFFFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00A4A0A0FF402020FFF0FBFFFFF0FBFFFF0000
+      00FF000000FF000000FF000000FFC0DCC0FFFFFFFF00FFFFFF00808080FFF0FB
+      FFFFF0FBFFFFF0FBFFFF000000FF000000FF000000FF000000FF404040FFFFFF
+      FF00808080FFF0FBFFFFA4A0A0FF404040FFF0FBFFFF000000FF404040FFF0FB
+      FFFF806060FF000000FFC0C0C0FF808080FFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+      FFFF000000FF000000FF000000FF000000FF000000FFA4A0A0FF808080FFF0FB
+      FFFFF0FBFFFFF0FBFFFFF0FBFFFF000000FF000000FF000000FF000000FF0000
+      00FFA4A0A0FF808080FFF0FBFFFFF0FBFFFF808080FFF0FBFFFF000000FF4020
+      20FFC0DCC0FF402020FF000000FFC0C0C0FFFFFFFF00808080FFF0FBFFFFC0C0
+      C0FF000000FFF0FBFFFFF0FBFFFF404040FF000000FF404040FFFFFFFF00FFFF
+      FF00A4A0A0FF402020FFF0FBFFFFF0FBFFFF000000FF000000FF000000FF0000
+      00FFC0DCC0FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00402020FF000000FF0000
+      00FF000000FF808080FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF009D9D
+      9D70E5E5E51E1A1A1AFF000000FF040404FF6D6D6D9C2A2A2AE3FFFFFF00FFFF
+      FF00EAEAEA417A7A7AFF818181FF393939FFFEFEFEFFFEFEFEFFFEFEFEFFC1C1
+      C1FFEDEDEDFF676767FFAAAAAAD0DCDCDC41A4A4A4FFFEFEFEFFFEFEFEFFFEFE
+      FEFFFEFEFEFFFEFEFEFFFEFEFEFFFEFEFEFFEEEEEEFF9C9C9CD0A7A7A7FFE2E2
+      E2FF808080FF9F9F9FFF676767FFFEFEFEFFCFCFCFFF757575FF666666FFA4A4
+      A4FFE6E6E6FFA1A1A1FFFEFEFEFFFEFEFEFFFEFEFEFFFEFEFEFFFEFEFEFFFEFE
+      FEFFFEFEFEFFFEFEFEFFFEFEFEFFEEEEEEFFA1A1A1FFFEFEFEFFFEFEFEFFFEFE
+      FEFFFEFEFEFFFEFEFEFFFEFEFEFFFEFEFEFFFEFEFEFFFEFEFEFFEEEEEEFFA7A7
+      A7FFF5F5F5FFB3B3B3FFD6D6D6FF8B8B8BFFFEFEFEFFDADADAFFA5A5A5FF8E8E
+      8EFFDCDCDCFFE6E6E6FFDCDCDC41A4A4A4FFE8E8E8FFF8F8F8FFACACACFF0000
+      00FF373737FFD4D4D4FFC1C1C1FFEEEEEEFF8F8F8FFFEAEAEA417A7A7AFF8181
+      81FF393939FFFEFEFEFFFEFEFEFFFEFEFEFFC1C1C1FFEDEDEDFF676767FFAAAA
+      AAD0FFFFFF00FFFFFF009D9D9D70E5E5E51E1A1A1AFF000000FF040404FF6D6D
+      6D9C2A2A2AE3FFFFFF00FFFFFF00
+    }
+  end
+  object Timer1: TTimer
+    OnTimer = Timer1Timer
+    Left = 424
+    Top = 40
   end
 end

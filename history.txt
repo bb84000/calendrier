@@ -1,2 +1,10 @@
 Version 0.5.0.0 - 13/04/2021
 - Première version fonctionnelle
+
+Version 0.6.0.0 - 16/04/2021
+- Ajout des vacances scolaires
+- Ajout des lunaisons
+- Ajout des levers et couchers de soleil
+- Ajout des saisons
+- Mise en place du changement d'année
+
