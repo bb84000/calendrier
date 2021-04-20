@@ -265,7 +265,6 @@ object FCalendrier: TFCalendrier
           ScrollBars = ssNone
           ShowHint = True
           TabOrder = 0
-          OnDrawCell = SGDrawCell
           OnMouseMove = SGMouseMove
           OnSelectCell = SGSelectCell
         end
@@ -289,7 +288,6 @@ object FCalendrier: TFCalendrier
           ScrollBars = ssNone
           ShowHint = True
           TabOrder = 1
-          OnDrawCell = SGDrawCell
           OnMouseMove = SGMouseMove
           OnSelectCell = SGSelectCell
         end
@@ -299,7 +297,7 @@ object FCalendrier: TFCalendrier
           Top = 0
           Width = 560
           BevelInner = bvLowered
-          Enabled = False
+          PopupMenu = PMnuMain
           TabOrder = 2
         end
         object PanInfos1: TPanel
@@ -462,7 +460,6 @@ object FCalendrier: TFCalendrier
           ScrollBars = ssNone
           ShowHint = True
           TabOrder = 0
-          OnDrawCell = SGDrawCell
           OnMouseMove = SGMouseMove
           OnSelectCell = SGSelectCell
         end
@@ -496,6 +493,7 @@ object FCalendrier: TFCalendrier
           Top = 0
           Width = 560
           BevelInner = bvLowered
+          PopupMenu = PMnuMain
           TabOrder = 2
         end
         object PanInfos2: TPanel
@@ -686,5 +684,13 @@ object FCalendrier: TFCalendrier
     OnTimer = Timer1Timer
     Left = 424
     Top = 40
+  end
+  object PMnuMain: TPopupMenu
+    Left = 480
+    Top = 40
+    object PMnuSettings: TMenuItem
+      Caption = 'Préférences'
+      OnClick = PMnuSettingsClick
+    end
   end
 end

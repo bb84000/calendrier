@@ -1,0 +1,546 @@
+object Prefs: TPrefs
+  Left = 702
+  Height = 428
+  Top = 205
+  Width = 468
+  BorderStyle = bsDialog
+  Caption = 'Préférences'
+  ClientHeight = 428
+  ClientWidth = 468
+  Position = poMainFormCenter
+  LCLVersion = '2.0.12.0'
+  object PanButtons: TPanel
+    Left = 0
+    Height = 40
+    Top = 363
+    Width = 468
+    Align = alBottom
+    BevelInner = bvLowered
+    ClientHeight = 40
+    ClientWidth = 468
+    TabOrder = 0
+    OnClick = PanButtonsClick
+    object BtnOK: TButton
+      Left = 144
+      Height = 25
+      Top = 8
+      Width = 75
+      Caption = 'OK'
+      ModalResult = 1
+      TabOrder = 0
+    end
+    object BtnCancel: TButton
+      Left = 240
+      Height = 25
+      Top = 8
+      Width = 75
+      Caption = 'Annuler'
+      ModalResult = 2
+      TabOrder = 1
+    end
+  end
+  object PanStatus: TPanel
+    Left = 0
+    Height = 25
+    Top = 403
+    Width = 468
+    Align = alBottom
+    Alignment = taLeftJustify
+    BevelInner = bvRaised
+    TabOrder = 1
+  end
+  object PanColors: TTitlePanel
+    Left = 8
+    Height = 115
+    Top = 8
+    Width = 448
+    Alignment = taLeftJustify
+    BorderLine = bsSingle
+    BorderColor = clActiveBorder
+    Caption = 'Couleurs'
+    ClientHeight = 115
+    ClientWidth = 448
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 2
+    object lLColBack: TLabel
+      Left = 8
+      Height = 15
+      Top = 18
+      Width = 64
+      AutoSize = False
+      Caption = 'Semaine'
+      ParentColor = False
+      ParentFont = False
+    end
+    object LColSund: TLabel
+      Left = 8
+      Height = 15
+      Top = 40
+      Width = 64
+      AutoSize = False
+      Caption = 'Dimanches'
+      ParentColor = False
+      ParentFont = False
+    end
+    object LColferie: TLabel
+      Left = 8
+      Height = 15
+      Top = 62
+      Width = 64
+      AutoSize = False
+      Caption = 'Fériés'
+      ParentColor = False
+      ParentFont = False
+    end
+    object LZonea: TLabel
+      Left = 235
+      Height = 15
+      Top = 18
+      Width = 55
+      AutoSize = False
+      Caption = 'Zone A'
+      ParentColor = False
+      ParentFont = False
+    end
+    object LZoneb: TLabel
+      Left = 235
+      Height = 15
+      Top = 40
+      Width = 55
+      AutoSize = False
+      Caption = 'Zone B'
+      ParentColor = False
+      ParentFont = False
+    end
+    object LZonec: TLabel
+      Left = 235
+      Height = 15
+      Top = 62
+      Width = 55
+      AutoSize = False
+      Caption = 'Zone C'
+      ParentColor = False
+      ParentFont = False
+    end
+    object LZonek: TLabel
+      Left = 235
+      Height = 15
+      Top = 84
+      Width = 55
+      AutoSize = False
+      Caption = 'Corse'
+      ParentColor = False
+      ParentFont = False
+    end
+    object CPcolweek: TColorPicker
+      Left = 73
+      Height = 21
+      Top = 15
+      Width = 140
+      ItemHeight = 15
+      ItemWidth = 0
+      Color = clDefault
+      MnuCopyCaption = '&Copy'
+      MnuPasteCaption = '&Paste'
+      TabOrder = 0
+    end
+    object CPcolsunday: TColorPicker
+      Left = 73
+      Height = 21
+      Top = 38
+      Width = 140
+      ItemHeight = 15
+      ItemWidth = 0
+      Color = clDefault
+      MnuCopyCaption = '&Copy'
+      MnuPasteCaption = '&Paste'
+      TabOrder = 1
+    end
+    object CPColferie: TColorPicker
+      Left = 72
+      Height = 21
+      Top = 61
+      Width = 140
+      ItemHeight = 15
+      ItemWidth = 0
+      Color = clDefault
+      MnuCopyCaption = '&Copy'
+      MnuPasteCaption = '&Paste'
+      TabOrder = 2
+    end
+    object CPcolvaca: TColorPicker
+      Left = 294
+      Height = 21
+      Top = 15
+      Width = 140
+      ItemHeight = 15
+      ItemWidth = 0
+      Color = clDefault
+      MnuCopyCaption = '&Copy'
+      MnuPasteCaption = '&Paste'
+      TabOrder = 3
+    end
+    object CPcolvacb: TColorPicker
+      Left = 294
+      Height = 21
+      Top = 38
+      Width = 140
+      ItemHeight = 15
+      ItemWidth = 0
+      Color = clDefault
+      MnuCopyCaption = '&Copy'
+      MnuPasteCaption = '&Paste'
+      TabOrder = 4
+    end
+    object CPcolvacc: TColorPicker
+      Left = 294
+      Height = 21
+      Top = 61
+      Width = 140
+      ItemHeight = 15
+      ItemWidth = 0
+      Color = clDefault
+      MnuCopyCaption = '&Copy'
+      MnuPasteCaption = '&Paste'
+      TabOrder = 5
+    end
+    object CPcolvack: TColorPicker
+      Left = 294
+      Height = 21
+      Top = 84
+      Width = 140
+      ItemHeight = 15
+      ItemWidth = 0
+      Color = clDefault
+      MnuCopyCaption = '&Copy'
+      MnuPasteCaption = '&Paste'
+      TabOrder = 6
+    end
+    object LColtText: TLabel
+      Left = 8
+      Height = 15
+      Top = 85
+      Width = 64
+      AutoSize = False
+      Caption = 'Texte'
+      ParentColor = False
+      ParentFont = False
+    end
+    object CPcolText: TColorPicker
+      Left = 72
+      Height = 21
+      Top = 84
+      Width = 141
+      ItemHeight = 15
+      ItemWidth = 0
+      Color = clDefault
+      MnuCopyCaption = '&Copy'
+      MnuPasteCaption = '&Paste'
+      TabOrder = 7
+    end
+  end
+  object PanCoords: TTitlePanel
+    Left = 8
+    Height = 106
+    Top = 128
+    Width = 452
+    Alignment = taLeftJustify
+    BorderLine = bsSingle
+    BorderColor = clActiveBorder
+    Caption = 'Coordonnées pour le lever et le coucher du soleil'
+    ClientHeight = 106
+    ClientWidth = 452
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 3
+    object LTown: TLabel
+      Left = 8
+      Height = 15
+      Top = 23
+      Width = 58
+      AutoSize = False
+      Caption = 'Ville'
+      ParentColor = False
+      ParentFont = False
+    end
+    object ComboBox1: TComboBox
+      Left = 72
+      Height = 23
+      Top = 20
+      Width = 184
+      ItemHeight = 15
+      ParentFont = False
+      TabOrder = 0
+    end
+    object LLatitude: TLabel
+      Left = 8
+      Height = 15
+      Top = 50
+      Width = 58
+      AutoSize = False
+      Caption = 'Latitude'
+      ParentColor = False
+      ParentFont = False
+    end
+    object ELatitude: TEdit
+      Left = 72
+      Height = 23
+      Top = 47
+      Width = 112
+      ParentFont = False
+      TabOrder = 1
+    end
+    object Edit2: TEdit
+      Left = 200
+      Height = 23
+      Top = 47
+      Width = 30
+      ParentFont = False
+      TabOrder = 2
+    end
+    object LLatitude1: TLabel
+      Left = 232
+      Height = 15
+      Top = 50
+      Width = 25
+      AutoSize = False
+      Caption = 'deg.'
+      ParentColor = False
+      ParentFont = False
+    end
+    object Edit3: TEdit
+      Left = 260
+      Height = 23
+      Top = 47
+      Width = 30
+      ParentFont = False
+      TabOrder = 3
+    end
+    object LLatitude2: TLabel
+      Left = 294
+      Height = 15
+      Top = 50
+      Width = 25
+      AutoSize = False
+      Caption = 'mn'
+      ParentColor = False
+      ParentFont = False
+    end
+    object Edit4: TEdit
+      Left = 320
+      Height = 23
+      Top = 47
+      Width = 76
+      ParentFont = False
+      TabOrder = 4
+    end
+    object LLatitude3: TLabel
+      Left = 401
+      Height = 15
+      Top = 50
+      Width = 15
+      AutoSize = False
+      Caption = 's'
+      ParentColor = False
+      ParentFont = False
+    end
+    object Edit5: TEdit
+      Left = 416
+      Height = 23
+      Top = 47
+      Width = 20
+      Alignment = taCenter
+      ParentFont = False
+      TabOrder = 5
+      Text = 'N'
+    end
+    object LLatitude4: TLabel
+      Left = 8
+      Height = 15
+      Top = 77
+      Width = 58
+      AutoSize = False
+      Caption = 'Longitude'
+      ParentColor = False
+      ParentFont = False
+    end
+    object ELongitude: TEdit
+      Left = 72
+      Height = 23
+      Top = 74
+      Width = 112
+      ParentFont = False
+      TabOrder = 6
+    end
+    object Edit7: TEdit
+      Left = 200
+      Height = 23
+      Top = 74
+      Width = 30
+      ParentFont = False
+      TabOrder = 7
+    end
+    object LLatitude5: TLabel
+      Left = 232
+      Height = 15
+      Top = 77
+      Width = 25
+      AutoSize = False
+      Caption = 'deg.'
+      ParentColor = False
+      ParentFont = False
+    end
+    object Edit8: TEdit
+      Left = 260
+      Height = 23
+      Top = 74
+      Width = 30
+      ParentFont = False
+      TabOrder = 8
+    end
+    object LLatitude6: TLabel
+      Left = 294
+      Height = 15
+      Top = 77
+      Width = 25
+      AutoSize = False
+      Caption = 'mn'
+      ParentColor = False
+      ParentFont = False
+    end
+    object Edit9: TEdit
+      Left = 320
+      Height = 23
+      Top = 74
+      Width = 76
+      ParentFont = False
+      TabOrder = 9
+    end
+    object LLatitude7: TLabel
+      Left = 401
+      Height = 15
+      Top = 77
+      Width = 15
+      AutoSize = False
+      Caption = 's'
+      ParentColor = False
+      ParentFont = False
+    end
+    object Edit10: TEdit
+      Left = 416
+      Height = 23
+      Top = 74
+      Width = 20
+      Alignment = taCenter
+      ParentFont = False
+      TabOrder = 10
+      Text = 'N'
+    end
+    object LTimezone: TLabel
+      Left = 272
+      Height = 15
+      Top = 23
+      Width = 96
+      AutoSize = False
+      Caption = 'Décalage horaire'
+      ParentColor = False
+      ParentFont = False
+    end
+    object Edit11: TEdit
+      Left = 385
+      Height = 23
+      Top = 20
+      Width = 50
+      AutoSize = False
+      NumbersOnly = True
+      ParentFont = False
+      TabOrder = 11
+    end
+  end
+  object PanSystem: TTitlePanel
+    Left = 8
+    Height = 112
+    Top = 240
+    Width = 452
+    Alignment = taLeftJustify
+    BorderLine = bsSingle
+    BorderColor = clActiveBorder
+    Caption = 'Système'
+    ClientHeight = 112
+    ClientWidth = 452
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 4
+    object CBStartwin: TCheckBox
+      Left = 8
+      Height = 19
+      Top = 17
+      Width = 204
+      AutoSize = False
+      Caption = 'Lancer au démarrage'
+      ParentFont = False
+      TabOrder = 0
+    end
+    object CBStartmini: TCheckBox
+      Left = 8
+      Height = 19
+      Top = 40
+      Width = 204
+      AutoSize = False
+      Caption = 'Démarrer minimisé'
+      ParentFont = False
+      TabOrder = 1
+    end
+    object CBMiniintray: TCheckBox
+      Left = 220
+      Height = 19
+      Top = 17
+      Width = 230
+      AutoSize = False
+      Caption = 'Minimiser dans la zone de notification'
+      ParentFont = False
+      TabOrder = 2
+    end
+    object CBSaveSizPos1: TCheckBox
+      Left = 220
+      Height = 19
+      Top = 40
+      Width = 230
+      AutoSize = False
+      Caption = 'Masquer l''icone dans la barre des tâches'
+      ParentFont = False
+      TabOrder = 3
+    end
+    object CBSaveSizPos: TCheckBox
+      Left = 9
+      Height = 19
+      Top = 64
+      Width = 204
+      AutoSize = False
+      Caption = 'Sauvegarde position et taille'
+      ParentFont = False
+      TabOrder = 4
+    end
+    object CBMoonPhases: TCheckBox
+      Left = 220
+      Height = 19
+      Top = 64
+      Width = 204
+      AutoSize = False
+      Caption = 'Sauvegarde des phases de la lune'
+      ParentFont = False
+      TabOrder = 5
+    end
+    object CBSaveVacs: TCheckBox
+      Left = 8
+      Height = 19
+      Top = 88
+      Width = 204
+      AutoSize = False
+      Caption = 'Sauvegarde des vacances scolaires'
+      ParentFont = False
+      TabOrder = 6
+    end
+  end
+end

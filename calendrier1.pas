@@ -9,8 +9,9 @@ uses
     Win32Proc,
   {$ENDIF}
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
-  Grids, StdCtrls, lazbbcontrols, csvdocument, Types, DateUtils,
-  lazbbastro, LResources, Buttons, registry, lazbbutils, LazUTF8, lazbbosver;
+  Grids, StdCtrls, lazbbcontrols, csvdocument, Types, DateUtils, lazbbastro,
+  LResources, Buttons, Menus, registry, lazbbutils, LazUTF8, lazbbosver,
+  laz2_DOM, laz2_XMLRead, laz2_XMLWrite, calsettings;
 
 type
   TDay = record
@@ -57,6 +58,7 @@ type
     MemoToday1: TMemo;
     MemoToday2: TMemo;
     MemoCurDay1: TMemo;
+    PMnuSettings: TMenuItem;
     PageControl1: TPageControl;
     PanInfos2: TPanel;
     PanImg1: TPanel;
@@ -67,6 +69,7 @@ type
     PanStatus: TPanel;
     PanSelDay1: TTitlePanel;
     PanToday2: TTitlePanel;
+    PMnuMain: TPopupMenu;
     ScrollBox1: TScrollBox;
     ScrollBox2: TScrollBox;
     SG1: TStringGrid;
@@ -90,6 +93,7 @@ type
     procedure MemoSeasons1Change(Sender: TObject);
     procedure MemoSeasons2Change(Sender: TObject);
     procedure MemoTodayChange(Sender: TObject);
+    procedure PMnuSettingsClick(Sender: TObject);
     procedure SBNextQClick(Sender: TObject);
     procedure SBPrevQClick(Sender: TObject);
     procedure SGMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -108,6 +112,7 @@ type
     CompileDateTime: TDateTime;
     CalExecPath: String;
     CalAppDataPath: String;
+    cfgfilename: String;
     LangStr: String;
     UserAppsDataPath: String;
     version: String;
@@ -117,7 +122,7 @@ type
     FeriesTxt: String;
     aSG: array[0..3] of TStringGrid;
     ColorDay, ColorSunday, ColorFerie: TColor;
-    latitude, longitude: double;
+
     Days: array of TDay;
     aMonths: array [1..13] of integer;
     PrevTop, PrevLeft: integer;
@@ -126,12 +131,17 @@ type
     curRow, curCol : Integer;
     curHint: String;
     TimeSepar: String;
+    Settings: TSEttings;
+    SettingsChanged: Boolean;
     procedure OnAppMinimize(Sender: TObject);
     procedure OnQueryendSession(var Cancel: Boolean);
     procedure UpdateCal(Annee: word);
     function DayInfos(dDate: TDateTime): String;
+    function LoadSettings(Filename: string): Boolean;
+    function SaveSettings(filename: string): Boolean;
+    procedure SettingsOnChange(sender: TObject);
   public
-    TimeZone: Integer;  // minutes
+
   end;
 
 var
@@ -195,26 +205,27 @@ var
      x: Integer;
   {$ENDIF}
 begin
-  inherited;
   {$I fr_saints.lrs}
   {$I fr_feries.lrs}
   {$I fr_holidays.lrs}
+
   // Intercept system commands
   Application.OnMinimize:=@OnAppMinimize;
   Application.OnQueryEndSession:= @OnQueryendSession;
+
   Initialized := False;
-  CompileDateTime:= StringToTimeDate({$I %DATE%}+' '+{$I %TIME%}, 'yyyy/mm/dd hh:nn:ss');
-  Iconized:= false;
+   CompileDateTime:= StringToTimeDate({$I %DATE%}+' '+{$I %TIME%}, 'yyyy/mm/dd hh:nn:ss');
+ Iconized:= false;
   OS := 'Unk';
   ProgName := 'Calendrier';
   CalExecPath:=ExtractFilePath(Application.ExeName);
-  {$IFDEF CPU32}
+ {$IFDEF CPU32}
      OSTarget := '32 bits';
   {$ENDIF}
   {$IFDEF CPU64}
      OSTarget := '64 bits';
   {$ENDIF}
-  {$IFDEF Linux}
+   {$IFDEF Linux}
     OS := 'Linux';
     LangStr := GetEnvironmentVariable('LANG');
     x := pos('.', LangStr);
@@ -222,22 +233,21 @@ begin
     wxbitsrun := 0;
     UserAppsDataPath := GetUserDir;
   {$ENDIF}
+  OSVersion:= TOSVersion.Create();
   {$IFDEF WINDOWS}
     OS := 'Windows ';
     // get user data folder
     s := ExtractFilePath(ExcludeTrailingPathDelimiter(GetAppConfigDir(False)));
-    if Ord(WindowsVersion) < 7 then
-      UserAppsDataPath := s                     // NT to XP
-    else
-    UserAppsDataPath := ExtractFilePath(ExcludeTrailingPathDelimiter(s)) + 'Roaming'; // Vista to W10
+    if OSVersion.VerMaj < 7 then UserAppsDataPath := s                     // NT to XP
+    else UserAppsDataPath := ExtractFilePath(ExcludeTrailingPathDelimiter(s)) + 'Roaming'; // Vista to W10
     LazGetShortLanguageID(LangStr);
   {$ENDIF}
   version := GetVersionInfo.ProductVersion;
-  OSVersion:= TOSVersion.Create();
   CalAppDataPath:= UserAppsDataPath + PathDelim + ProgName + PathDelim;
   if not DirectoryExists(CalAppDataPath) then CreateDir(CalAppDataPath);
+  cfgfilename:= CalAppDataPath+ProgName+'.xml';
   // place properly grids and panels
-  SG1.Left := 0;
+ SG1.Left := 0;
   PanImg1.left := SG1.Width;
   PanInfos1.left:= SG1.Width;
   PanInfos1.top:= PanImg1.Height+4;
@@ -259,11 +269,11 @@ begin
   csvsaints := TCSVDocument.Create;
   r:= LazarusResources.Find('fr_saints');
   csvsaints.CSVText:= r.value;
-  //load feries from resource
+   //load feries from resource
   csvferies := TCSVDocument.Create;
   r:= LazarusResources.Find('fr_feries');
   FeriesTxt:= r.value;
-  //csvferies.CSVText:= FeriesTxt;
+  csvferies.CSVText:= FeriesTxt;
   // load Holidays from resource
   csvvacs:= TCSVDocument.Create;
   if FileExists('fr_holidays.csv')then csvvacs.LoadFromFile('fr_holidays.csv') else
@@ -280,18 +290,10 @@ begin
   MemoSeasons21.Lines.Text:='';
   MemoSeasons12.Lines.Text:='';
   MemoSeasons22.Lines.Text:='';
-
-
   MoonDescs[0]:= 'Nouvelle Lune';
   MoonDescs[1]:= 'Premier quartier';
   MoonDescs[2]:= 'Dernier quartier';
   MoonDescs[3]:= 'Pleine lune';
-  TimeZone:= 60;
-  latitude:= 43.94284;
-  longitude:= 4.8089;
-
-
-
 end;
 
 procedure TFCalendrier.FormDestroy(Sender: TObject);
@@ -322,18 +324,140 @@ begin
   MemoToday2.Lines.Text:= MemoToday1.Lines.Text;
 end;
 
+procedure TFCalendrier.SettingsOnChange(sender: TObject);
+begin
+  SettingsChanged:= true;
+end;
+
+procedure TFCalendrier.PMnuSettingsClick(Sender: TObject);
+begin
+  Prefs.PanStatus.Caption:= OSVersion.VerDetail ;
+  Prefs.CPcolweek.Color:= Settings.colweekday;
+  Prefs.CPcolsunday.Color:= Settings.colsunday;
+  Prefs.CPColferie.Color:= Settings.colferie;
+  Prefs.CPcolvaca.Color:= Settings.colvaca;
+  Prefs.CPcolvacb.Color:= Settings.colvacb;
+  Prefs.CPcolvacc.Color:= Settings.colvacc;
+  Prefs.CPcolvack.Color:= Settings.colvack;
+  Prefs.ELatitude.Text:= FloatToString(Settings.latitude, '.');
+  Prefs.ELongitude.Text:= FloatToString(Settings.longitude, '.');
+  if Prefs.ShowModal<>mrOK then exit;              // Pas OK ? on ne change rien
+  Settings.colweekday:= Prefs.CPcolweek.Color;
+  Settings.colsunday:= Prefs.CPcolsunday.Color;
+  Settings.colferie:= Prefs.CPColferie.Color;
+  Settings.colvaca:= Prefs.CPcolvaca.Color;
+  Settings.colvacb:= Prefs.CPcolvacb.Color;
+  Settings.colvacc:= Prefs.CPcolvacc.Color;
+  Settings.colvack:= Prefs.CPcolvack.Color;
+  Settings.latitude:= StringToFloat(Prefs.ELatitude.text, '.');
+  Settings.longitude:= StringToFloat(Prefs.ELongitude.text, '.');
+  CBVA.CheckColor:= Settings.colvaca;
+  CBVB.CheckColor:= Settings.colvacb;
+  CBVC.CheckColor:= Settings.colvacc;
+  CBVK.CheckColor:= Settings.colvack;
+  SaveSettings(cfgfilename);
+  INvalidate;
+end;
+
 
 
 procedure TFCalendrier.FormActivate(Sender: TObject);
 begin
   if not Initialized then
   begin
+    CurYear := YearOf(now);
 
+    if MonthOf(now) < 7 then PageControl1.Activepage:= TS1
+    else PageControl1.Activepage:= TS2;
+    Settings:= TSettings.create(self);
+    // Set defaults settings;
+    Settings.colweekday:= clDefault;
+    Settings.colsunday:= StringToColour('$00FFFF80');
+    Settings.colferie:= StringToColour('$00FFFF80');
+    Settings.colvaca:= CBVA.CheckColor;
+    Settings.colvacb:= CBVB.CheckColor;
+    Settings.colvacc:= CBVC.CheckColor;
+    Settings.colvack:= CBVK.CheckColor;
+    Settings.Timezone:= 60; // Paris tz
+    Settings.latitude:= 43.94284;
+    Settings.longitude:= 4.8089;
+    Settings.OnChange:= @SettingsOnChange;
+    LoadSettings(cfgfilename);
+    UpdateCal(curyear);
   end;
-  CurYear := YearOf(now);
-  UpdateCal(curyear);
-  if MonthOf(now) < 7 then PageControl1.Activepage:= TS1
-  else PageControl1.Activepage:= TS2;
+
+end;
+
+function TFCalendrier.LoadSettings(Filename: string): Boolean;
+var
+  FilNamWoExt: string;
+  i: integer;
+  CfgXML: TXMLDocument;
+  RootNode, SettingsNode, FilesNode :TDOMNode;
+begin
+
+  If not FileExists(Filename) then
+  begin
+    FilNamWoExt:= TrimFileExt(FileName);
+    If FileExists (FilNamWoExt+'.bk0') then
+    begin
+      RenameFile(FilNamWoExt+'.bk0', filename);
+      For i:= 1 to 5 do
+      begin
+        // Renomme les précédentes si elles existent
+        if FileExists (FilNamWoExt+'.bk'+IntToStr(i))
+             then  RenameFile(FilNamWoExt+'.bk'+IntToStr(i), FilNamWoExt+'.bk'+IntToStr(i-1));
+      end;
+    end else
+    begin
+       SaveSettings(filename)
+    end;
+  end;
+  ReadXMLFile(CfgXml, filename);
+  RootNode := CfgXML.DocumentElement;
+  SettingsNode:= CfgXML.DocumentElement.FindNode('settings');
+  if Settingsnode<>nil then
+  begin
+    Settings.ReadXMLNode(SettingsNode);
+    CBVA.CheckColor:= Settings.colvaca;
+    CBVB.CheckColor:= Settings.colvacb;
+    CBVC.CheckColor:= Settings.colvacc;
+    CBVK.CheckColor:= Settings.colvack;
+  end;
+  // only now, when settings are loaded
+  For i:= 0 to 3 do aSG[i].OnDrawCell:= @SGDrawCell ;
+  INvalidate;
+end;
+
+
+function TFCalendrier.SaveSettings(filename: string): Boolean;
+var
+  CfgXML: TXMLDocument;
+  RootNode, SettingsNode, FilesNode :TDOMNode;
+  i: Integer;
+begin
+   try
+     // If oldconfig, then create a new file, else read existing config file
+     if FileExists(filename) then
+     begin
+       ReadXMLFile(CfgXml, filename);
+       RootNode := CfgXML.DocumentElement;
+     end else
+     begin
+       CfgXML := TXMLDocument.Create;
+       RootNode := CfgXML.CreateElement('config');
+       CfgXML.Appendchild(RootNode);
+     end;
+     SettingsNode:= RootNode.FindNode('settings');
+     if SettingsNode <> nil then RootNode.RemoveChild(SettingsNode);
+     SettingsNode:= CfgXML.CreateElement('settings');
+     Settings.SaveToXMLnode(SettingsNode);
+     RootNode.Appendchild(SettingsNode);
+     writeXMLFile(CfgXML, filename);
+
+   finally
+
+   end;
 end;
 
 procedure TFCalendrier.SBNextQClick(Sender: TObject);
@@ -347,7 +471,7 @@ begin
   begin
     CurYear:= CurYear+1;
     UpdateCal(CurYear);
-    for i:= 0 to 3 do aSG[i].Invalidate;
+    Invalidate;
     PageControl1.ActivePage:=TS1;
   end;
 end;
@@ -361,7 +485,7 @@ begin
   begin
     CurYear:= CurYear-1;
     UpdateCal(CurYear);
-    for i:= 0 to 3 do aSG[i].Invalidate;
+    Invalidate;
     PageControl1.ActivePage:=TS2;
   end else
   begin
@@ -418,21 +542,20 @@ begin
   begin
     Result:= Result+LineEnding+Days[doy-1].sMoonDesc+' à '+FormatDateTime ('hh'+TimeSepar+'mm', Days[doy-1].dMoon);
   end;
-  dtr:= Sunrise(dDate, latitude, longitude);
-  dtr:= IncMinute(dtr, TimeZone+60*Integer(IsDST(dDate)));
-  dts:= Sunset(dDate, latitude, longitude);
-  dts:= IncMinute(dts, TimeZone+60*Integer(IsDST(dDate)));
+  dtr:= Sunrise(dDate, Settings.latitude, Settings.longitude);
+  dtr:= IncMinute(dtr, Settings.TimeZone+60*Integer(IsDST(dDate)));
+  dts:= Sunset(dDate, Settings.latitude, Settings.longitude);
+  dts:= IncMinute(dts, Settings.TimeZone+60*Integer(IsDST(dDate)));
   s:= 'Lever et coucher du soleil : '+FormatDateTime ('hh'+TimeSepar+'mm', dtr)+' - '+
                                       FormatDateTime ('hh'+TimeSepar+'mm', dts);
   Result:= Result+LineEnding+s;
   if Days[doy-1].bSeason then
   begin
     dtsz:= Days[doy-1].dSeason;
-    dtsz:= IncMinute(dtsz, TimeZone+60*Integer(IsDST(dDate)));
+    dtsz:= IncMinute(dtsz, Settings.TimeZone+60*Integer(IsDST(dDate)));
     s:= Days[DOY-1].sSeasonDesc+' à '+FormatDateTime ('hh'+TimeSepar+'mm', dtsz);
     Result:= Result+LineEnding+s
   end;
-
 end;
 
 procedure TFCalendrier.SGSelectCell(Sender: TObject; aCol, aRow: Integer;
@@ -465,7 +588,7 @@ procedure TFCalendrier.CBXClick(Sender: TObject);
 var
   i: integer;
 begin
-  for i:= 0 to 3 do aSG[i].Invalidate;
+  Invalidate;
 end;
 
 
@@ -532,12 +655,12 @@ begin
     begin
       if (Days[Count+arow-1].bSunday) then
       begin
-        SGCur.Canvas.Brush.Color := ColorSunday;
+        SGCur.Canvas.Brush.Color := Settings.colsunday;
         SGCur.Canvas.FillRect(Rect(aRect.Left,aRect.Top,aRect.Right,aRect.Bottom));
       end;
       if (Days[Count+arow-1].bferie) then
       begin
-        SGCur.Canvas.Brush.Color := ColorFerie;
+        SGCur.Canvas.Brush.Color := Settings.colferie;
         SGCur.Canvas.FillRect(Rect(aRect.Left,aRect.Top,aRect.Right,aRect.Bottom));
         s1 := Days[Count + arow - 1].sferie;
       end;
@@ -550,25 +673,25 @@ begin
         SGCur.Canvas.Brush.Style:=bsSolid;
         if (CBVA.Checked) and (Pos('A', s1) > 0) then
         begin
-          SGCur.Canvas.Brush.Color:= CBVA.CheckColor;
+          SGCur.Canvas.Brush.Color:= Settings.colvaca;
           SGCur.Canvas.Rectangle(aRect.Right-9,aRect.Top,aRect.Right-6,aRect.Bottom);
           //SGCur.Canvas.Brush.Color:= DefBrushColor;
         end;
         if (CBVB.Checked) and (Pos('B', s1) > 0) then
         begin
-          SGCur.Canvas.Brush.Color:= CBVB.CheckColor;
+          SGCur.Canvas.Brush.Color:= Settings.colvacb;
           SGCur.Canvas.Rectangle(aRect.Right-6,aRect.Top,aRect.Right-3,aRect.Bottom);
           // SGCur.Canvas.Brush.Color:= DefBrushColor;
         end;
         if (CBVC.Checked) and (Pos('C', s1) > 0) then
         begin
-          SGCur.Canvas.Brush.Color:= CBVC.CheckColor;
+          SGCur.Canvas.Brush.Color:= Settings.colvacc;
           SGCur.Canvas.Rectangle(aRect.Right-3,aRect.Top,aRect.Right,aRect.Bottom);
           SGCur.Canvas.Brush.Color:= DefBrushColor;
         end;
         if (CBVK.Checked) and (Pos('K', s1) > 0) then
         begin
-          SGCur.Canvas.Brush.Color:= CBVK.CheckColor;
+          SGCur.Canvas.Brush.Color:= Settings.colvack;
           SGCur.Canvas.Rectangle(aRect.Right-12,aRect.Top,aRect.Right-9,aRect.Bottom);
           SGCur.Canvas.Brush.Color:= DefBrushColor;
         end;
@@ -631,13 +754,20 @@ var
   dt: TDateTime;
   dSpr, dSum, DAut, dWin: TDateTime;
 begin
-
   // Sans objet avant l'année 1583 (calendrier julien)
   if Annee < 1583 then Annee := 1583;
   // Ni après l'année 9998
   if Annee > 9998 then Annee := 9998;
   // Bissextile ?
-  if Isleapyear(Annee) then aMonths := leapyear else aMonths := noleapyear;
+  if Isleapyear(Annee) then
+  begin
+    aMonths := leapyear;
+    DaysCnt := 366;
+  end else
+  begin
+    aMonths := noleapyear;
+    DaysCnt := 365;
+  end;
   Caption := 'Calendrier ' + IntToStr(Annee);
   EYear.Text := IntToStr(Annee);
   Application.Title := Caption;
@@ -649,11 +779,7 @@ begin
   end;
   // Ecrit les jours
   BegYear := EncodeDate(Annee, 1, 1);
-  // Année bissextile
-  if IsLeapYear(Annee) then
-    DaysCnt := 366
-  else
-    DaysCnt := 365;
+
   setlength(Days, DaysCnt);
   j := 0;
   for i := 1 to DaysCnt do
@@ -730,7 +856,7 @@ begin
       Days[DOY].bMoon:= true;
       Days[DOY].sMoon:= LuneYr[i].MType;
       dt:= LuneYr[i].MDays;
-      dt:= IncMinute(dt, TimeZone+60*Integer(IsDST(dt)));
+      dt:= IncMinute(dt, Settings.TimeZone+60*Integer(IsDST(dt)));
       Days[DOY].dMoon:= dt;
       Days[DOY].sMoonDesc:= MoonDescs[Pos(Days[DOY].sMoon, s) div 2];
     end;
@@ -744,32 +870,26 @@ begin
   Days[DOY].bSeason:= true;
   Days[DOY].dSeason:= dSpr;
   Days[DOY].sSeasonDesc:= 'Printemps';
-  dSpr:= IncMinute(dSpr, TimeZone+60*Integer(IsDST(dSpr)));
+  dSpr:= IncMinute(dSpr, Settings.TimeZone+60*Integer(IsDST(dSpr)));
   s:= Days[DOY].sSeasonDesc+' ; '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', Days[DOY].dSeason)+LineEnding;
   DOY:= trunc(dSum-BegYear);
   Days[DOY].bSeason:= true;
   Days[DOY].dSeason:= dSum;
   Days[DOY].sSeasonDesc:= 'Eté';
-  dSum:= IncMinute(dSum, TimeZone+60*Integer(IsDST(dSum)));
+  dSum:= IncMinute(dSum, Settings.TimeZone+60*Integer(IsDST(dSum)));
   MemoSeasons11.Lines.text:=s+Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dSum);
   DOY:= trunc(dAut-BegYear);
   Days[DOY].bSeason:= true;
   Days[DOY].dSeason:= dAut;
   Days[DOY].sSeasonDesc:='Automne';;
-  dAut:= IncMinute(dAut, TimeZone+60*Integer(IsDST(dAut)));
+  dAut:= IncMinute(dAut, Settings.TimeZone+60*Integer(IsDST(dAut)));
   s:= Days[DOY].sSeasonDesc+' ; '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dAut)+LineEnding;
   DOY:= trunc(dWin-BegYear);
   Days[DOY].bSeason:= true;
   Days[DOY].dSeason:= dWin;
   Days[DOY].sSeasonDesc:='Hiver';
-  dWin:= IncMinute(dWin, TimeZone+60*Integer(IsDST(dWin)));
+  dWin:= IncMinute(dWin, Settings.TimeZone+60*Integer(IsDST(dWin)));
   MemoSeasons21.Lines.text:=s+Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dWin); ;
-
-
-
-
-  //MemoSeasons21.Lines.text:='';
-
 end;
 
 

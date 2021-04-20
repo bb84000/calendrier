@@ -39,7 +39,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="6">
+    <Units Count="4">
       <Unit0>
         <Filename Value="calendrier.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -52,26 +52,16 @@
         <ResourceBaseClass Value="Form"/>
       </Unit1>
       <Unit2>
-        <Filename Value="calendrierres.rc"/>
+        <Filename Value="..\lazbbunits\lazbbastro.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit2>
       <Unit3>
-        <Filename Value="..\lazbbunits\lazbbastro.pas"/>
+        <Filename Value="calsettings.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="settings1.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="FSettings"/>
+        <ComponentName Value="Prefs"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="Settings1"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="sunrisesetunit.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="sunRiseSetUnit"/>
-      </Unit5>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

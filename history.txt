@@ -8,3 +8,7 @@ Version 0.6.0.0 - 16/04/2021
 - Ajout des saisons
 - Mise en place du changement d'année
 
+Version 0.6.1.0 - 20/04/2021
+- Mise en place des options de couleurs et de leur sauvegarde
+
+
