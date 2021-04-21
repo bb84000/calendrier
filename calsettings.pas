@@ -6,32 +6,48 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  laz2_DOM, lazbbutils, lazbbcontrols;
+  laz2_DOM, lazbbutils, lazbbcontrols, csvdocument;
 
 type
+    TTown = record
+    name: string;
+    depart: string;
+    latitude: double;
+    longitude: double;
+    timezone: integer;
+  end;
 
   {Settings file management }
+  { We use array properties to avoid quasi duplicates in procedures}
 
   TSettings = class
     private
       Parent: TObject;
       FOnChange: TNotifyEvent;
       FOnStateChange: TNotifyEvent;
-      fsavsizepos: Boolean;
-      fminiintray: Boolean;
-      fhideintaskbar: Boolean;
+      fSysStates: array[0..5]of Boolean; //startwin, savsizepos, startmini, miniintray, hideintaskbar: Boolean;
+      fsaveMoon: Boolean;
+      fsaveVacs: Boolean;
       fwstate: String;
       fnochknewver: Boolean;
       flastupdchk: TDateTime;
+      fVersion: String;
       flastversion: String;
-      fstartwin: Boolean;
       flangstr: String;
       fColferie: Tcolor;
+      ftown: String;
+      ftownIndex: Integer;
       fTimezone: Integer;
       fDaysColors: array [0..2] of TColor;
       fVacsColors: array [0..3] of TColor;
       fChkBoxs: array [0..4] of Boolean;
       fCoords: array [0..1] of Double;
+      procedure setVersion(value: String);
+      procedure setWstate(value: string);
+      procedure setSaveMoon(value: boolean);
+      procedure setSavevacs(value: Boolean);
+      function GetSysState(Index: Integer): Boolean;
+      procedure SetSysState(Index: Integer; value: Boolean);
       function GetDaysColor(Index: Integer): TColor;
       procedure SetDaysColor(Index: Integer; Value: Tcolor);
       function GetVacsColor(Index: Integer): TColor;
@@ -41,6 +57,8 @@ type
       function GetCoord (Index: Integer): Double;
       procedure SetCoord (Index: Integer; Value: Double);
       procedure setTimezone (Value: Integer);
+      procedure setTown(value: String);
+      procedure setTownIndex(value: Integer);
     public
 
       constructor Create (Sender: TObject); overload;
@@ -49,15 +67,21 @@ type
     published
       property OnChange: TNotifyEvent read FOnChange write FOnChange;
       property OnStateChange: TNotifyEvent read FOnStateChange write FOnStateChange;
-      property savsizepos: Boolean read fsavsizepos;
-      Property miniintray: Boolean read fminiintray;
-      property hideintaskbar : Boolean read fhideintaskbar;
-      property wstate: String read fwstate;
+      property startwin: Boolean index 0 read GetSysState write SetSysState;
+      property savsizepos: Boolean index 1 read GetSysState write SetSysState;
+      property startmini: Boolean index 2 read GetSysState write SetSysState;
+      Property miniintray: Boolean index 3 read GetSysState write SetSysState;
+      property hideintaskbar : Boolean index 4 read GetSysState write SetSysState;
+      property savemoon: Boolean read fsaveMoon write setSaveMoon;
+      property savevacs: boolean read fsaveVacs write setSavevacs;
+      property wstate: String read fwstate write setWstate;
       property nochknewver: Boolean read fnochknewver;
       property lastupdchk: TDateTime read flastupdchk;
+      property version: String read fversion write setVersion;
       property lastversion: String read flastversion;
-      property startwin: Boolean read fstartwin;
       property langstr: String read flangstr;
+      property town: String read ftown write setTown;
+      property townIndex: Integer read ftownIndex write setTownIndex;
       property timezone: integer read fTimezone write setTimezone;
       property latitude: Double index 0 read GetCoord write SetCoord;
       property longitude: Double index 1 read GetCoord write SetCoord;
@@ -120,7 +144,7 @@ type
     CBMiniintray: TCheckBox;
     CBMoonPhases: TCheckBox;
     CBSaveSizPos: TCheckBox;
-    CBSaveSizPos1: TCheckBox;
+    CBHideinTaskBar: TCheckBox;
     CBSaveVacs: TCheckBox;
     CBStartmini: TCheckBox;
     CBStartwin: TCheckBox;
@@ -131,28 +155,28 @@ type
     CPcolvacc: TColorPicker;
     CPcolvacb: TColorPicker;
     CPcolweek: TColorPicker;
-    ComboBox1: TComboBox;
+    CBTowns: TComboBox;
     CPcolvaca: TColorPicker;
     ELatitude: TEdit;
-    Edit10: TEdit;
-    Edit11: TEdit;
-    Edit2: TEdit;
-    Edit3: TEdit;
-    Edit4: TEdit;
-    Edit5: TEdit;
+    EEOlon: TEdit;
+    ETimeZone: TEdit;
+    EDegLat: TEdit;
+    EMinLat: TEdit;
+    ESecLat: TEdit;
+    ENSLat: TEdit;
     ELongitude: TEdit;
-    Edit7: TEdit;
-    Edit8: TEdit;
-    Edit9: TEdit;
+    EDeglon: TEdit;
+    EMinLon: TEdit;
+    ESeclon: TEdit;
     LColtText: TLabel;
     LLatitude: TLabel;
-    LLatitude1: TLabel;
-    LLatitude2: TLabel;
-    LLatitude3: TLabel;
-    LLatitude4: TLabel;
-    LLatitude5: TLabel;
-    LLatitude6: TLabel;
-    LLatitude7: TLabel;
+    Llatdeg: TLabel;
+    LLatmin: TLabel;
+    Llatsec: TLabel;
+    LLongitude: TLabel;
+    Llondeg: TLabel;
+    Llonmin: TLabel;
+    Llonsec: TLabel;
     LTown: TLabel;
     LTimezone: TLabel;
     LZonek: TLabel;
@@ -167,11 +191,15 @@ type
     PanStatus: TPanel;
     PanColors: TTitlePanel;
     PanSystem: TTitlePanel;
-    procedure PanButtonsClick(Sender: TObject);
+    procedure CBTownsSelect(Sender: TObject);
+    procedure EDegLatChange(Sender: TObject);
+    procedure EDeglonChange(Sender: TObject);
+    procedure ELatitudeChange(Sender: TObject);
+    procedure ELongitudeChange(Sender: TObject);
   private
-
+    function findtown(tname: string): Integer;
   public
-
+    csvtowns: TcsvDocument;
   end;
 
 var
@@ -189,10 +217,114 @@ var  ClesTri: array[0..Ord(High(TChampsCompare))] of TChampsCompare;
 
 { TPrefs }
 
-procedure TPrefs.PanButtonsClick(Sender: TObject);
+
+procedure TPrefs.ELatitudeChange(Sender: TObject);
+var
+  lat: Double;
+  deg: Integer;
+  min: Integer;
+  sec: Double;
 begin
+  lat:= StringToFloat(ELatitude.text, '.') ;
+  if lat < 0 then  lat:= lat*(-1);
+  deg:= trunc(lat);
+  min:= trunc((lat-deg)*60);
+  sec:= (((lat-deg)*60)-min)*60;
+  sec:= floatround(sec, 6);
+  EDegLat.OnChange:= nil;
+  EDegLat.Text:= InttoStr(deg);
+  EminLat.Text:= InttoStr(min);
+  ESecLat.text:= FloatToString (sec, '.');
+  if lat>0 then ENSLat.text:= 'N' else   ENSLat.text:= 'S';
+  EDegLat.OnChange:= @EDegLatChange;
+end;
+
+procedure TPrefs.EDegLatChange(Sender: TObject);
+var
+  min: double;
+  sec: double;
+  lat: double;
+begin
+  ELatitude.OnChange:= nil;
+  lat:= StringToInt(EDegLat.text);
+  min:= StringToInt(EMinLat.text) / 60;
+  sec:= StringToFloat(ESecLat.text, '.')/3600;
+  lat:= lat+min+sec;
+  if uppercase(ENSLat.text)='S' then lat:= lat*(-1);
+  Elatitude.Text:= FloatToString(lat, '.');
+  ELatitude.OnChange:= @ELatitudeChange;
+end;
+
+procedure TPrefs.CBTownsSelect(Sender: TObject);
+var
+  n: integer;
+begin
+  n:= findtown(CBTowns.Items[CBTowns.ItemIndex]);
+  ELatitude.Text:= csvtowns.cells[2,n];
+  ELongitude.Text:= csvtowns.cells[3,n];
+  ETimeZone.Text:= csvtowns.cells[4,n];
+end;
+
+
+function TPrefs.findtown(tname: string): Integer;
+var
+  i: Integer;
+  curtown: TTown;
+begin
+ result:= -1;
+ for i:= 0 to csvtowns.RowCount-1 do
+  begin
+    if tname=csvtowns.cells[0,i] then
+    begin
+      result:= i;
+      break;
+    end;
+  end;
+end;
+
+procedure TPrefs.ELongitudeChange(Sender: TObject);
+var
+  lon: Double;
+  deg: Integer;
+  min: Integer;
+  sec: Double;
+begin
+  lon:= StringToFloat(ELongitude.text, '.') ;
+  if lon < 0 then  lon:= lon*(-1);
+  deg:= trunc(lon);
+  min:= trunc((lon-deg)*60);
+  sec:= (((lon-deg)*60)-min)*60;
+  sec:= floatround(sec, 6);
+  EDeglon.OnChange:= nil;
+  EDegLon.Text:= InttoStr(deg);
+  EminLon.Text:= InttoStr(min);
+  ESecLon.text:= FloatToString (sec, '.');
+  if lon>0 then EEOlon.text:= 'E' else   EEOLon.text:= 'O';
+  EDeglon.OnChange:= @EDeglonChange;
+end;
+
+
+procedure TPrefs.EDeglonChange(Sender: TObject);
+var
+  min: double;
+  sec: double;
+  lon: double;
+begin
+  ELongitude.OnChange:= nil;
+  lon:= StringToInt(EDegLon.text);
+  min:= StringToInt(EMinLon.text) / 60;
+  sec:= StringToFloat(ESecLon.text, '.')/3600;
+  lon:= lon+min+sec;
+  if uppercase(EEOlon.text)='O' then lon:= lon*(-1);
+  Elongitude.Text:= FloatToString(lon, '.');
+  ELongitude.OnChange:= @ELongitudeChange;
 
 end;
+
+
+
+
+// TSettings
 
 constructor TSettings.Create(Sender: TObject);
 begin
@@ -238,6 +370,75 @@ begin
 end;
 
 // End of common functions
+
+procedure TSettings.setSaveMoon(value: Boolean);
+begin
+ if fsaveMoon<> value then
+  begin
+    fsaveMoon:= value;
+    if Assigned(FOnChange) then FOnChange(Self);
+  end;
+end;
+
+procedure TSettings.setSaveVacs(value: Boolean);
+begin
+ if fsavevacs<> value then
+  begin
+    fsavevacs:= value;
+    if Assigned(FOnChange) then FOnChange(Self);
+  end;
+end;
+
+procedure TSettings.setWstate(value: String);
+begin
+ if fwstate<> value then
+  begin
+    fwstate:= value;
+    if Assigned(FOnChange) then FOnChange(Self);
+  end;
+end;
+
+function TSettings.GetSysState(Index: Integer): Boolean;
+begin
+  result:= fSysStates[index];
+end;
+
+procedure TSettings.SetSysState(Index: Integer; value: Boolean);
+begin
+  if fSysStates[Index]<> value then
+  begin
+    fSysStates[Index]:= Value;
+    if Assigned(FOnChange) then FOnChange(Self);
+  end;
+end;
+
+procedure TSettings.setVersion(value: String);
+begin
+ if fversion<> value then
+  begin
+    fversion:= value;
+    if Assigned(FOnChange) then FOnChange(Self);
+  end;
+end;
+
+
+procedure TSettings.SetTown(value: String);
+begin
+ if fTown<> value then
+  begin
+    fTown:= value;
+    if Assigned(FOnChange) then FOnChange(Self);
+  end;
+end;
+
+procedure TSettings.setTownIndex(value: Integer);
+begin
+   if fTownIndex<> value then
+  begin
+    fTownIndex:= value;
+    if Assigned(FOnChange) then FOnChange(Self);
+  end;
+end;
 
 function TSettings.GetDaysColor(Index: Integer): TColor;
 begin
@@ -306,16 +507,22 @@ end;
 function TSettings.SaveToXMLnode(iNode: TDOMNode): Boolean;
 begin
   Try
-    TDOMElement(iNode).SetAttribute ('savsizepos', BoolToString(FSavSizePos));
-    TDOMElement(iNode).SetAttribute ('miniintray',BoolToString(FMiniInTray));
-    TDOMElement(iNode).SetAttribute ('hideintaskbar', BoolToString(FHideInTaskBar));
+    TDOMElement(iNode).SetAttribute ('version', fversion);
+    TDOMElement(iNode).SetAttribute ('startwin', BoolToString(startwin));
+    TDOMElement(iNode).SetAttribute ('savsizepos', BoolToString(savSizePos));
+    TDOMElement(iNode).SetAttribute ('startmini', BoolToString(startmini));
+    TDOMElement(iNode).SetAttribute ('miniintray',BoolToString(MiniInTray));
+    TDOMElement(iNode).SetAttribute ('hideintaskbar', BoolToString(HideInTaskBar));
+    TDOMElement(iNode).SetAttribute ('savemoon', BoolToString(fsaveMoon));
+    TDOMElement(iNode).SetAttribute ('savevacs', BoolToString(fsavevacs));
     TDOMElement(iNode).SetAttribute ('wstate', FWState);
     TDOMElement(iNode).SetAttribute ('nochknewver', BoolToString(FNoChkNewVer));
     TDOMElement(iNode).SetAttribute ('lastupdchk', DateToStr(FLastUpdChk));
     TDOMElement(iNode).SetAttribute ('lastupdchk', TimeDateToString(FLastUpdChk, 'dd/mm/yyyy hh:nn:ss'));
     TDOMElement(iNode).SetAttribute ('lastversion', FLastVersion);
-    TDOMElement(iNode).SetAttribute ('startwin', BoolToString(FStartWin));
     TDOMElement(iNode).SetAttribute ('langstr', FLangStr);
+    TDOMElement(iNode).SetAttribute ('town', fTown);
+    TDOMElement(iNode).SetAttribute ('townindex', InttoStr(fTownindex));
     TDOMElement(iNode).SetAttribute ('timezone', IntToStr(fTimezone));
     TDOMElement(iNode).SetAttribute ('latitude', FloatToString(fCoords[0]));     // latitude
     TDOMElement(iNode).SetAttribute ('longitude', FloatToString(fCoords[1]));    // longitude
@@ -344,17 +551,22 @@ end;
 
 function TSettings.ReadXMLNode(iNode: TDOMNode): Boolean;
 begin
-
- try
-    FSavSizePos:= StringToBool(TDOMElement(iNode).GetAttribute('savsizepos'));
-    FMiniInTray:= StringToBool(TDOMElement(iNode).GetAttribute('miniintray'));
-    FHideInTaskBar:= StringToBool(TDOMElement(iNode).GetAttribute('hideintaskbar'));
+  try
+    fVersion:= TDOMElement(iNode).GetAttribute('version');
+    fSysStates[0]:= StringToBool(TDOMElement(iNode).GetAttribute('startwin'));
+    fSysStates[1]:= StringToBool(TDOMElement(iNode).GetAttribute('savsizepos'));
+    fSysStates[2]:= StringToBool(TDOMElement(iNode).GetAttribute('startmini'));
+    fSysStates[3]:= StringToBool(TDOMElement(iNode).GetAttribute('miniintray'));
+    fSysStates[4]:= StringToBool(TDOMElement(iNode).GetAttribute('hideintaskbar'));
+    fsaveMoon:= StringToBool(TDOMElement(iNode).GetAttribute('savemoon'));
+    fsaveVacs:= StringToBool(TDOMElement(iNode).GetAttribute('savevacs'));
     FWState:= TDOMElement(iNode).GetAttribute('wstate');
     FNoChkNewVer:= StringToBool(TDOMElement(iNode).GetAttribute('nochknewver'));
     FLastUpdChk:= StringToTimeDate(TDOMElement(iNode).GetAttribute('lastupdchk'));
     FLastVersion:= TDOMElement(iNode).GetAttribute('lastversion');
-    FStartWin:= StringToBool(TDOMElement(iNode).GetAttribute('startwin'));
     FLangStr:= TDOMElement(iNode).GetAttribute('langstr');
+    fTown:= TDOMElement(iNode).GetAttribute('town');
+    ftownIndex:= StringToInt(TDOMElement(iNode).GetAttribute('townindex'));
     fTimezone:= StringToInt(TDOMElement(iNode).GetAttribute('timezone'));
     fCoords[0]:= StringToFloat(TDOMElement(iNode).GetAttribute('latitude'));
     fCoords[1]:= StringToFloat(TDOMElement(iNode).GetAttribute('longitude'));

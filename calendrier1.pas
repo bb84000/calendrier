@@ -10,10 +10,12 @@ uses
   {$ENDIF}
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
   Grids, StdCtrls, lazbbcontrols, csvdocument, Types, DateUtils, lazbbastro,
-  LResources, Buttons, Menus, registry, lazbbutils, LazUTF8, lazbbosver,
+  LResources, Buttons, Menus, registry, lazbbutils, lazbbautostart, LazUTF8, lazbbosver,
   laz2_DOM, laz2_XMLRead, laz2_XMLWrite, calsettings;
 
+
 type
+
   TDay = record
     index: integer;
     ddate: TDateTime;
@@ -58,6 +60,8 @@ type
     MemoToday1: TMemo;
     MemoToday2: TMemo;
     MemoCurDay1: TMemo;
+    PMnuRestore: TMenuItem;
+    PMnuQuit: TMenuItem;
     PMnuSettings: TMenuItem;
     PageControl1: TPageControl;
     PanInfos2: TPanel;
@@ -70,6 +74,7 @@ type
     PanSelDay1: TTitlePanel;
     PanToday2: TTitlePanel;
     PMnuMain: TPopupMenu;
+    PMnuTray: TPopupMenu;
     ScrollBox1: TScrollBox;
     ScrollBox2: TScrollBox;
     SG1: TStringGrid;
@@ -81,18 +86,22 @@ type
     Timer1: TTimer;
     PanToday1: TTitlePanel;
     PanSeasons1: TTitlePanel;
+    TrayCal: TTrayIcon;
     TS2: TTabSheet;
     TS1: TTabSheet;
 
     procedure CBXClick(Sender: TObject);
     procedure ETodayTimeChange(Sender: TObject);
     procedure FormActivate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure MemoCurDayChange(Sender: TObject);
     procedure MemoSeasons1Change(Sender: TObject);
     procedure MemoSeasons2Change(Sender: TObject);
     procedure MemoTodayChange(Sender: TObject);
+    procedure PMnuQuitClick(Sender: TObject);
+    procedure PMnuRestoreClick(Sender: TObject);
     procedure PMnuSettingsClick(Sender: TObject);
     procedure SBNextQClick(Sender: TObject);
     procedure SBPrevQClick(Sender: TObject);
@@ -116,7 +125,9 @@ type
     LangStr: String;
     UserAppsDataPath: String;
     version: String;
-
+    WState: String;
+    WinState: TWindowState;
+    PrevLeft, PrevTop: Integer;
     MoonDescs: array [0..3] of string;
     csvsaints, csvferies,csvvacs: TCSVDocument;
     FeriesTxt: String;
@@ -125,7 +136,7 @@ type
 
     Days: array of TDay;
     aMonths: array [1..13] of integer;
-    PrevTop, PrevLeft: integer;
+
     Today: Integer;
     curyear: integer;
     curRow, curCol : Integer;
@@ -139,9 +150,10 @@ type
     function DayInfos(dDate: TDateTime): String;
     function LoadSettings(Filename: string): Boolean;
     function SaveSettings(filename: string): Boolean;
+    function HideOnTaskbar: boolean;
     procedure SettingsOnChange(sender: TObject);
   public
-
+    csvtowns: TCSVDocument;
   end;
 
 var
@@ -160,13 +172,13 @@ implementation
 
 procedure TFCalendrier.OnAppMinimize(Sender: TObject);
 begin
-  {if FSettings.Settings.HideInTaskbar then
+  if Settings.HideInTaskbar and Settings.miniintray then
   begin
     PrevLeft:=self.left;
     PrevTop:= self.top;
     WindowState:= wsMinimized;
     Iconized:= HideOnTaskbar;
-  end;}
+  end;
 end;
 
 procedure TFCalendrier.OnQueryendSession(var Cancel: Boolean);
@@ -176,9 +188,9 @@ var
     RunRegKeyVal, RunRegKeySz: string;
   {$ENDIF}
 begin
-  {if not FSettings.Settings.Startup then
+  if not Settings.startwin then
   begin
-    FSettings.Settings.Restart:= true;
+    //Settings.Restart:= true;
     {$IFDEF WINDOWS}
       reg := TRegistry.Create;
       reg.RootKey := HKEY_CURRENT_USER;
@@ -193,8 +205,8 @@ begin
        SetAutostart(ProgName, Application.exename);
     {$ENDIF}
   end;
-  BeforeClose;
-  Application.ProcessMessages; }
+  //BeforeClose;
+  Application.ProcessMessages;
 end;
 
 procedure TFCalendrier.FormCreate(Sender: TObject);
@@ -208,7 +220,7 @@ begin
   {$I fr_saints.lrs}
   {$I fr_feries.lrs}
   {$I fr_holidays.lrs}
-
+  {$I fr_villes.lrs}
   // Intercept system commands
   Application.OnMinimize:=@OnAppMinimize;
   Application.OnQueryEndSession:= @OnQueryendSession;
@@ -276,7 +288,7 @@ begin
   csvferies.CSVText:= FeriesTxt;
   // load Holidays from resource
   csvvacs:= TCSVDocument.Create;
-  if FileExists('fr_holidays.csv')then csvvacs.LoadFromFile('fr_holidays.csv') else
+  if FileExists(CalAppDataPath+'fr_holidays.csv')then csvvacs.LoadFromFile(CalAppDataPath+'fr_holidays.csv') else
   begin
     r:= LazarusResources.Find('fr_holidays');
     csvvacs.CSVText:= r.value;
@@ -294,6 +306,175 @@ begin
   MoonDescs[1]:= 'Premier quartier';
   MoonDescs[2]:= 'Dernier quartier';
   MoonDescs[3]:= 'Pleine lune';
+  TrayCal.Icon:= Application.Icon;
+end;
+
+procedure TFCalendrier.FormActivate(Sender: TObject);
+var
+  i: Integer;
+  line: string;
+    r: TLResource;
+begin
+  if not Initialized then
+  begin
+    Initialized:= true;
+    CurYear := YearOf(now);
+    if MonthOf(now) < 7 then PageControl1.Activepage:= TS1
+    else PageControl1.Activepage:= TS2;
+    Settings:= TSettings.create(self);
+    // Set defaults settings;
+    Settings.colweekday:= clDefault;
+    Settings.colsunday:= StringToColour('$00FFFF80');
+    Settings.colferie:= StringToColour('$00FFFF80');
+    Settings.colvaca:= CBVA.CheckColor;
+    Settings.colvacb:= CBVB.CheckColor;
+    Settings.colvacc:= CBVC.CheckColor;
+    Settings.colvack:= CBVK.CheckColor;
+    Settings.Timezone:= 60; // Paris tz
+    Settings.latitude:= 43.94284;
+    Settings.longitude:= 4.8089;
+    // load towns from resources
+    Prefs.csvtowns:= TCSVDocument.Create;
+    if FileExists(CalAppDataPath+'fr_villes.csv')then Prefs.csvtowns.LoadFromFile(CalAppDataPath+'fr_villes.csv') else
+    begin
+      r:= LazarusResources.Find('fr_villes');
+      Prefs.csvtowns.CSVText:= r.value;
+    end;
+    for i:= 0 to Prefs.csvtowns.RowCount-1 do
+      Prefs.CBTowns.Items.Add(Prefs.csvtowns.Cells[0,i]);
+    Prefs.CBTowns.ItemIndex:= 0;
+    Settings.OnChange:= @SettingsOnChange;
+    LoadSettings(cfgfilename);
+    UpdateCal(curyear);
+  end;
+end;
+
+
+
+procedure TFCalendrier.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  self.WState:= IntToHex(ord(self.WindowState), 4)+IntToHex(self.Top, 4)+
+                    IntToHex(self.Left, 4)+IntToHex(self.Height, 4)+IntToHex(self.width, 4); ;
+  if (self.WState<>Settings.wstate) or SettingsChanged then SaveSettings(cfgfilename);
+  CloseAction:= caFree;
+end;
+
+function TFCalendrier.LoadSettings(Filename: string): Boolean;
+var
+  FilNamWoExt: string;
+  i: integer;
+  CfgXML: TXMLDocument;
+  RootNode, SettingsNode, FilesNode :TDOMNode;
+begin
+  If not FileExists(Filename) then
+  begin
+    FilNamWoExt:= TrimFileExt(FileName);
+    If FileExists (FilNamWoExt+'.bk0') then
+    begin
+      RenameFile(FilNamWoExt+'.bk0', filename);
+      For i:= 1 to 5 do
+      begin
+        // Renomme les précédentes si elles existent
+        if FileExists (FilNamWoExt+'.bk'+IntToStr(i))
+             then  RenameFile(FilNamWoExt+'.bk'+IntToStr(i), FilNamWoExt+'.bk'+IntToStr(i-1));
+      end;
+    end else
+    begin
+       SaveSettings(filename)
+    end;
+  end;
+  self.Position:= poDesktopCenter;
+  ReadXMLFile(CfgXml, filename);
+  RootNode := CfgXML.DocumentElement;
+  SettingsNode:= CfgXML.DocumentElement.FindNode('settings');
+  if Settingsnode<>nil then
+  begin
+    Settings.ReadXMLNode(SettingsNode);
+    if Settings.SavSizePos then
+    try
+      WinState := TWindowState(StrToInt('$' + Copy(Settings.WState, 1, 4)));
+      self.Top := StrToInt('$' + Copy(Settings.WState, 5, 4));
+      self.Left := StrToInt('$' + Copy(Settings.WState, 9, 4));
+      self.Height := StrToInt('$' + Copy(Settings.WState, 13, 4));
+      self.Width := StrToInt('$' + Copy(Settings.WState, 17, 4));
+      self.WindowState := WinState;
+      PrevLeft:= self.left;
+      PrevTop:= self.top;
+    except
+    end;
+    if Settings.startwin then SetAutostart(ProgName, Application.exename)  else UnsetAutostart(ProgName);
+    if Settings.StartMini or (Settings.SavSizePos and (Winstate=wsMinimized)) then
+    begin
+      WindowState:=wsNormal;
+      Application.Minimize;
+    end;
+    if Settings.miniintray then TrayCal.visible:= true;
+    CBVA.CheckColor:= Settings.colvaca;
+    CBVB.CheckColor:= Settings.colvacb;
+    CBVC.CheckColor:= Settings.colvacc;
+    CBVK.CheckColor:= Settings.colvack;
+    if Settings.savemoon then CBLune.checked:= Settings.cbmoon;
+    if Settings.savevacs then begin
+      CBVA.Checked:= Settings.cbvaca;
+      CBVB.Checked:= Settings.cbvacb;
+      CBVC.Checked:= Settings.cbvacc;
+      CBVK.Checked:= Settings.cbvack;
+    end;
+  end;
+  // only now, when settings are loaded
+  For i:= 0 to 3 do aSG[i].OnDrawCell:= @SGDrawCell ;
+  INvalidate;
+end;
+
+function TFCalendrier.SaveSettings(filename: string): Boolean;
+var
+  CfgXML: TXMLDocument;
+  RootNode, SettingsNode, FilesNode :TDOMNode;
+  i: Integer;
+begin
+  Settings.WState:= '';
+  if self.Top < 0 then self.Top:= 0;
+  if self.Left < 0 then self.Left:= 0;
+  // Main form size and position
+  Settings.WState:= IntToHex(ord(self.WindowState), 4)+IntToHex(self.Top, 4)+
+                    IntToHex(self.Left, 4)+IntToHex(self.Height, 4)+IntToHex(self.width, 4);
+  Settings.Version:= version;
+  Settings.cbmoon:= CBLune.checked;
+  Settings.cbvaca:= CBVA.checked;
+  Settings.cbvacb:= CBVB.checked;
+  Settings.cbvacc:= CBVC.checked;
+  Settings.cbvack:= CBVK.checked;
+  try
+     if FileExists(filename) then
+     begin
+       ReadXMLFile(CfgXml, filename);
+       RootNode := CfgXML.DocumentElement;
+     end else
+     begin
+       CfgXML := TXMLDocument.Create;
+       RootNode := CfgXML.CreateElement('config');
+       CfgXML.Appendchild(RootNode);
+     end;
+     SettingsNode:= RootNode.FindNode('settings');
+     if SettingsNode <> nil then RootNode.RemoveChild(SettingsNode);
+     SettingsNode:= CfgXML.CreateElement('settings');
+     Settings.SaveToXMLnode(SettingsNode);
+     RootNode.Appendchild(SettingsNode);
+     writeXMLFile(CfgXML, filename);
+
+   finally
+
+   end;
+end;
+
+function TFCalendrier.HideOnTaskbar: boolean;
+begin
+  result:= false;
+  if (WindowState=wsMinimized) and Settings.HideInTaskbar then
+  begin
+    result:= true;
+    visible:= false;
+  end;
 end;
 
 procedure TFCalendrier.FormDestroy(Sender: TObject);
@@ -324,6 +505,23 @@ begin
   MemoToday2.Lines.Text:= MemoToday1.Lines.Text;
 end;
 
+procedure TFCalendrier.PMnuQuitClick(Sender: TObject);
+begin
+  close();
+end;
+
+procedure TFCalendrier.PMnuRestoreClick(Sender: TObject);
+begin
+  iconized:= false;
+  visible:= true;
+  WindowState:=wsNormal;
+ //Need to reload position as it can change during hide in taskbar process
+  left:= PrevLeft;
+  top:= PrevTop;
+
+  Application.BringToFront;
+end;
+
 procedure TFCalendrier.SettingsOnChange(sender: TObject);
 begin
   SettingsChanged:= true;
@@ -332,6 +530,13 @@ end;
 procedure TFCalendrier.PMnuSettingsClick(Sender: TObject);
 begin
   Prefs.PanStatus.Caption:= OSVersion.VerDetail ;
+  Prefs.CBStartwin.Checked:= Settings.startwin;
+  Prefs.CBSaveSizPos.Checked:= Settings.savsizepos;
+  Prefs.CBStartmini.Checked:= Settings.startmini;
+  Prefs.CBMiniintray.Checked:= Settings.miniintray;
+  Prefs.CBHideinTaskBar.Checked:= Settings.hideintaskbar;
+  prefs.CBMoonPhases.checked:= Settings.savemoon;
+  prefs.CBSaveVacs.checked:= Settings.savevacs;
   Prefs.CPcolweek.Color:= Settings.colweekday;
   Prefs.CPcolsunday.Color:= Settings.colsunday;
   Prefs.CPColferie.Color:= Settings.colferie;
@@ -339,9 +544,18 @@ begin
   Prefs.CPcolvacb.Color:= Settings.colvacb;
   Prefs.CPcolvacc.Color:= Settings.colvacc;
   Prefs.CPcolvack.Color:= Settings.colvack;
+  Prefs.CBTowns.Text:= Settings.town;
+  Prefs.CBTowns.ItemIndex:= Settings.townIndex;
   Prefs.ELatitude.Text:= FloatToString(Settings.latitude, '.');
   Prefs.ELongitude.Text:= FloatToString(Settings.longitude, '.');
   if Prefs.ShowModal<>mrOK then exit;              // Pas OK ? on ne change rien
+  Settings.startwin:= Prefs.CBStartwin.Checked;
+  Settings.savsizepos:= Prefs.CBSaveSizPos.Checked;
+  Settings.startmini:= Prefs.CBStartmini.Checked;
+  Settings.miniintray:= Prefs.CBMiniintray.Checked;
+  Settings.hideintaskbar:= Prefs.CBHideinTaskBar.Checked;
+  Settings.savemoon:= prefs.CBMoonPhases.checked;
+  Settings.savevacs:= prefs.CBSaveVacs.checked;
   Settings.colweekday:= Prefs.CPcolweek.Color;
   Settings.colsunday:= Prefs.CPcolsunday.Color;
   Settings.colferie:= Prefs.CPColferie.Color;
@@ -349,116 +563,24 @@ begin
   Settings.colvacb:= Prefs.CPcolvacb.Color;
   Settings.colvacc:= Prefs.CPcolvacc.Color;
   Settings.colvack:= Prefs.CPcolvack.Color;
+  Settings.townIndex:= Prefs.CBTowns.ItemIndex;
+  Settings.town:= Prefs.CBTowns.Text;
   Settings.latitude:= StringToFloat(Prefs.ELatitude.text, '.');
   Settings.longitude:= StringToFloat(Prefs.ELongitude.text, '.');
   CBVA.CheckColor:= Settings.colvaca;
   CBVB.CheckColor:= Settings.colvacb;
   CBVC.CheckColor:= Settings.colvacc;
   CBVK.CheckColor:= Settings.colvack;
-  SaveSettings(cfgfilename);
+  if SettingsChanged then SaveSettings(cfgfilename);
   INvalidate;
 end;
 
 
 
-procedure TFCalendrier.FormActivate(Sender: TObject);
-begin
-  if not Initialized then
-  begin
-    CurYear := YearOf(now);
-
-    if MonthOf(now) < 7 then PageControl1.Activepage:= TS1
-    else PageControl1.Activepage:= TS2;
-    Settings:= TSettings.create(self);
-    // Set defaults settings;
-    Settings.colweekday:= clDefault;
-    Settings.colsunday:= StringToColour('$00FFFF80');
-    Settings.colferie:= StringToColour('$00FFFF80');
-    Settings.colvaca:= CBVA.CheckColor;
-    Settings.colvacb:= CBVB.CheckColor;
-    Settings.colvacc:= CBVC.CheckColor;
-    Settings.colvack:= CBVK.CheckColor;
-    Settings.Timezone:= 60; // Paris tz
-    Settings.latitude:= 43.94284;
-    Settings.longitude:= 4.8089;
-    Settings.OnChange:= @SettingsOnChange;
-    LoadSettings(cfgfilename);
-    UpdateCal(curyear);
-  end;
-
-end;
-
-function TFCalendrier.LoadSettings(Filename: string): Boolean;
-var
-  FilNamWoExt: string;
-  i: integer;
-  CfgXML: TXMLDocument;
-  RootNode, SettingsNode, FilesNode :TDOMNode;
-begin
-
-  If not FileExists(Filename) then
-  begin
-    FilNamWoExt:= TrimFileExt(FileName);
-    If FileExists (FilNamWoExt+'.bk0') then
-    begin
-      RenameFile(FilNamWoExt+'.bk0', filename);
-      For i:= 1 to 5 do
-      begin
-        // Renomme les précédentes si elles existent
-        if FileExists (FilNamWoExt+'.bk'+IntToStr(i))
-             then  RenameFile(FilNamWoExt+'.bk'+IntToStr(i), FilNamWoExt+'.bk'+IntToStr(i-1));
-      end;
-    end else
-    begin
-       SaveSettings(filename)
-    end;
-  end;
-  ReadXMLFile(CfgXml, filename);
-  RootNode := CfgXML.DocumentElement;
-  SettingsNode:= CfgXML.DocumentElement.FindNode('settings');
-  if Settingsnode<>nil then
-  begin
-    Settings.ReadXMLNode(SettingsNode);
-    CBVA.CheckColor:= Settings.colvaca;
-    CBVB.CheckColor:= Settings.colvacb;
-    CBVC.CheckColor:= Settings.colvacc;
-    CBVK.CheckColor:= Settings.colvack;
-  end;
-  // only now, when settings are loaded
-  For i:= 0 to 3 do aSG[i].OnDrawCell:= @SGDrawCell ;
-  INvalidate;
-end;
 
 
-function TFCalendrier.SaveSettings(filename: string): Boolean;
-var
-  CfgXML: TXMLDocument;
-  RootNode, SettingsNode, FilesNode :TDOMNode;
-  i: Integer;
-begin
-   try
-     // If oldconfig, then create a new file, else read existing config file
-     if FileExists(filename) then
-     begin
-       ReadXMLFile(CfgXml, filename);
-       RootNode := CfgXML.DocumentElement;
-     end else
-     begin
-       CfgXML := TXMLDocument.Create;
-       RootNode := CfgXML.CreateElement('config');
-       CfgXML.Appendchild(RootNode);
-     end;
-     SettingsNode:= RootNode.FindNode('settings');
-     if SettingsNode <> nil then RootNode.RemoveChild(SettingsNode);
-     SettingsNode:= CfgXML.CreateElement('settings');
-     Settings.SaveToXMLnode(SettingsNode);
-     RootNode.Appendchild(SettingsNode);
-     writeXMLFile(CfgXML, filename);
 
-   finally
 
-   end;
-end;
 
 procedure TFCalendrier.SBNextQClick(Sender: TObject);
 var
@@ -588,6 +710,7 @@ procedure TFCalendrier.CBXClick(Sender: TObject);
 var
   i: integer;
 begin
+  SettingsChanged:= true;
   Invalidate;
 end;
 

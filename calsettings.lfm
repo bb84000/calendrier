@@ -19,7 +19,6 @@ object Prefs: TPrefs
     ClientHeight = 40
     ClientWidth = 468
     TabOrder = 0
-    OnClick = PanButtonsClick
     object BtnOK: TButton
       Left = 144
       Height = 25
@@ -264,13 +263,15 @@ object Prefs: TPrefs
       ParentColor = False
       ParentFont = False
     end
-    object ComboBox1: TComboBox
-      Left = 72
+    object CBTowns: TComboBox
+      Left = 73
       Height = 23
       Top = 20
       Width = 184
       ItemHeight = 15
+      OnSelect = CBTownsSelect
       ParentFont = False
+      Sorted = True
       TabOrder = 0
     end
     object LLatitude: TLabel
@@ -288,18 +289,22 @@ object Prefs: TPrefs
       Height = 23
       Top = 47
       Width = 112
+      NumbersOnly = True
+      OnChange = ELatitudeChange
       ParentFont = False
       TabOrder = 1
     end
-    object Edit2: TEdit
+    object EDegLat: TEdit
       Left = 200
       Height = 23
       Top = 47
       Width = 30
+      NumbersOnly = True
+      OnChange = EDegLatChange
       ParentFont = False
       TabOrder = 2
     end
-    object LLatitude1: TLabel
+    object Llatdeg: TLabel
       Left = 232
       Height = 15
       Top = 50
@@ -309,15 +314,17 @@ object Prefs: TPrefs
       ParentColor = False
       ParentFont = False
     end
-    object Edit3: TEdit
+    object EMinLat: TEdit
       Left = 260
       Height = 23
       Top = 47
       Width = 30
+      NumbersOnly = True
+      OnChange = EDegLatChange
       ParentFont = False
       TabOrder = 3
     end
-    object LLatitude2: TLabel
+    object LLatmin: TLabel
       Left = 294
       Height = 15
       Top = 50
@@ -327,15 +334,17 @@ object Prefs: TPrefs
       ParentColor = False
       ParentFont = False
     end
-    object Edit4: TEdit
+    object ESecLat: TEdit
       Left = 320
       Height = 23
       Top = 47
       Width = 76
+      NumbersOnly = True
+      OnChange = EDegLatChange
       ParentFont = False
       TabOrder = 4
     end
-    object LLatitude3: TLabel
+    object Llatsec: TLabel
       Left = 401
       Height = 15
       Top = 50
@@ -345,17 +354,18 @@ object Prefs: TPrefs
       ParentColor = False
       ParentFont = False
     end
-    object Edit5: TEdit
+    object ENSLat: TEdit
       Left = 416
       Height = 23
       Top = 47
       Width = 20
       Alignment = taCenter
+      OnChange = EDegLatChange
       ParentFont = False
       TabOrder = 5
       Text = 'N'
     end
-    object LLatitude4: TLabel
+    object LLongitude: TLabel
       Left = 8
       Height = 15
       Top = 77
@@ -370,18 +380,22 @@ object Prefs: TPrefs
       Height = 23
       Top = 74
       Width = 112
+      NumbersOnly = True
+      OnChange = ELongitudeChange
       ParentFont = False
       TabOrder = 6
     end
-    object Edit7: TEdit
+    object EDeglon: TEdit
       Left = 200
       Height = 23
       Top = 74
       Width = 30
+      NumbersOnly = True
+      OnChange = EDeglonChange
       ParentFont = False
       TabOrder = 7
     end
-    object LLatitude5: TLabel
+    object Llondeg: TLabel
       Left = 232
       Height = 15
       Top = 77
@@ -391,15 +405,17 @@ object Prefs: TPrefs
       ParentColor = False
       ParentFont = False
     end
-    object Edit8: TEdit
+    object EMinLon: TEdit
       Left = 260
       Height = 23
       Top = 74
       Width = 30
+      NumbersOnly = True
+      OnChange = EDeglonChange
       ParentFont = False
       TabOrder = 8
     end
-    object LLatitude6: TLabel
+    object Llonmin: TLabel
       Left = 294
       Height = 15
       Top = 77
@@ -409,15 +425,17 @@ object Prefs: TPrefs
       ParentColor = False
       ParentFont = False
     end
-    object Edit9: TEdit
+    object ESeclon: TEdit
       Left = 320
       Height = 23
       Top = 74
       Width = 76
+      NumbersOnly = True
+      OnChange = EDeglonChange
       ParentFont = False
       TabOrder = 9
     end
-    object LLatitude7: TLabel
+    object Llonsec: TLabel
       Left = 401
       Height = 15
       Top = 77
@@ -427,15 +445,16 @@ object Prefs: TPrefs
       ParentColor = False
       ParentFont = False
     end
-    object Edit10: TEdit
+    object EEOlon: TEdit
       Left = 416
       Height = 23
       Top = 74
       Width = 20
       Alignment = taCenter
+      OnChange = EDeglonChange
       ParentFont = False
       TabOrder = 10
-      Text = 'N'
+      Text = 'E'
     end
     object LTimezone: TLabel
       Left = 272
@@ -447,7 +466,7 @@ object Prefs: TPrefs
       ParentColor = False
       ParentFont = False
     end
-    object Edit11: TEdit
+    object ETimeZone: TEdit
       Left = 385
       Height = 23
       Top = 20
@@ -502,7 +521,7 @@ object Prefs: TPrefs
       ParentFont = False
       TabOrder = 2
     end
-    object CBSaveSizPos1: TCheckBox
+    object CBHideinTaskBar: TCheckBox
       Left = 220
       Height = 19
       Top = 40

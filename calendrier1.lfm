@@ -1,24 +1,27 @@
 object FCalendrier: TFCalendrier
   Left = 447
-  Height = 729
+  Height = 685
   Top = 151
-  Width = 1248
+  Width = 1240
   Caption = 'FCalendrier'
-  ClientHeight = 729
-  ClientWidth = 1248
+  ClientHeight = 685
+  ClientWidth = 1240
+  Constraints.MaxHeight = 685
+  Constraints.MaxWidth = 1240
   OnActivate = FormActivate
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   LCLVersion = '2.0.12.0'
   object PanStatus: TPanel
     Left = 0
     Height = 45
-    Top = 684
-    Width = 1248
+    Top = 640
+    Width = 1240
     Align = alBottom
     BevelInner = bvLowered
     ClientHeight = 45
-    ClientWidth = 1248
+    ClientWidth = 1240
     TabOrder = 0
     object EYear: TEdit
       Left = 589
@@ -220,9 +223,9 @@ object FCalendrier: TFCalendrier
   end
   object PageControl1: TPageControl
     Left = 0
-    Height = 684
+    Height = 640
     Top = 0
-    Width = 1248
+    Width = 1240
     ActivePage = TS1
     Align = alClient
     Font.Style = [fsBold]
@@ -231,19 +234,19 @@ object FCalendrier: TFCalendrier
     TabOrder = 1
     object TS1: TTabSheet
       Caption = '1er semestre'
-      ClientHeight = 656
-      ClientWidth = 1240
+      ClientHeight = 612
+      ClientWidth = 1232
       object ScrollBox1: TScrollBox
         Left = 0
-        Height = 656
+        Height = 612
         Top = 0
-        Width = 1240
+        Width = 1232
         HorzScrollBar.Page = 1231
-        VertScrollBar.Page = 614
+        VertScrollBar.Page = 612
         Align = alClient
         BorderStyle = bsNone
-        ClientHeight = 656
-        ClientWidth = 1240
+        ClientHeight = 612
+        ClientWidth = 1232
         TabOrder = 0
         object SG1: TStringGrid
           Left = 0
@@ -302,12 +305,12 @@ object FCalendrier: TFCalendrier
         end
         object PanInfos1: TPanel
           Left = 336
-          Height = 190
+          Height = 188
           Top = 424
           Width = 560
           Alignment = taLeftJustify
           BevelOuter = bvNone
-          ClientHeight = 190
+          ClientHeight = 188
           ClientWidth = 560
           Color = clNone
           ParentColor = False
@@ -426,19 +429,19 @@ object FCalendrier: TFCalendrier
     end
     object TS2: TTabSheet
       Caption = '2ème semestre'
-      ClientHeight = 656
-      ClientWidth = 1240
+      ClientHeight = 614
+      ClientWidth = 1232
       object ScrollBox2: TScrollBox
         Left = 0
-        Height = 656
+        Height = 614
         Top = 0
-        Width = 1240
+        Width = 1232
         HorzScrollBar.Page = 1231
-        VertScrollBar.Page = 614
+        VertScrollBar.Page = 612
         Align = alClient
         BorderStyle = bsNone
-        ClientHeight = 656
-        ClientWidth = 1240
+        ClientHeight = 614
+        ClientWidth = 1232
         TabOrder = 0
         object SG3: TStringGrid
           Left = 0
@@ -498,12 +501,12 @@ object FCalendrier: TFCalendrier
         end
         object PanInfos2: TPanel
           Left = 336
-          Height = 190
+          Height = 188
           Top = 424
           Width = 560
           Alignment = taLeftJustify
           BevelOuter = bvNone
-          ClientHeight = 190
+          ClientHeight = 188
           ClientWidth = 560
           Color = clNone
           ParentColor = False
@@ -691,6 +694,23 @@ object FCalendrier: TFCalendrier
     object PMnuSettings: TMenuItem
       Caption = 'Préférences'
       OnClick = PMnuSettingsClick
+    end
+  end
+  object TrayCal: TTrayIcon
+    PopUpMenu = PMnuTray
+    Left = 536
+    Top = 40
+  end
+  object PMnuTray: TPopupMenu
+    Left = 592
+    Top = 44
+    object PMnuRestore: TMenuItem
+      Caption = 'Restaurer'
+      OnClick = PMnuRestoreClick
+    end
+    object PMnuQuit: TMenuItem
+      Caption = 'Quitter le calendrier'
+      OnClick = PMnuQuitClick
     end
   end
 end

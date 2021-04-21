@@ -11,4 +11,5 @@ Version 0.6.0.0 - 16/04/2021
 Version 0.6.1.0 - 20/04/2021
 - Mise en place des options de couleurs et de leur sauvegarde
 
-
+Version 0.6.1.1 - 21/04/2021
+- Mise en place de toutes les options de configuration
