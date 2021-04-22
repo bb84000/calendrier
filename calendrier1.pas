@@ -10,8 +10,8 @@ uses
   {$ENDIF}
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
   Grids, StdCtrls, lazbbcontrols, csvdocument, Types, DateUtils, lazbbastro,
-  LResources, Buttons, Menus, registry, lazbbutils, lazbbautostart, LazUTF8, lazbbosver,
-  laz2_DOM, laz2_XMLRead, laz2_XMLWrite, calsettings;
+  LResources, Buttons, Menus, ExtDlgs, registry, lazbbutils, lazbbautostart,
+  LazUTF8, lazbbosver, laz2_DOM, laz2_XMLRead, laz2_XMLWrite, calsettings;
 
 
 type
@@ -51,6 +51,9 @@ type
     ETodayTime1: TEdit;
     ETodayTime2: TEdit;
     EYear: TEdit;
+    Image1: TImage;
+    Image2: TImage;
+    Image3: TImage;
     ImgLMoon: TImageList;
     MemoSeasons11: TMemo;
     MemoCurDay2: TMemo;
@@ -60,6 +63,9 @@ type
     MemoToday1: TMemo;
     MemoToday2: TMemo;
     MemoCurDay1: TMemo;
+    PMnuDelImg: TMenuItem;
+    OPDHalf: TOpenPictureDialog;
+    PMnuAddImg: TMenuItem;
     PMnuRestore: TMenuItem;
     PMnuQuit: TMenuItem;
     PMnuSettings: TMenuItem;
@@ -100,6 +106,9 @@ type
     procedure MemoSeasons1Change(Sender: TObject);
     procedure MemoSeasons2Change(Sender: TObject);
     procedure MemoTodayChange(Sender: TObject);
+    procedure PMnuAddImgClick(Sender: TObject);
+    procedure PMnuDelImgClick(Sender: TObject);
+    procedure PMnuMainPopup(Sender: TObject);
     procedure PMnuQuitClick(Sender: TObject);
     procedure PMnuRestoreClick(Sender: TObject);
     procedure PMnuSettingsClick(Sender: TObject);
@@ -121,6 +130,7 @@ type
     CompileDateTime: TDateTime;
     CalExecPath: String;
     CalAppDataPath: String;
+    CalImagePath: String;
     cfgfilename: String;
     LangStr: String;
     UserAppsDataPath: String;
@@ -142,7 +152,8 @@ type
     curRow, curCol : Integer;
     curHint: String;
     TimeSepar: String;
-    Settings: TSEttings;
+    Settings: TSettings;
+    HalfImgsList: TFichierList;
     SettingsChanged: Boolean;
     procedure OnAppMinimize(Sender: TObject);
     procedure OnQueryendSession(var Cancel: Boolean);
@@ -152,6 +163,7 @@ type
     function SaveSettings(filename: string): Boolean;
     function HideOnTaskbar: boolean;
     procedure SettingsOnChange(sender: TObject);
+    procedure loadimage;
   public
     csvtowns: TCSVDocument;
   end;
@@ -257,6 +269,8 @@ begin
   version := GetVersionInfo.ProductVersion;
   CalAppDataPath:= UserAppsDataPath + PathDelim + ProgName + PathDelim;
   if not DirectoryExists(CalAppDataPath) then CreateDir(CalAppDataPath);
+  CalImagePath:= CalAppDataPath+'images'+PathDelim;
+  if not DirectoryExists(CalImagePath) then CreateDir(CalImagePath);
   cfgfilename:= CalAppDataPath+ProgName+'.xml';
   // place properly grids and panels
  SG1.Left := 0;
@@ -322,6 +336,7 @@ begin
     if MonthOf(now) < 7 then PageControl1.Activepage:= TS1
     else PageControl1.Activepage:= TS2;
     Settings:= TSettings.create(self);
+    HalfImgsList:= TFichierList.Create;
     // Set defaults settings;
     Settings.colweekday:= clDefault;
     Settings.colsunday:= StringToColour('$00FFFF80');
@@ -344,6 +359,7 @@ begin
       Prefs.CBTowns.Items.Add(Prefs.csvtowns.Cells[0,i]);
     Prefs.CBTowns.ItemIndex:= 0;
     Settings.OnChange:= @SettingsOnChange;
+    HalfImgsList.OnChange:= @SettingsOnChange;
     LoadSettings(cfgfilename);
     UpdateCal(curyear);
   end;
@@ -365,6 +381,7 @@ var
   i: integer;
   CfgXML: TXMLDocument;
   RootNode, SettingsNode, FilesNode :TDOMNode;
+  imghalf: TFichier;
 begin
   If not FileExists(Filename) then
   begin
@@ -421,9 +438,43 @@ begin
       CBVK.Checked:= Settings.cbvack;
     end;
   end;
+  // Now load half images
+  FilesNode:= CfgXML.DocumentElement.FindNode('files');
+  if Filesnode<>nil then
+  begin
+    HalfImgsList.ReadXMLNode(FilesNode);
+    loadImage;
+
+
+
+  end;
   // only now, when settings are loaded
   For i:= 0 to 3 do aSG[i].OnDrawCell:= @SGDrawCell ;
   INvalidate;
+end;
+
+
+procedure TFCalendrier.loadImage;
+var
+  ImgHalf: TFichier;
+  i: Integer;
+  imgname: string;
+begin
+  Image1.Picture:= nil;
+  Image2.Picture:= nil;
+  PMnuAddImg.Caption:= 'Ajouter une image';
+  PMnuDelImg.Visible:= false;
+  i:= HalfImgsList.FindYearAndHalf(Curyear, pagecontrol1.TabIndex+1);
+  if i>=0 then
+  begin
+    PMnuAddImg.Caption:= 'Modifier l'' image';
+     PMnuDelImg.Visible:= true;
+    ImgHalf:= HalfImgsList.GetItem(i);
+    if FileExists(ImgHalf.LocalCopy) then imgname:= ImgHalf.LocalCopy
+    else imgname:= ImgHalf.name;
+    if pagecontrol1.TabIndex=0 then Image1.Picture.LoadFromFile(imgname)
+    else Image2.Picture.LoadFromFile(imgname);
+  end;
 end;
 
 function TFCalendrier.SaveSettings(filename: string): Boolean;
@@ -460,6 +511,11 @@ begin
      SettingsNode:= CfgXML.CreateElement('settings');
      Settings.SaveToXMLnode(SettingsNode);
      RootNode.Appendchild(SettingsNode);
+     FilesNode:=  RootNode.FindNode('files');
+     if FilesNode <> nil then RootNode.RemoveChild(FilesNode);
+     FilesNode:= CfgXML.CreateElement('files');
+     HalfImgsList.SaveToXMLnode(FilesNode);
+     RootNode.Appendchild(FilesNode);
      writeXMLFile(CfgXML, filename);
 
    finally
@@ -503,6 +559,97 @@ end;
 procedure TFCalendrier.MemoTodayChange(Sender: TObject);
 begin
   MemoToday2.Lines.Text:= MemoToday1.Lines.Text;
+end;
+
+procedure TFCalendrier.PMnuAddImgClick(Sender: TObject);
+var
+  CurImg: TFichier;
+  i: Integer;
+  jpg: TJPEGImage;
+  rec: TRect;
+begin
+  jpg:= TJpegImage.Create;
+  jpg.SetSize(Image1.width, Image1.Height);
+  rec:= Rect(0,0,Image1.width, Image1.Height);
+  CurImg.Year:= curyear;
+  CurImg.Half:= PageControl1.TabIndex+1;
+  i:= HalfImgsList.FindYearAndHalf(curyear, PageControl1.TabIndex+1);
+  if i> 0 then
+  begin
+    CurImg:= HalfImgsList.GetItem(i);
+    OPDHalf.InitialDir:= ExtractFileDir(CurImg.Name);
+    OPDHalf.FileName:= ExtractFileName(CurImg.Name) ;
+    PMnuAddImg.Caption:= 'Modifier l''image';
+  end;
+  if OPDHalf.execute then
+  begin
+    CurImg.Year:= CurYear;
+    CurImg.Half:= PageControl1.TabIndex+1;
+    CurImg.Name:= OPDHalf.FileName;
+    CurImg.LocalCopy:= CalImagePath+InttoStr(CurImg.year)+'-'+InttoStr(CurImg.Half)+'.jpg';
+    Image1.Picture.Clear;
+    if i>=0 then
+    begin
+      HalfImgsList.ModifyFile(i, CurImg);
+    end else
+    begin
+      HalfImgsList.AddFile(CurImg);
+    end;
+    if CurImg.Half=1 then
+    begin
+      Image1.Picture.LoadFromFile(CurImg.Name);
+      Application.ProcessMessages;
+      jpg.Canvas.CopyRect(rec, image1.Canvas, rec);
+    end else
+    begin
+      Image2.Picture.LoadFromFile(CurImg.Name) ;
+      Application.ProcessMessages;
+      jpg.Canvas.CopyRect(rec, image2.Canvas, rec);
+      jpg.SaveToFile(CurImg.LocalCopy);
+    end;
+    jpg.SaveToFile(CurImg.LocalCopy);
+    if assigned(jpg) then FreeAndNil(jpg);
+    if SettingsChanged then SaveSettings(cfgfilename);
+  end;
+{procedure TForm1.RescaleImage(newScale: Double);
+var
+  OrgWidth, OrgHeight: integer;
+  Rect: TRect;
+begin
+  OrgWidth := Image1.Picture.Bitmap.Width;
+  OrgHeight := Image1.Picture.Bitmap.Height;
+  FImageScale := FImageScale * NewScale; //FImageScale-> private 1.0 on start(original)
+  Rect := Image1.BoundsRect;
+  Rect.Right := Rect.Left + Round(OrgWidth * FImageScale);
+  Rect.Bottom := Rect.Top + Round(OrgHeight * FImageScale);
+  Image1.Align := AlNone;
+  Image1.BoundsRect := Rect;
+  Image1.Stretch:= true;   //strech
+end}
+end;
+
+procedure TFCalendrier.PMnuDelImgClick(Sender: TObject);
+var
+  i: integer;
+  half: Integer;
+begin
+  half:= PageControl1.TabIndex+1;
+  i:= HalfImgsList.FindYearAndHalf(CurYear, half);
+  if i>=0 then
+  begin
+    DeleteFile(HalfImgsList.GetItem(i).LocalCopy);
+    HalfImgsList.Delete(i);
+    if Half=1 then Image1.Picture:=nil
+    else Image2.Picture:= nil;
+    if SettingsChanged then SaveSettings(cfgfilename);
+  end;
+end;
+
+procedure TFCalendrier.PMnuMainPopup(Sender: TObject);
+begin
+
+
+
 end;
 
 procedure TFCalendrier.PMnuQuitClick(Sender: TObject);
@@ -596,6 +743,7 @@ begin
     Invalidate;
     PageControl1.ActivePage:=TS1;
   end;
+  loadimage;
 end;
 
 
@@ -613,6 +761,7 @@ begin
   begin
     PageControl1.ActivePage:=TS1;
   end;
+  loadimage;
 end;
 
 procedure TFCalendrier.SGMouseMove(Sender: TObject; Shift: TShiftState; X,

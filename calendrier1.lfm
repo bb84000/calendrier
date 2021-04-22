@@ -220,6 +220,14 @@ object FCalendrier: TFCalendrier
         FF00FFFFFF00FFFFFF00
       }
     end
+    object Image3: TImage
+      Left = 20
+      Height = 90
+      Top = 5
+      Width = 90
+      Center = True
+      Stretch = True
+    end
   end
   object PageControl1: TPageControl
     Left = 0
@@ -300,8 +308,20 @@ object FCalendrier: TFCalendrier
           Top = 0
           Width = 560
           BevelInner = bvLowered
+          ClientHeight = 420
+          ClientWidth = 560
           PopupMenu = PMnuMain
           TabOrder = 2
+          object Image1: TImage
+            Left = 2
+            Height = 416
+            Top = 2
+            Width = 556
+            Align = alClient
+            Center = True
+            Proportional = True
+            Stretch = True
+          end
         end
         object PanInfos1: TPanel
           Left = 336
@@ -429,18 +449,18 @@ object FCalendrier: TFCalendrier
     end
     object TS2: TTabSheet
       Caption = '2ème semestre'
-      ClientHeight = 614
+      ClientHeight = 612
       ClientWidth = 1232
       object ScrollBox2: TScrollBox
         Left = 0
-        Height = 614
+        Height = 612
         Top = 0
         Width = 1232
         HorzScrollBar.Page = 1231
         VertScrollBar.Page = 612
         Align = alClient
         BorderStyle = bsNone
-        ClientHeight = 614
+        ClientHeight = 612
         ClientWidth = 1232
         TabOrder = 0
         object SG3: TStringGrid
@@ -496,8 +516,20 @@ object FCalendrier: TFCalendrier
           Top = 0
           Width = 560
           BevelInner = bvLowered
+          ClientHeight = 420
+          ClientWidth = 560
           PopupMenu = PMnuMain
           TabOrder = 2
+          object Image2: TImage
+            Left = 2
+            Height = 416
+            Top = 2
+            Width = 556
+            Align = alClient
+            Center = True
+            Proportional = True
+            Stretch = True
+          end
         end
         object PanInfos2: TPanel
           Left = 336
@@ -689,8 +721,18 @@ object FCalendrier: TFCalendrier
     Top = 40
   end
   object PMnuMain: TPopupMenu
+    OnPopup = PMnuMainPopup
     Left = 480
     Top = 40
+    object PMnuAddImg: TMenuItem
+      Caption = 'Ajouter une image'
+      OnClick = PMnuAddImgClick
+    end
+    object PMnuDelImg: TMenuItem
+      Caption = 'Supprimer l''image'
+      Visible = False
+      OnClick = PMnuDelImgClick
+    end
     object PMnuSettings: TMenuItem
       Caption = 'Préférences'
       OnClick = PMnuSettingsClick
@@ -712,5 +754,9 @@ object FCalendrier: TFCalendrier
       Caption = 'Quitter le calendrier'
       OnClick = PMnuQuitClick
     end
+  end
+  object OPDHalf: TOpenPictureDialog
+    Left = 640
+    Top = 44
   end
 end

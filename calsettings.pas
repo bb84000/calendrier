@@ -123,6 +123,7 @@ type
     procedure Delete (const i : Integer);
     procedure ModifyFile (const i: integer; Fichier : TFichier);
     procedure ModifyField (const i: integer; field: string; value: variant);
+    function FindYearAndHalf(yr, hf: Integer): Integer;
     procedure Reset;
     function GetItem(const i: Integer): TFichier;
     function ReadXMLNode(iNode: TDOMNode): Boolean;
@@ -647,6 +648,19 @@ begin
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
+function TFichierList.FindYearAndHalf(yr, hf: Integer): integer;
+var
+ i: integer;
+begin
+  result:=-1;
+  for i:= 0 to count-1 do
+    if (yr=TFichier(Items[i]^).Year) and (hf=TFichier(Items[i]^).half) then
+    begin
+      result:= i;
+      break;
+    end;
+end;
+
 procedure TFichierList.Reset;
 var
  i: Integer;
@@ -671,7 +685,7 @@ begin
    For i:= 0 to Count-1 do
    Try
      FileNode := iNode.OwnerDocument.CreateElement('file');
-     TDOMElement(FileNode).SetAttribute('index', IntToStr(TFichier(Items[i]^).Index));
+     //TDOMElement(FileNode).SetAttribute('index', IntToStr(TFichier(Items[i]^).Index));
      TDOMElement(FileNode).SetAttribute('year', IntToStr(TFichier(Items[i]^).Year));
      TDOMElement(FileNode).SetAttribute('half', IntToStr(TFichier(Items[i]^).Half));
      TDOMElement(FileNode).SetAttribute('name', TFichier(Items[i]^).Name);
@@ -693,7 +707,7 @@ begin
   begin
     Try
       new(K);
-      K^.Index:= StringToInt(TDOMElement(chNode).GetAttribute('index'));
+      //K^.Index:= StringToInt(TDOMElement(chNode).GetAttribute('index'));
       K^.Year:= StringToInt(TDOMElement(chNode).GetAttribute('year'));
       K^.Half := StringToInt(TDOMElement(chNode).GetAttribute('half'));
       K^.Name := TDOMElement(chNode).GetAttribute('name');

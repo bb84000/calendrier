@@ -13,3 +13,7 @@ Version 0.6.1.0 - 20/04/2021
 
 Version 0.6.1.1 - 21/04/2021
 - Mise en place de toutes les options de configuration
+
+Version 0.6.2.0 -21/04/2021
+- Installation des images
+- A venir : redimensionnement des images
