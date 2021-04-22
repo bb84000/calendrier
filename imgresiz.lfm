@@ -1,0 +1,97 @@
+object FImgResiz: TFImgResiz
+  Left = 375
+  Height = 435
+  Top = 185
+  Width = 1003
+  BorderStyle = bsDialog
+  Caption = 'FImgResiz'
+  ClientHeight = 435
+  ClientWidth = 1003
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  Position = poMainFormCenter
+  LCLVersion = '2.0.12.0'
+  object PanImgOrig: TPanel
+    Left = 10
+    Height = 308
+    Top = 10
+    Width = 408
+    BevelOuter = bvNone
+    BorderStyle = bsSingle
+    ClientHeight = 304
+    ClientWidth = 404
+    TabOrder = 0
+    object Image1: TImage
+      Left = 0
+      Height = 300
+      Top = 0
+      Width = 400
+      Center = True
+      Proportional = True
+      Stretch = True
+    end
+    object Sel: TShape
+      Left = 144
+      Height = 65
+      Top = 96
+      Width = 65
+      Brush.Color = clDefault
+      Brush.Style = bsClear
+      Pen.Color = clRed
+      OnMouseDown = SelMouseDown
+      OnMouseMove = SelMouseMove
+      OnMouseUp = SelMouseUp
+    end
+  end
+  object PanImgRsizd: TPanel
+    Left = 432
+    Height = 418
+    Top = 10
+    Width = 558
+    BevelOuter = bvNone
+    BorderStyle = bsSingle
+    ClientHeight = 414
+    ClientWidth = 554
+    TabOrder = 1
+    object Image2: TImage
+      Left = 0
+      Height = 416
+      Top = 0
+      Width = 556
+      Center = True
+      Stretch = True
+    end
+  end
+  object BtnOK: TButton
+    Left = 96
+    Height = 25
+    Top = 400
+    Width = 75
+    Caption = 'OK'
+    ModalResult = 1
+    TabOrder = 2
+  end
+  object BtnCancel: TButton
+    Left = 208
+    Height = 25
+    Top = 400
+    Width = 75
+    Caption = 'Annuler'
+    ModalResult = 2
+    TabOrder = 3
+  end
+  object EFilename: TEdit
+    Left = 16
+    Height = 23
+    Top = 360
+    Width = 400
+    ReadOnly = True
+    TabOrder = 4
+  end
+  object OPD1: TOpenPictureDialog
+    Left = 576
+    Top = 8
+  end
+end

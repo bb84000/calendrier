@@ -7,7 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, calendrier1, calsettings;
+  Forms, calendrier1, calsettings, ImgResiz;
 
 {$R *.res}
 
@@ -17,6 +17,7 @@ begin
   Application.Initialize;
   Application.CreateForm(TFCalendrier, FCalendrier);
   Application.CreateForm(TPrefs, Prefs);
+  Application.CreateForm(TFImgResiz, FImgResiz);
   Application.Run;
 end.
 

@@ -16,4 +16,8 @@ Version 0.6.1.1 - 21/04/2021
 
 Version 0.6.2.0 -21/04/2021
 - Installation des images
-- A venir : redimensionnement des images
+
+Version 0.6.2.1 - 22/04/2021
+- Modification de la sélection des images : possibilité de recadrer les images
+  ayant un ratio d'aspect différent. Stockage des images modifiées dans le répertoire
+  utilisateur.

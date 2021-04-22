@@ -11,7 +11,7 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
   Grids, StdCtrls, lazbbcontrols, csvdocument, Types, DateUtils, lazbbastro,
   LResources, Buttons, Menus, ExtDlgs, registry, lazbbutils, lazbbautostart,
-  LazUTF8, lazbbosver, laz2_DOM, laz2_XMLRead, laz2_XMLWrite, calsettings;
+  LazUTF8, lazbbosver, laz2_DOM, laz2_XMLRead, laz2_XMLWrite, calsettings, ImgResiz;
 
 
 type
@@ -64,7 +64,6 @@ type
     MemoToday2: TMemo;
     MemoCurDay1: TMemo;
     PMnuDelImg: TMenuItem;
-    OPDHalf: TOpenPictureDialog;
     PMnuAddImg: TMenuItem;
     PMnuRestore: TMenuItem;
     PMnuQuit: TMenuItem;
@@ -567,6 +566,7 @@ var
   i: Integer;
   jpg: TJPEGImage;
   rec: TRect;
+  ratio: Double;
 begin
   jpg:= TJpegImage.Create;
   jpg.SetSize(Image1.width, Image1.Height);
@@ -577,15 +577,18 @@ begin
   if i> 0 then
   begin
     CurImg:= HalfImgsList.GetItem(i);
-    OPDHalf.InitialDir:= ExtractFileDir(CurImg.Name);
-    OPDHalf.FileName:= ExtractFileName(CurImg.Name) ;
+    FImgResiz.InitialDir:= ExtractFileDir(CurImg.Name);
+    FImgResiz.FileName:= ExtractFileName(CurImg.Name) ;
     PMnuAddImg.Caption:= 'Modifier l''image';
   end;
-  if OPDHalf.execute then
+  FImgResiz.ImgWidth:= Image1.Width;
+  FImgResiz.ImgHeight:= Image1.Height;
+  if FImgResiz.showModal=mrOK then
+  //if OPDHalf.execute then
   begin
     CurImg.Year:= CurYear;
     CurImg.Half:= PageControl1.TabIndex+1;
-    CurImg.Name:= OPDHalf.FileName;
+    CurImg.Name:= FImgResiz.filename;  //OPDHalf.FileName;
     CurImg.LocalCopy:= CalImagePath+InttoStr(CurImg.year)+'-'+InttoStr(CurImg.Half)+'.jpg';
     Image1.Picture.Clear;
     if i>=0 then
@@ -597,15 +600,17 @@ begin
     end;
     if CurImg.Half=1 then
     begin
-      Image1.Picture.LoadFromFile(CurImg.Name);
+      //Image1.Picture.LoadFromFile(CurImg.Name);
+      Image1.Picture.assign(FImgResiz.Image2.Picture);
       Application.ProcessMessages;
       jpg.Canvas.CopyRect(rec, image1.Canvas, rec);
     end else
     begin
-      Image2.Picture.LoadFromFile(CurImg.Name) ;
+      //Image2.Picture.LoadFromFile(CurImg.Name) ;
+      Image2.Picture.assign(FImgResiz.Image2.Picture);
       Application.ProcessMessages;
       jpg.Canvas.CopyRect(rec, image2.Canvas, rec);
-      jpg.SaveToFile(CurImg.LocalCopy);
+      //jpg.SaveToFile(CurImg.LocalCopy);
     end;
     jpg.SaveToFile(CurImg.LocalCopy);
     if assigned(jpg) then FreeAndNil(jpg);

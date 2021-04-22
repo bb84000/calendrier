@@ -19,7 +19,8 @@
       <UseVersionInfo Value="True"/>
       <MinorVersionNr Value="6"/>
       <RevisionNr Value="2"/>
-      <StringTable Comments="Calendrier universel français" CompanyName="sdtp - bb - April 2021" FileDescription="Calendrier universel" InternalName="calendrier" LegalCopyright="sdtp - bb -April 2021" LegalTrademarks="sdtp - bb -April 2021" OriginalFilename="calendrier.exe" ProductName="calendrier" ProductVersion="0.6.2.0"/>
+      <BuildNr Value="1"/>
+      <StringTable Comments="Calendrier universel français" CompanyName="sdtp - bb - April 2021" FileDescription="Calendrier universel" InternalName="calendrier" LegalCopyright="sdtp - bb -April 2021" LegalTrademarks="sdtp - bb -April 2021" OriginalFilename="calendrier.exe" ProductName="calendrier" ProductVersion="0.6.2.1"/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
@@ -40,7 +41,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="5">
       <Unit0>
         <Filename Value="calendrier.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -63,6 +64,14 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit3>
+      <Unit4>
+        <Filename Value="imgresiz.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FImgResiz"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ImgResiz"/>
+      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

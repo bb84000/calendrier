@@ -4,13 +4,13 @@
     <PathDelim Value="\"/>
     <Version Value="11"/>
     <BuildModes Active="Default"/>
-    <Units Count="46">
+    <Units Count="47">
       <Unit0>
         <Filename Value="calendrier.lpr"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="3" Y="20"/>
-        <UsageCount Value="136"/>
+        <UsageCount Value="150"/>
       </Unit0>
       <Unit1>
         <Filename Value="calendrier1.pas"/>
@@ -18,10 +18,11 @@
         <ComponentName Value="FCalendrier"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <TopLine Value="597"/>
-        <CursorPos X="72" Y="599"/>
-        <UsageCount Value="136"/>
+        <IsVisibleTab Value="True"/>
+        <CursorPos X="166" Y="570"/>
+        <UsageCount Value="150"/>
         <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="..\lazbbunits\lazbbastro.pas"/>
@@ -29,7 +30,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="830"/>
         <CursorPos X="3" Y="858"/>
-        <UsageCount Value="107"/>
+        <UsageCount Value="121"/>
       </Unit2>
       <Unit3>
         <Filename Value="calsettings.pas"/>
@@ -40,16 +41,30 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="633"/>
         <CursorPos X="71" Y="657"/>
-        <UsageCount Value="56"/>
+        <UsageCount Value="70"/>
       </Unit3>
       <Unit4>
+        <Filename Value="imgresiz.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FImgResiz"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ImgResiz"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="99"/>
+        <CursorPos Y="106"/>
+        <UsageCount Value="34"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit4>
+      <Unit5>
         <Filename Value="calendrierres.rc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="14" Y="3"/>
-        <UsageCount Value="87"/>
+        <UsageCount Value="86"/>
         <DefaultSyntaxHighlighter Value="None"/>
-      </Unit4>
-      <Unit5>
+      </Unit5>
+      <Unit6>
         <Filename Value="settings1.pas"/>
         <ComponentName Value="FSettings"/>
         <HasResources Value="True"/>
@@ -57,301 +72,421 @@
         <UnitName Value="Settings1"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="80" Y="15"/>
-        <UsageCount Value="50"/>
-      </Unit5>
-      <Unit6>
+        <UsageCount Value="49"/>
+      </Unit6>
+      <Unit7>
         <Filename Value="sunrisesetunit.pas"/>
         <UnitName Value="sunRiseSetUnit"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="212"/>
         <CursorPos Y="241"/>
-        <UsageCount Value="34"/>
-      </Unit6>
-      <Unit7>
+        <UsageCount Value="33"/>
+      </Unit7>
+      <Unit8>
         <Filename Value="..\Packets\Lazbbcomponents\lazbbcontrols.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="1076"/>
         <CursorPos Y="1090"/>
-        <UsageCount Value="24"/>
-      </Unit7>
-      <Unit8>
+        <UsageCount Value="23"/>
+      </Unit8>
+      <Unit9>
         <Filename Value="C:\lazarus\lcl\stdctrls.pp"/>
         <UnitName Value="StdCtrls"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="1119"/>
         <CursorPos X="29" Y="1135"/>
-        <UsageCount Value="23"/>
-      </Unit8>
-      <Unit9>
+        <UsageCount Value="22"/>
+      </Unit9>
+      <Unit10>
         <Filename Value="C:\lazarus\lcl\include\customcheckbox.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="196"/>
-        <UsageCount Value="7"/>
-      </Unit9>
-      <Unit10>
+        <UsageCount Value="6"/>
+      </Unit10>
+      <Unit11>
         <Filename Value="C:\lazarus\lcl\controls.pp"/>
         <UnitName Value="Controls"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="777"/>
         <CursorPos X="3" Y="1981"/>
-        <UsageCount Value="16"/>
-      </Unit10>
-      <Unit11>
+        <UsageCount Value="15"/>
+      </Unit11>
+      <Unit12>
         <Filename Value="C:\lazarus\lcl\grids.pas"/>
         <UnitName Value="Grids"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="9930"/>
         <CursorPos Y="9946"/>
-        <UsageCount Value="7"/>
-      </Unit11>
-      <Unit12>
+        <UsageCount Value="6"/>
+      </Unit12>
+      <Unit13>
         <Filename Value="C:\lazarus\fpc\3.2.0\source\rtl\objpas\sysutils\datih.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="169"/>
         <CursorPos X="10" Y="201"/>
-        <UsageCount Value="13"/>
-      </Unit12>
-      <Unit13>
+        <UsageCount Value="12"/>
+      </Unit13>
+      <Unit14>
         <Filename Value="C:\lazarus\fpc\3.2.0\source\rtl\objpas\classes\classesh.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="1131"/>
         <CursorPos X="3" Y="1143"/>
-        <UsageCount Value="12"/>
-      </Unit13>
-      <Unit14>
+        <UsageCount Value="11"/>
+      </Unit14>
+      <Unit15>
         <Filename Value="C:\lazarus\fpc\3.2.0\source\rtl\objpas\types.pp"/>
         <UnitName Value="Types"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="10"/>
         <CursorPos X="12" Y="22"/>
-        <UsageCount Value="11"/>
-      </Unit14>
-      <Unit15>
+        <UsageCount Value="10"/>
+      </Unit15>
+      <Unit16>
         <Filename Value="C:\lazarus\fpc\3.2.0\source\rtl\win\wininc\defines.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="1275"/>
         <CursorPos X="5" Y="1291"/>
-        <UsageCount Value="10"/>
-      </Unit15>
-      <Unit16>
+        <UsageCount Value="9"/>
+      </Unit16>
+      <Unit17>
         <Filename Value="fr_ferie.csv"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="17" Y="11"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
         <DefaultSyntaxHighlighter Value="None"/>
-      </Unit16>
-      <Unit17>
+      </Unit17>
+      <Unit18>
         <Filename Value="C:\lazarus\lcl\dialogs.pp"/>
         <UnitName Value="Dialogs"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="708"/>
         <CursorPos X="11" Y="724"/>
-        <UsageCount Value="6"/>
-      </Unit17>
-      <Unit18>
+        <UsageCount Value="5"/>
+      </Unit18>
+      <Unit19>
         <Filename Value="C:\lazarus\fpc\3.2.0\source\rtl\win\sysutils.pp"/>
         <UnitName Value="SysUtils"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="948"/>
         <CursorPos X="33" Y="975"/>
-        <UsageCount Value="6"/>
-      </Unit18>
-      <Unit19>
+        <UsageCount Value="5"/>
+      </Unit19>
+      <Unit20>
         <Filename Value="holidays.csv"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="169"/>
         <CursorPos X="28" Y="198"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="5"/>
         <DefaultSyntaxHighlighter Value="None"/>
-      </Unit19>
-      <Unit20>
+      </Unit20>
+      <Unit21>
         <Filename Value="fr_holidays.csv"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="167"/>
         <CursorPos X="27" Y="184"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
         <DefaultSyntaxHighlighter Value="None"/>
-      </Unit20>
-      <Unit21>
-        <Filename Value="C:\lazarus\fpc\3.2.0\source\rtl\win64\windows.pp"/>
-        <EditorIndex Value="-1"/>
-        <UsageCount Value="7"/>
       </Unit21>
       <Unit22>
-        <Filename Value="history.txt"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="1"/>
-        <CursorPos Y="20"/>
-        <UsageCount Value="48"/>
-        <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="None"/>
+        <Filename Value="C:\lazarus\fpc\3.2.0\source\rtl\win64\windows.pp"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="6"/>
       </Unit22>
       <Unit23>
+        <Filename Value="history.txt"/>
+        <EditorIndex Value="1"/>
+        <CursorPos X="15" Y="24"/>
+        <UsageCount Value="56"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="None"/>
+      </Unit23>
+      <Unit24>
         <Filename Value="lazbbastro.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="380"/>
         <CursorPos X="5" Y="427"/>
-        <UsageCount Value="17"/>
-      </Unit23>
-      <Unit24>
+        <UsageCount Value="16"/>
+      </Unit24>
+      <Unit25>
         <Filename Value="calendrierres.lrs"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="78"/>
         <CursorPos X="32" Y="183"/>
-        <UsageCount Value="8"/>
-      </Unit24>
-      <Unit25>
-        <Filename Value="calres.lrs"/>
-        <EditorIndex Value="-1"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="7"/>
       </Unit25>
       <Unit26>
+        <Filename Value="calres.lrs"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="5"/>
+      </Unit26>
+      <Unit27>
         <Filename Value="..\lazbbunits\lazbbosver.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="401"/>
         <CursorPos X="3" Y="23"/>
-        <UsageCount Value="22"/>
-      </Unit26>
-      <Unit27>
+        <UsageCount Value="21"/>
+      </Unit27>
+      <Unit28>
         <Filename Value="C:\lazarus\fpc\3.2.0\source\rtl\objpas\sysutils\sysinth.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="80"/>
         <CursorPos X="72" Y="96"/>
-        <UsageCount Value="9"/>
-      </Unit27>
-      <Unit28>
+        <UsageCount Value="8"/>
+      </Unit28>
+      <Unit29>
         <Filename Value="..\Packets\Lazbbcomponents\titlepanel.pas"/>
         <UnitName Value="TitlePanel"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="8" Y="65"/>
-        <UsageCount Value="8"/>
-      </Unit28>
-      <Unit29>
+        <UsageCount Value="7"/>
+      </Unit29>
+      <Unit30>
         <Filename Value="C:\lazarus\lcl\extctrls.pp"/>
         <UnitName Value="ExtCtrls"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="766"/>
         <CursorPos X="45" Y="793"/>
-        <UsageCount Value="17"/>
-      </Unit29>
-      <Unit30>
+        <UsageCount Value="16"/>
+      </Unit30>
+      <Unit31>
         <Filename Value="C:\lazarus\lcl\graphics.pp"/>
         <UnitName Value="Graphics"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="746"/>
         <CursorPos X="15" Y="761"/>
-        <UsageCount Value="16"/>
-      </Unit30>
-      <Unit31>
-        <Filename Value="fr_feries.csv"/>
-        <EditorIndex Value="-1"/>
-        <UsageCount Value="7"/>
-        <DefaultSyntaxHighlighter Value="None"/>
+        <UsageCount Value="15"/>
       </Unit31>
       <Unit32>
+        <Filename Value="fr_feries.csv"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="6"/>
+        <DefaultSyntaxHighlighter Value="None"/>
+      </Unit32>
+      <Unit33>
         <Filename Value="fr_saints.csv"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="210"/>
         <CursorPos X="19" Y="228"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
         <DefaultSyntaxHighlighter Value="None"/>
-      </Unit32>
-      <Unit33>
+      </Unit33>
+      <Unit34>
         <Filename Value="..\Packets\Lazbbcomponents\Soleil.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="571"/>
         <CursorPos X="10" Y="601"/>
-        <UsageCount Value="6"/>
-      </Unit33>
-      <Unit34>
-        <Filename Value="..\Packets\Lazbbcomponents\soleil.lrs"/>
-        <EditorIndex Value="-1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="5"/>
       </Unit34>
       <Unit35>
+        <Filename Value="..\Packets\Lazbbcomponents\soleil.lrs"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="9"/>
+      </Unit35>
+      <Unit36>
         <Filename Value="..\Packets\Lazbbcomponents\lazsoleil.pas"/>
         <UnitName Value="lazSoleil"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="422"/>
         <CursorPos X="25" Y="74"/>
-        <UsageCount Value="10"/>
-      </Unit35>
-      <Unit36>
+        <UsageCount Value="9"/>
+      </Unit36>
+      <Unit37>
         <Filename Value="fr_villes.csv"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="69"/>
         <CursorPos X="33" Y="85"/>
-        <UsageCount Value="14"/>
+        <UsageCount Value="13"/>
         <DefaultSyntaxHighlighter Value="None"/>
-      </Unit36>
-      <Unit37>
+      </Unit37>
+      <Unit38>
         <Filename Value="C:\lazarus\fpc\3.2.0\source\rtl\objpas\math.pp"/>
         <UnitName Value="Math"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="387"/>
         <CursorPos X="10" Y="403"/>
-        <UsageCount Value="8"/>
-      </Unit37>
-      <Unit38>
+        <UsageCount Value="7"/>
+      </Unit38>
+      <Unit39>
         <Filename Value="C:\lazarus\fpc\3.2.0\source\packages\rtl-objpas\src\inc\dateutil.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="105"/>
         <CursorPos X="14" Y="123"/>
-        <UsageCount Value="8"/>
-      </Unit38>
-      <Unit39>
+        <UsageCount Value="7"/>
+      </Unit39>
+      <Unit40>
         <Filename Value="C:\lazarus\components\lazutils\laz2_xmlread.pas"/>
         <UnitName Value="laz2_XMLRead"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="350"/>
         <CursorPos X="11" Y="58"/>
-        <UsageCount Value="8"/>
-      </Unit39>
-      <Unit40>
+        <UsageCount Value="7"/>
+      </Unit40>
+      <Unit41>
         <Filename Value="..\lazbbunits\lazbbutils.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="41"/>
         <CursorPos X="56" Y="56"/>
-        <UsageCount Value="26"/>
-      </Unit40>
-      <Unit41>
+        <UsageCount Value="25"/>
+      </Unit41>
+      <Unit42>
         <Filename Value="C:\lazarus\lcl\forms.pp"/>
         <UnitName Value="Forms"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="1832"/>
         <CursorPos X="3" Y="1848"/>
-        <UsageCount Value="18"/>
-      </Unit41>
-      <Unit42>
+        <UsageCount Value="17"/>
+      </Unit42>
+      <Unit43>
         <Filename Value="..\lazbbunits\lazbbautostart.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="4"/>
         <CursorPos X="12" Y="20"/>
-        <UsageCount Value="17"/>
-      </Unit42>
-      <Unit43>
+        <UsageCount Value="16"/>
+      </Unit43>
+      <Unit44>
         <Filename Value="C:\lazarus\fpc\3.2.0\source\rtl\objpas\sysutils\finah.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="10" Y="4"/>
-        <UsageCount Value="13"/>
-      </Unit43>
-      <Unit44>
+        <UsageCount Value="12"/>
+      </Unit44>
+      <Unit45>
         <Filename Value="C:\lazarus\lcl\include\canvas.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="85"/>
         <CursorPos X="19" Y="101"/>
-        <UsageCount Value="13"/>
-      </Unit44>
-      <Unit45>
+        <UsageCount Value="12"/>
+      </Unit45>
+      <Unit46>
         <Filename Value="image1.pas"/>
         <ComponentName Value="Fimage"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Image1"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="22"/>
-      </Unit45>
+        <UsageCount Value="21"/>
+      </Unit46>
     </Units>
-    <JumpHistory HistoryIndex="-1"/>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="98" Column="54" TopLine="82"/>
+      </Position1>
+      <Position2>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="100" Column="38" TopLine="82"/>
+      </Position2>
+      <Position3>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="98" Column="66" TopLine="82"/>
+      </Position3>
+      <Position4>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="101" TopLine="101"/>
+      </Position4>
+      <Position5>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="160" TopLine="134"/>
+      </Position5>
+      <Position6>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="42" TopLine="72"/>
+      </Position6>
+      <Position7>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="43" TopLine="43"/>
+      </Position7>
+      <Position8>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="42" TopLine="42"/>
+      </Position8>
+      <Position9>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="43" TopLine="43"/>
+      </Position9>
+      <Position10>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="109" Column="29" TopLine="78"/>
+      </Position10>
+      <Position11>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="106" Column="29" TopLine="90"/>
+      </Position11>
+      <Position12>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="73" Column="12" TopLine="50"/>
+      </Position12>
+      <Position13>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="110" Column="33" TopLine="79"/>
+      </Position13>
+      <Position14>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="47" Column="3" TopLine="31"/>
+      </Position14>
+      <Position15>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="61" Column="107" TopLine="57"/>
+      </Position15>
+      <Position16>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="109" Column="74" TopLine="84"/>
+      </Position16>
+      <Position17>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="44" Column="22" TopLine="44"/>
+      </Position17>
+      <Position18>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="43" Column="22" TopLine="43"/>
+      </Position18>
+      <Position19>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="44" Column="22" TopLine="44"/>
+      </Position19>
+      <Position20>
+        <Filename Value="calendrier1.pas"/>
+        <Caret Line="617" Column="8" TopLine="527"/>
+      </Position20>
+      <Position21>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="87" Column="22" TopLine="71"/>
+      </Position21>
+      <Position22>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="111" Column="10" TopLine="95"/>
+      </Position22>
+      <Position23>
+        <Filename Value="calendrier1.pas"/>
+        <Caret Line="605" Column="46" TopLine="589"/>
+      </Position23>
+      <Position24>
+        <Filename Value="calendrier1.pas"/>
+        <Caret Line="616" Column="7" TopLine="589"/>
+      </Position24>
+      <Position25>
+        <Filename Value="calendrier1.pas"/>
+        <Caret Line="611" Column="39" TopLine="595"/>
+      </Position25>
+      <Position26>
+        <Filename Value="calendrier1.pas"/>
+        <Caret Line="582" Column="14" TopLine="571"/>
+      </Position26>
+      <Position27>
+        <Filename Value="calendrier1.pas"/>
+        <Caret Line="581" Column="14" TopLine="570"/>
+      </Position27>
+      <Position28>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="88" Column="28" TopLine="61"/>
+      </Position28>
+      <Position29>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="186" Column="35" TopLine="170"/>
+      </Position29>
+      <Position30>
+        <Filename Value="imgresiz.pas"/>
+        <Caret Line="144" TopLine="138"/>
+      </Position30>
+    </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
       <Modes Count="0" ActiveMode=""/>

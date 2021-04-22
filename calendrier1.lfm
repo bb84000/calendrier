@@ -755,8 +755,4 @@ object FCalendrier: TFCalendrier
       OnClick = PMnuQuitClick
     end
   end
-  object OPDHalf: TOpenPictureDialog
-    Left = 640
-    Top = 44
-  end
 end
