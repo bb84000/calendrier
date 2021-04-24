@@ -192,6 +192,7 @@ type
     PanStatus: TPanel;
     PanColors: TTitlePanel;
     PanSystem: TTitlePanel;
+    procedure CBMiniintrayClick(Sender: TObject);
     procedure CBTownsSelect(Sender: TObject);
     procedure EDegLatChange(Sender: TObject);
     procedure EDeglonChange(Sender: TObject);
@@ -264,6 +265,11 @@ begin
   ELatitude.Text:= csvtowns.cells[2,n];
   ELongitude.Text:= csvtowns.cells[3,n];
   ETimeZone.Text:= csvtowns.cells[4,n];
+end;
+
+procedure TPrefs.CBMiniintrayClick(Sender: TObject);
+begin
+  CBHideinTaskBar.Enabled:= (CBMiniintray.checked=true);
 end;
 
 
@@ -651,9 +657,10 @@ end;
 function TFichierList.FindYearAndHalf(yr, hf: Integer): integer;
 var
  i: integer;
+ yr1, hf1: Integer;
 begin
   result:=-1;
-  for i:= 0 to count-1 do
+for i:= 0 to count-1 do
     if (yr=TFichier(Items[i]^).Year) and (hf=TFichier(Items[i]^).half) then
     begin
       result:= i;

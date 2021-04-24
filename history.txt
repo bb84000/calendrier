@@ -21,3 +21,11 @@ Version 0.6.2.1 - 22/04/2021
 - Modification de la sélection des images : possibilité de recadrer les images
   ayant un ratio d'aspect différent. Stockage des images modifiées dans le répertoire
   utilisateur.
+
+Version 0.6.3.0 - 23/04/2021
+- Optimisation de l'implantation des composants, utilisations d'onglets "virtuels"
+  améliorant la qualité et la rapidité du changement de semestre
+- Unité resize optimisée, fournit une image jpeg recadrée et redimensionnée
+  adaptée au cadre du calendrier. Cette image est enregistrée dans le dossier
+  "images" de l'utilisateur, l'image originale n'est plus nécessaire.
+

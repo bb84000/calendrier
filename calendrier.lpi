@@ -18,9 +18,8 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MinorVersionNr Value="6"/>
-      <RevisionNr Value="2"/>
-      <BuildNr Value="1"/>
-      <StringTable Comments="Calendrier universel français" CompanyName="sdtp - bb - April 2021" FileDescription="Calendrier universel" InternalName="calendrier" LegalCopyright="sdtp - bb -April 2021" LegalTrademarks="sdtp - bb -April 2021" OriginalFilename="calendrier.exe" ProductName="calendrier" ProductVersion="0.6.2.1"/>
+      <RevisionNr Value="3"/>
+      <StringTable Comments="Calendrier universel français" CompanyName="sdtp - bb - April 2021" FileDescription="Calendrier universel" InternalName="calendrier" LegalCopyright="sdtp - bb -April 2021" LegalTrademarks="sdtp - bb -April 2021" OriginalFilename="calendrier.exe" ProductName="calendrier" ProductVersion="0.6.3.0"/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>

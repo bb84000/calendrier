@@ -1,13 +1,12 @@
 object FImgResiz: TFImgResiz
   Left = 375
-  Height = 435
+  Height = 441
   Top = 185
-  Width = 1003
+  Width = 1047
   BorderStyle = bsDialog
   Caption = 'FImgResiz'
-  ClientHeight = 435
-  ClientWidth = 1003
-  OnActivate = FormActivate
+  ClientHeight = 441
+  ClientWidth = 1047
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
@@ -23,7 +22,7 @@ object FImgResiz: TFImgResiz
     ClientHeight = 304
     ClientWidth = 404
     TabOrder = 0
-    object Image1: TImage
+    object ImgOrig: TImage
       Left = 0
       Height = 300
       Top = 0
@@ -49,17 +48,17 @@ object FImgResiz: TFImgResiz
     Left = 432
     Height = 418
     Top = 10
-    Width = 558
+    Width = 609
     BevelOuter = bvNone
     BorderStyle = bsSingle
     ClientHeight = 414
-    ClientWidth = 554
+    ClientWidth = 605
     TabOrder = 1
     object Image2: TImage
       Left = 0
       Height = 416
       Top = 0
-      Width = 556
+      Width = 605
       Center = True
       Stretch = True
     end
@@ -71,6 +70,7 @@ object FImgResiz: TFImgResiz
     Width = 75
     Caption = 'OK'
     ModalResult = 1
+    OnClick = BtnOKClick
     TabOrder = 2
   end
   object BtnCancel: TButton

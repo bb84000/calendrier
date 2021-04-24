@@ -518,6 +518,7 @@ object Prefs: TPrefs
       Width = 230
       AutoSize = False
       Caption = 'Minimiser dans la zone de notification'
+      OnClick = CBMiniintrayClick
       ParentFont = False
       TabOrder = 2
     end
