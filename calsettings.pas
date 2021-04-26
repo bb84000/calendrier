@@ -62,6 +62,7 @@ type
       procedure setLastupdchk(value: TDateTime);
       procedure setNochknewver(value: Boolean);
       procedure setLastversion(value: string);
+      procedure setLangstr(value: String);
     public
 
       constructor Create (Sender: TObject); overload;
@@ -82,7 +83,7 @@ type
       property lastupdchk: TDateTime read flastupdchk write setLastupdchk;
       property version: String read fversion write setVersion;
       property lastversion: String read flastversion write setLastversion;
-      property langstr: String read flangstr;
+      property langstr: String read flangstr write setLangstr;
       property town: String read ftown write setTown;
       property townIndex: Integer read ftownIndex write setTownIndex;
       property timezone: integer read fTimezone write setTimezone;
@@ -540,6 +541,15 @@ begin
     flastversion:= value;
     if Assigned(FOnChange) then FOnChange(Self);
   end;
+end;
+
+procedure TSettings.setLangstr(value: String);
+begin
+ if FLangStr<>value then
+ begin
+   flangstr:= value;
+   if Assigned(FOnChange) then FOnChange(Self);
+ end;
 end;
 
 function TSettings.SaveToXMLnode(iNode: TDOMNode): Boolean;

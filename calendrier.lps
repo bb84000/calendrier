@@ -19,8 +19,8 @@
         <ComponentName Value="FCalendrier"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <TopLine Value="296"/>
-        <CursorPos X="17" Y="325"/>
+        <TopLine Value="1372"/>
+        <CursorPos X="109" Y="1396"/>
         <UsageCount Value="186"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -40,9 +40,10 @@
         <ComponentName Value="Prefs"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
-        <TopLine Value="178"/>
-        <CursorPos X="99" Y="188"/>
+        <TopLine Value="531"/>
+        <CursorPos X="11" Y="546"/>
         <UsageCount Value="106"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -220,10 +221,9 @@
       </Unit24>
       <Unit25>
         <Filename Value="history.txt"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="10"/>
-        <TopLine Value="6"/>
-        <CursorPos X="94" Y="39"/>
+        <TopLine Value="10"/>
+        <CursorPos Y="43"/>
         <UsageCount Value="72"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="None"/>
@@ -439,8 +439,8 @@
       <Unit54>
         <Filename Value="calendrier.lng"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="129"/>
-        <CursorPos X="62" Y="162"/>
+        <TopLine Value="37"/>
+        <CursorPos X="45" Y="59"/>
         <UsageCount Value="15"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="None"/>
@@ -449,123 +449,123 @@
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="calendrier1.pas"/>
-        <Caret Line="582" Column="14" TopLine="552"/>
+        <Caret Line="413" Column="9" TopLine="391"/>
       </Position1>
       <Position2>
         <Filename Value="calendrier1.pas"/>
-        <Caret Line="413" Column="9" TopLine="391"/>
+        <Caret Line="839" Column="14" TopLine="808"/>
       </Position2>
       <Position3>
         <Filename Value="calendrier1.pas"/>
-        <Caret Line="839" Column="14" TopLine="808"/>
+        <Caret Line="852" Column="14" TopLine="821"/>
       </Position3>
       <Position4>
         <Filename Value="calendrier1.pas"/>
-        <Caret Line="852" Column="14" TopLine="821"/>
+        <Caret Line="460" Column="122" TopLine="444"/>
       </Position4>
       <Position5>
-        <Filename Value="calendrier1.pas"/>
-        <Caret Line="460" Column="122" TopLine="444"/>
-      </Position5>
-      <Position6>
         <Filename Value="calendrier.lng"/>
         <Caret Line="134" Column="9" TopLine="98"/>
-      </Position6>
-      <Position7>
+      </Position5>
+      <Position6>
         <Filename Value="calsettings.pas"/>
         <Caret Line="610" Column="77" TopLine="74"/>
+      </Position6>
+      <Position7>
+        <Filename Value="calendrier1.pas"/>
+        <Caret Line="383" Column="21" TopLine="356"/>
       </Position7>
       <Position8>
         <Filename Value="calendrier1.pas"/>
-        <Caret Line="383" Column="21" TopLine="356"/>
+        <Caret Line="878" Column="43" TopLine="859"/>
       </Position8>
       <Position9>
         <Filename Value="calendrier1.pas"/>
-        <Caret Line="878" Column="43" TopLine="859"/>
+        <Caret Line="897" Column="19" TopLine="879"/>
       </Position9>
       <Position10>
-        <Filename Value="calendrier1.pas"/>
-        <Caret Line="897" Column="19" TopLine="879"/>
+        <Filename Value="calsettings.pas"/>
+        <Caret Line="193" Column="23" TopLine="177"/>
       </Position10>
       <Position11>
         <Filename Value="calsettings.pas"/>
-        <Caret Line="193" Column="23" TopLine="177"/>
+        <Caret Line="187" Column="99" TopLine="177"/>
       </Position11>
       <Position12>
         <Filename Value="calsettings.pas"/>
-        <Caret Line="187" Column="99" TopLine="177"/>
+        <Caret Line="188" Column="99" TopLine="178"/>
       </Position12>
       <Position13>
-        <Filename Value="calsettings.pas"/>
-        <Caret Line="188" Column="99" TopLine="178"/>
+        <Filename Value="calendrier1.pas"/>
+        <Caret Line="1397" Column="49" TopLine="1387"/>
       </Position13>
       <Position14>
         <Filename Value="calendrier1.pas"/>
-        <Caret Line="1397" Column="49" TopLine="1387"/>
+        <Caret Line="1403" Column="116" TopLine="1387"/>
       </Position14>
       <Position15>
         <Filename Value="calendrier1.pas"/>
-        <Caret Line="1342" Column="14" TopLine="1391"/>
+        <Caret Line="1400" Column="59" TopLine="1377"/>
       </Position15>
       <Position16>
         <Filename Value="calendrier1.pas"/>
-        <Caret Line="1403" Column="116" TopLine="1387"/>
+        <Caret Line="1406" Column="7" TopLine="1379"/>
       </Position16>
       <Position17>
         <Filename Value="calendrier1.pas"/>
-        <Caret Line="1400" Column="59" TopLine="1377"/>
+        <Caret Line="1401" Column="62" TopLine="1385"/>
       </Position17>
       <Position18>
         <Filename Value="calendrier1.pas"/>
-        <Caret Line="1406" Column="7" TopLine="1379"/>
+        <Caret Line="1405" Column="53" TopLine="1390"/>
       </Position18>
       <Position19>
         <Filename Value="calendrier1.pas"/>
-        <Caret Line="1401" Column="62" TopLine="1385"/>
+        <Caret Line="1404" Column="37" TopLine="1388"/>
       </Position19>
       <Position20>
         <Filename Value="calendrier1.pas"/>
-        <Caret Line="1405" Column="53" TopLine="1390"/>
+        <Caret Line="1405" Column="35" TopLine="1391"/>
       </Position20>
       <Position21>
         <Filename Value="calendrier1.pas"/>
-        <Caret Line="1404" Column="37" TopLine="1388"/>
+        <Caret Line="1406" Column="26" TopLine="1398"/>
       </Position21>
       <Position22>
         <Filename Value="calendrier1.pas"/>
-        <Caret Line="1405" Column="35" TopLine="1391"/>
+        <Caret Line="1402" Column="70" TopLine="1388"/>
       </Position22>
       <Position23>
         <Filename Value="calendrier1.pas"/>
-        <Caret Line="1406" Column="26" TopLine="1398"/>
+        <Caret Line="1404" Column="96" TopLine="1386"/>
       </Position23>
       <Position24>
         <Filename Value="calendrier1.pas"/>
-        <Caret Line="1402" Column="70" TopLine="1388"/>
+        <Caret Line="1409" Column="54" TopLine="1397"/>
       </Position24>
       <Position25>
         <Filename Value="calendrier1.pas"/>
-        <Caret Line="1404" Column="96" TopLine="1386"/>
+        <Caret Line="1419" Column="114" TopLine="1393"/>
       </Position25>
       <Position26>
         <Filename Value="calendrier1.pas"/>
-        <Caret Line="1409" Column="54" TopLine="1397"/>
+        <Caret Line="1411" Column="10" TopLine="1392"/>
       </Position26>
       <Position27>
         <Filename Value="calendrier1.pas"/>
-        <Caret Line="1419" Column="114" TopLine="1393"/>
+        <Caret Line="1343" Column="7" TopLine="1322"/>
       </Position27>
       <Position28>
         <Filename Value="calendrier1.pas"/>
-        <Caret Line="1411" Column="10" TopLine="1392"/>
+        <Caret Line="1342" Column="7" TopLine="1321"/>
       </Position28>
       <Position29>
-        <Filename Value="calendrier1.pas"/>
-        <Caret Line="1343" Column="7" TopLine="1322"/>
+        <Filename Value="history.txt"/>
+        <Caret Line="43" TopLine="10"/>
       </Position29>
       <Position30>
-        <Filename Value="calendrier1.pas"/>
-        <Caret Line="1342" Column="7" TopLine="1321"/>
+        <Filename Value="calsettings.pas"/>
+        <Caret Line="548" Column="13" TopLine="541"/>
       </Position30>
     </JumpHistory>
     <RunParams>
