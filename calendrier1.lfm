@@ -375,6 +375,7 @@ object FCalendrier: TFCalendrier
         7FD5A4AE7FB9A4AE7F6300000000000000000000000000000000
       }
       NumGlyphs = 2
+      OnClick = SBAboutClick
     end
     object SBQuit: TSpeedButton
       Left = 96
@@ -844,6 +845,7 @@ object FCalendrier: TFCalendrier
     object PMnuAbout: TMenuItem
       Caption = 'A propos'
       ImageIndex = 6
+      OnClick = SBAboutClick
     end
     object MnuSep2: TMenuItem
       Caption = '-'
@@ -889,6 +891,7 @@ object FCalendrier: TFCalendrier
     object PTMnuAbout: TMenuItem
       Caption = 'A propos...'
       ImageIndex = 6
+      OnClick = SBAboutClick
     end
     object MnuSep4: TMenuItem
       Caption = '-'
@@ -1417,5 +1420,10 @@ object FCalendrier: TFCalendrier
       FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
       FF00FFFFFF00FFFFFF00FFFFFF00
     }
+  end
+  object UniqueInstance1: TUniqueInstance
+    Enabled = True
+    Left = 423
+    Top = 117
   end
 end

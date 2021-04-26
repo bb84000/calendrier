@@ -18,8 +18,8 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MinorVersionNr Value="6"/>
-      <RevisionNr Value="3"/>
-      <StringTable Comments="Calendrier universel français" CompanyName="sdtp - bb - April 2021" FileDescription="Calendrier universel" InternalName="calendrier" LegalCopyright="sdtp - bb -April 2021" LegalTrademarks="sdtp - bb -April 2021" OriginalFilename="calendrier.exe" ProductName="calendrier" ProductVersion="0.6.3.0"/>
+      <RevisionNr Value="4"/>
+      <StringTable Comments="Calendrier universel français" CompanyName="sdtp - bb - April 2021" FileDescription="Calendrier universel" InternalName="calendrier" LegalCopyright="sdtp - bb -April 2021" LegalTrademarks="sdtp - bb -April 2021" OriginalFilename="calendrier.exe" ProductName="calendrier" ProductVersion="0.6.4.0"/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
@@ -32,15 +32,18 @@
       <FormatVersion Value="2"/>
       <Modes Count="0"/>
     </RunParams>
-    <RequiredPackages Count="2">
+    <RequiredPackages Count="3">
       <Item1>
-        <PackageName Value="lazbbcomponents"/>
+        <PackageName Value="uniqueinstance_package"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
+        <PackageName Value="lazbbcomponents"/>
       </Item2>
+      <Item3>
+        <PackageName Value="LCL"/>
+      </Item3>
     </RequiredPackages>
-    <Units Count="5">
+    <Units Count="7">
       <Unit0>
         <Filename Value="calendrier.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -71,6 +74,17 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="ImgResiz"/>
       </Unit4>
+      <Unit5>
+        <Filename Value="..\lazbbunits\lazbbaboutupdate.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="AboutBox"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="calendrier.ini"/>
+        <IsPartOfProject Value="True"/>
+      </Unit6>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

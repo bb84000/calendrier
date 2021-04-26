@@ -59,6 +59,9 @@ type
       procedure setTimezone (Value: Integer);
       procedure setTown(value: String);
       procedure setTownIndex(value: Integer);
+      procedure setLastupdchk(value: TDateTime);
+      procedure setNochknewver(value: Boolean);
+      procedure setLastversion(value: string);
     public
 
       constructor Create (Sender: TObject); overload;
@@ -75,17 +78,17 @@ type
       property savemoon: Boolean read fsaveMoon write setSaveMoon;
       property savevacs: boolean read fsaveVacs write setSavevacs;
       property wstate: String read fwstate write setWstate;
-      property nochknewver: Boolean read fnochknewver;
-      property lastupdchk: TDateTime read flastupdchk;
+      property nochknewver: Boolean read fnochknewver write setNochknewver;
+      property lastupdchk: TDateTime read flastupdchk write setLastupdchk;
       property version: String read fversion write setVersion;
-      property lastversion: String read flastversion;
+      property lastversion: String read flastversion write setLastversion;
       property langstr: String read flangstr;
       property town: String read ftown write setTown;
       property townIndex: Integer read ftownIndex write setTownIndex;
       property timezone: integer read fTimezone write setTimezone;
       property latitude: Double index 0 read GetCoord write SetCoord;
       property longitude: Double index 1 read GetCoord write SetCoord;
-      property colweekday: TColor index 0 read GetDaysColor write SetDaysColor;
+      property coluser: TColor index 0 read GetDaysColor write SetDaysColor;
       property colsunday: Tcolor index 1 read GetDaysColor write SetDaysColor;
       property colferie: TColor index 2 read GetDaysColor write SetDaysColor;
       property colvaca: Tcolor index 0 read GetVacsColor write SetVacsColor;
@@ -144,6 +147,7 @@ type
     BtnCancel: TButton;
     CBMiniintray: TCheckBox;
     CBMoonPhases: TCheckBox;
+    CBNoChkUpdate: TCheckBox;
     CBSaveSizPos: TCheckBox;
     CBHideinTaskBar: TCheckBox;
     CBSaveVacs: TCheckBox;
@@ -155,7 +159,7 @@ type
     CPcolvack: TColorPicker;
     CPcolvacc: TColorPicker;
     CPcolvacb: TColorPicker;
-    CPcolweek: TColorPicker;
+    CPcoluser: TColorPicker;
     CBTowns: TComboBox;
     CPcolvaca: TColorPicker;
     ELatitude: TEdit;
@@ -169,7 +173,7 @@ type
     EDeglon: TEdit;
     EMinLon: TEdit;
     ESeclon: TEdit;
-    LColtText: TLabel;
+    LColText: TLabel;
     LLatitude: TLabel;
     Llatdeg: TLabel;
     LLatmin: TLabel;
@@ -180,13 +184,13 @@ type
     Llonsec: TLabel;
     LTown: TLabel;
     LTimezone: TLabel;
-    LZonek: TLabel;
-    LZonec: TLabel;
-    LZoneb: TLabel;
-    lLColBack: TLabel;
+    LColZk: TLabel;
+    LColZc: TLabel;
+    LColZb: TLabel;
+    LColUser: TLabel;
     LColSund: TLabel;
-    LColferie: TLabel;
-    LZonea: TLabel;
+    LColFerie: TLabel;
+    LColZa: TLabel;
     PanCoords: TTitlePanel;
     PanButtons: TPanel;
     PanStatus: TPanel;
@@ -511,6 +515,33 @@ begin
   end;
 end;
 
+procedure TSettings.setLastupdchk(value: TDateTime);
+begin
+ if flastupdchk<>value then
+ begin
+   flastupdchk:= value;
+   if Assigned(FOnChange) then FOnChange(Self);
+ end;
+end;
+
+procedure TSettings.setNochknewver(value: Boolean);
+begin
+ if fnochknewver<>value then
+ begin
+   fnochknewver:= value;
+   if Assigned(FOnChange) then FOnChange(Self);
+ end;
+end;
+
+procedure TSettings.setLastversion(value: string);
+begin
+  if flastversion<>value then
+  begin
+    flastversion:= value;
+    if Assigned(FOnChange) then FOnChange(Self);
+  end;
+end;
+
 function TSettings.SaveToXMLnode(iNode: TDOMNode): Boolean;
 begin
   Try
@@ -533,7 +564,7 @@ begin
     TDOMElement(iNode).SetAttribute ('timezone', IntToStr(fTimezone));
     TDOMElement(iNode).SetAttribute ('latitude', FloatToString(fCoords[0]));     // latitude
     TDOMElement(iNode).SetAttribute ('longitude', FloatToString(fCoords[1]));    // longitude
-    TDOMElement(iNode).SetAttribute ('colweekday', ColorToString(colweekday));
+    TDOMElement(iNode).SetAttribute ('coluser', ColorToString(coluser));
     TDOMElement(iNode).SetAttribute ('colsunday', ColorToString(colsunday));
     TDOMElement(iNode).SetAttribute ('colferie', ColorToString(colferie));
     TDOMElement(iNode).SetAttribute ('colvaca', ColorToString(colvaca));
@@ -577,7 +608,7 @@ begin
     fTimezone:= StringToInt(TDOMElement(iNode).GetAttribute('timezone'));
     fCoords[0]:= StringToFloat(TDOMElement(iNode).GetAttribute('latitude'));
     fCoords[1]:= StringToFloat(TDOMElement(iNode).GetAttribute('longitude'));
-    fDaysColors[0]:= StringToColour(TDOMElement(iNode).GetAttribute('colweekday'));
+    fDaysColors[0]:= StringToColour(TDOMElement(iNode).GetAttribute('coluser'));
     fDaysColors[1]:= StringToColour(TDOMElement(iNode).GetAttribute('colsunday'));
     fDaysColors[2]:= StringToColour(TDOMElement(iNode).GetAttribute('colferie'));
     fVacsColors[0]:= StringToColour(TDOMElement(iNode).GetAttribute('colvaca'));

@@ -29,3 +29,14 @@ Version 0.6.3.0 - 23/04/2021
   adaptée au cadre du calendrier. Cette image est enregistrée dans le dossier
   "images" de l'utilisateur, l'image originale n'est plus nécessaire.
 
+Version 0.6.4.0 - 26/04/2021
+- Lorsque l'option de réduction dans la zone de notification est activée, les boutons
+  système ne ferment pas l'application mais la réduisent dans la zone de notification.
+- Blocage du lancement d'instances multiples
+- Mise en place du dialogue "A propos"
+- Mise en place des traductions. Les jours/mois sont ceux définis par le système.
+  Les autres traductions sont listées dans le fichier lng. Si le système n'est pas
+  en langue française, l'anglais est utilisé. Les saints, fériés et villes restent inchangés.
+
+
+

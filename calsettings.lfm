@@ -60,15 +60,16 @@ object Prefs: TPrefs
     ClientHeight = 115
     ClientWidth = 448
     Font.Style = [fsBold]
+    ParentColor = False
     ParentFont = False
     TabOrder = 2
-    object lLColBack: TLabel
+    object LColUser: TLabel
       Left = 8
       Height = 15
       Top = 18
-      Width = 64
+      Width = 72
       AutoSize = False
-      Caption = 'Semaine'
+      Caption = 'Utilisateur'
       ParentColor = False
       ParentFont = False
     end
@@ -76,23 +77,23 @@ object Prefs: TPrefs
       Left = 8
       Height = 15
       Top = 40
-      Width = 64
+      Width = 72
       AutoSize = False
       Caption = 'Dimanches'
       ParentColor = False
       ParentFont = False
     end
-    object LColferie: TLabel
+    object LColFerie: TLabel
       Left = 8
       Height = 15
       Top = 62
-      Width = 64
+      Width = 72
       AutoSize = False
       Caption = 'Fériés'
       ParentColor = False
       ParentFont = False
     end
-    object LZonea: TLabel
+    object LColZa: TLabel
       Left = 235
       Height = 15
       Top = 18
@@ -102,7 +103,7 @@ object Prefs: TPrefs
       ParentColor = False
       ParentFont = False
     end
-    object LZoneb: TLabel
+    object LColZb: TLabel
       Left = 235
       Height = 15
       Top = 40
@@ -112,7 +113,7 @@ object Prefs: TPrefs
       ParentColor = False
       ParentFont = False
     end
-    object LZonec: TLabel
+    object LColZc: TLabel
       Left = 235
       Height = 15
       Top = 62
@@ -122,7 +123,7 @@ object Prefs: TPrefs
       ParentColor = False
       ParentFont = False
     end
-    object LZonek: TLabel
+    object LColZk: TLabel
       Left = 235
       Height = 15
       Top = 84
@@ -132,8 +133,8 @@ object Prefs: TPrefs
       ParentColor = False
       ParentFont = False
     end
-    object CPcolweek: TColorPicker
-      Left = 73
+    object CPcoluser: TColorPicker
+      Left = 80
       Height = 21
       Top = 15
       Width = 140
@@ -145,7 +146,7 @@ object Prefs: TPrefs
       TabOrder = 0
     end
     object CPcolsunday: TColorPicker
-      Left = 73
+      Left = 80
       Height = 21
       Top = 38
       Width = 140
@@ -157,7 +158,7 @@ object Prefs: TPrefs
       TabOrder = 1
     end
     object CPColferie: TColorPicker
-      Left = 72
+      Left = 80
       Height = 21
       Top = 61
       Width = 140
@@ -169,7 +170,7 @@ object Prefs: TPrefs
       TabOrder = 2
     end
     object CPcolvaca: TColorPicker
-      Left = 294
+      Left = 300
       Height = 21
       Top = 15
       Width = 140
@@ -181,7 +182,7 @@ object Prefs: TPrefs
       TabOrder = 3
     end
     object CPcolvacb: TColorPicker
-      Left = 294
+      Left = 300
       Height = 21
       Top = 38
       Width = 140
@@ -193,7 +194,7 @@ object Prefs: TPrefs
       TabOrder = 4
     end
     object CPcolvacc: TColorPicker
-      Left = 294
+      Left = 300
       Height = 21
       Top = 61
       Width = 140
@@ -205,7 +206,7 @@ object Prefs: TPrefs
       TabOrder = 5
     end
     object CPcolvack: TColorPicker
-      Left = 294
+      Left = 300
       Height = 21
       Top = 84
       Width = 140
@@ -216,18 +217,18 @@ object Prefs: TPrefs
       MnuPasteCaption = '&Paste'
       TabOrder = 6
     end
-    object LColtText: TLabel
+    object LColText: TLabel
       Left = 8
       Height = 15
       Top = 85
-      Width = 64
+      Width = 72
       AutoSize = False
       Caption = 'Texte'
       ParentColor = False
       ParentFont = False
     end
     object CPcolText: TColorPicker
-      Left = 72
+      Left = 80
       Height = 21
       Top = 84
       Width = 141
@@ -457,20 +458,20 @@ object Prefs: TPrefs
       Text = 'E'
     end
     object LTimezone: TLabel
-      Left = 272
+      Left = 270
       Height = 15
       Top = 23
-      Width = 96
+      Width = 120
       AutoSize = False
       Caption = 'Décalage horaire'
       ParentColor = False
       ParentFont = False
     end
     object ETimeZone: TEdit
-      Left = 385
+      Left = 390
       Height = 23
       Top = 20
-      Width = 50
+      Width = 45
       AutoSize = False
       NumbersOnly = True
       ParentFont = False
@@ -546,7 +547,7 @@ object Prefs: TPrefs
       Left = 220
       Height = 19
       Top = 64
-      Width = 204
+      Width = 228
       AutoSize = False
       Caption = 'Sauvegarde des phases de la lune'
       ParentFont = False
@@ -561,6 +562,16 @@ object Prefs: TPrefs
       Caption = 'Sauvegarde des vacances scolaires'
       ParentFont = False
       TabOrder = 6
+    end
+    object CBNoChkUpdate: TCheckBox
+      Left = 220
+      Height = 19
+      Top = 88
+      Width = 228
+      AutoSize = False
+      Caption = 'Ne pas rechercher de mise à jour'
+      ParentFont = False
+      TabOrder = 7
     end
   end
 end

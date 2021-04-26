@@ -10,12 +10,19 @@ uses
   {$ENDIF}
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
   Grids, StdCtrls, lazbbcontrols, csvdocument, Types, DateUtils, lazbbastro,
-  LResources, Buttons, Menus, ExtDlgs, registry, lazbbutils, lazbbautostart,
-  LazUTF8, lazbbosver, laz2_DOM, laz2_XMLRead, laz2_XMLWrite, calsettings, ImgResiz;
+  LResources, Buttons, Menus, UniqueInstance, registry, lazbbutils,
+  lazbbautostart, LazUTF8, lazbbosver, laz2_DOM, laz2_XMLRead, laz2_XMLWrite,
+  calsettings, ImgResiz, lazbbaboutupdate, lazbbinifiles;
 
 
 type
-
+   { int64 or longint type for Application.QueueAsyncCall }
+  {$IFDEF CPU32}
+    iDays= LongInt;
+  {$ENDIF}
+  {$IFDEF CPU64}
+    iDays= Int64;
+  {$ENDIF}
 
 
   TDay = record
@@ -98,6 +105,7 @@ type
     SG4: TStringGrid;
     Timer1: TTimer;
     TrayCal: TTrayIcon;
+    UniqueInstance1: TUniqueInstance;
 
     procedure CBXClick(Sender: TObject);
     procedure ETodayTimeChange(Sender: TObject);
@@ -112,6 +120,7 @@ type
     procedure PTMnuMaximizeClick(Sender: TObject);
     procedure PTMnuQuitClick(Sender: TObject);
     procedure PTMnuRestoreClick(Sender: TObject);
+    procedure SBAboutClick(Sender: TObject);
     procedure SBNextQClick(Sender: TObject);
     procedure SBPrevQClick(Sender: TObject);
     procedure SBQuitClick(Sender: TObject);
@@ -129,7 +138,7 @@ type
   private
     Half: Integer;
     prevHalfColor: TColor;
-
+    CanClose: Boolean;
     Iconized: Boolean;
     Initialized: Boolean;
     OS: String;
@@ -152,10 +161,8 @@ type
     FeriesTxt: String;
     aSG: array[0..3] of TStringGrid;
     ColorDay, ColorSunday, ColorFerie: TColor;
-
     Days: array of TDay;
     aMonths: array [1..13] of integer;
-
     Today: Integer;
     curyear: integer;
     curRow, curCol : Integer;
@@ -164,6 +171,17 @@ type
     Settings: TSettings;
     HalfImgsList: TFichierList;
     SettingsChanged: Boolean;
+    sUse64bitcaption: string;
+    ChkVerInterval: Integer;
+    LangFile: TBbInifile;
+    CancelBtn: string;
+    sNoLongerChkUpdates: String;
+    sCannotGetNewVerList: String;
+    sPMnuAddImgCaption: String;
+    sPMnuModImgCaption: String;
+    sDayWeekInfo: String;
+    sSunRiseAndSet: String;
+    sSeasonSpring, sSeasonSummer, sSeasonAutumn, sSeasonWinter: String;
     procedure OnAppMinimize(Sender: TObject);
     procedure OnQueryendSession(var Cancel: Boolean);
     procedure UpdateCal(Annee: word);
@@ -174,6 +192,9 @@ type
     procedure SettingsOnChange(sender: TObject);
     procedure loadimage;
     procedure showHalf(n: integer);
+    procedure InitAboutBox;
+    procedure CheckUpdate(ndays: iDays);
+    procedure ModLangue;
   public
     csvtowns: TCSVDocument;
   end;
@@ -259,19 +280,16 @@ var
      x: Integer;
   {$ENDIF}
 begin
-  {$I fr_saints.lrs}
-  {$I fr_feries.lrs}
-  {$I fr_holidays.lrs}
-  {$I fr_villes.lrs}
+  {$I calendrier.lrs}
   // Intercept system commands
   Application.OnMinimize:=@OnAppMinimize;
   Application.OnQueryEndSession:= @OnQueryendSession;
-
+  CanClose:= false;
   Initialized := False;
    CompileDateTime:= StringToTimeDate({$I %DATE%}+' '+{$I %TIME%}, 'yyyy/mm/dd hh:nn:ss');
  Iconized:= false;
   OS := 'Unk';
-  ProgName := 'Calendrier';
+  ProgName := 'calendrier';
   CalExecPath:=ExtractFilePath(Application.ExeName);
  {$IFDEF CPU32}
      OSTarget := '32 bits';
@@ -302,8 +320,11 @@ begin
   CalImagePath:= CalAppDataPath+'images'+PathDelim;
   if not DirectoryExists(CalImagePath) then CreateDir(CalImagePath);
   cfgfilename:= CalAppDataPath+ProgName+'.xml';
+  // Chargement des chaînes de langue...
+  LangFile:= TBbIniFile.create(CalExecPath+ProgName+'.lng');
+  if Langstr<>'fr' then LangStr:='en';
   // place properly grids and panels
- SG1.Left := 0;
+  SG1.Left := 0;
   PanImg.left := SG1.Width+1;
   PanInfos.left:= SG1.Width+1;
   PanInfos.top:= PanImg.Height+4;
@@ -339,10 +360,7 @@ begin
   MemoCurDay.Lines.Text:='';
   MemoSeasons1.Lines.Text:='';
   MemoSeasons2.Lines.Text:='';
-  MoonDescs[0]:= 'Nouvelle Lune';
-  MoonDescs[1]:= 'Premier quartier';
-  MoonDescs[2]:= 'Dernier quartier';
-  MoonDescs[3]:= 'Pleine lune';
+
   TrayCal.Icon:= Application.Icon;
 
 end;
@@ -350,8 +368,7 @@ end;
 procedure TFCalendrier.FormActivate(Sender: TObject);
 var
   i: Integer;
-  line: string;
-    r: TLResource;
+  r: TLResource;
 begin
   if not Initialized then
   begin
@@ -362,7 +379,7 @@ begin
     Settings:= TSettings.create(self);
     HalfImgsList:= TFichierList.Create;
     // Set defaults settings;
-    Settings.colweekday:= clDefault;
+    Settings.coluser:= clDefault;
     Settings.colsunday:= StringToColour('$00FFFF80');
     Settings.colferie:= StringToColour('$00FFFF80');
     Settings.colvaca:= CBVA.CheckColor;
@@ -382,21 +399,115 @@ begin
     for i:= 0 to Prefs.csvtowns.RowCount-1 do
       Prefs.CBTowns.Items.Add(Prefs.csvtowns.Cells[0,i]);
     Prefs.CBTowns.ItemIndex:= 0;
+    InitAboutBox;
+    LoadSettings(cfgfilename);
+    ModLangue;
     Settings.OnChange:= @SettingsOnChange;
     HalfImgsList.OnChange:= @SettingsOnChange;
-    LoadSettings(cfgfilename);
+    if (Pos('64', OSVersion.Architecture)>0) and (OsTarget='32 bits') then
+    begin
+      ShowMessage(sUse64bitcaption);
+    end;
+    Application.QueueAsyncCall(@CheckUpdate, ChkVerInterval);       // async call to let icons loading
     UpdateCal(curyear);
+    loadimage;
   end;
 end;
 
+// About Box initialization
 
+procedure TFCalendrier.InitAboutBox;
+var
+  IniFile: TBbInifile;
+begin
+
+  // Check inifile with URLs, if not present, then use default
+  IniFile:= TBbInifile.Create(ProgName+'.ini');
+  AboutBox.ChkVerURL := IniFile.ReadString('urls', 'ChkVerURL','https://github.com/bb84000/calendrier/raw/main/history.txt');
+  AboutBox.UrlWebsite:= IniFile.ReadString('urls', 'UrlWebSite','https://www.sdtp.com');
+  AboutBox.UrlSourceCode:=IniFile.ReadString('urls', 'UrlSourceCode','https://github.com/bb84000/calendrier');
+  AboutBox.UrlProgSite:= IniFile.ReadString('urls','UrlProgSite','https://github.com/bb84000/calendrier');
+
+  ChkVerInterval:= IniFile.ReadInt64('urls', 'ChkVerInterval', 3);
+  if Assigned(IniFile) then FreeAndNil(IniFile);
+  //Aboutbox.Caption:= 'A propos du Calendrier';   Some infos in Modlangue
+  AboutBox.Image1.Picture.LoadFromLazarusResource('calendrier32');
+  AboutBox.LProductName.Caption := GetVersionInfo.FileDescription;
+  AboutBox.LCopyright.Caption := GetVersionInfo.CompanyName + ' - ' + DateTimeToStr(CompileDateTime);
+  AboutBox.LVersion.Caption := 'Version: ' + Version + ' (' + OS + OSTarget + ')';
+  AboutBox.LVersion.Hint:= OSVersion.VerDetail;
+  AboutBox.LUpdate.Hint := AboutBox.sLastUpdateSearch + ': ' + DateToStr(Settings.LastUpdChk);
+  AboutBox.Version:= Version;
+  AboutBox.ProgName:= ProgName;
+end;
+
+procedure TFCalendrier.CheckUpdate(ndays: iDays);
+var
+  errmsg: string;
+  sNewVer: string;
+  CurVer, NewVer: int64;
+  alertpos: TPosition;
+  alertmsg: string;
+begin
+  //Dernière recherche il y a "days" jours ou plus ?
+  errmsg := '';
+  alertmsg:= '';
+  if not visible then alertpos:= poDesktopCenter
+  else alertpos:= poMainFormCenter;
+  if (Trunc(Now)>= Trunc(Settings.LastUpdChk)+ndays) and (not Settings.NoChkNewVer) then
+  begin
+     Settings.LastUpdChk := Trunc(Now);
+     AboutBox.Checked:= true;
+     AboutBox.ErrorMessage:='';
+     //AboutBox.version:= '0.1.0.0' ;
+     sNewVer:= AboutBox.ChkNewVersion;
+     errmsg:= AboutBox.ErrorMessage;
+     if length(sNewVer)=0 then
+     begin
+       if length(errmsg)=0 then alertmsg:= sCannotGetNewVerList
+       else alertmsg:= errmsg;
+       if AlertDlg(Caption,  alertmsg, ['OK', CancelBtn, sNoLongerChkUpdates],
+                    true, mtError, alertpos)= mrYesToAll then Settings.NoChkNewVer:= true;
+       exit;
+     end;
+     NewVer := VersionToInt(sNewVer);
+     // Cannot get new version
+     if NewVer < 0 then exit;
+     CurVer := VersionToInt(AboutBox.version);
+     if NewVer > CurVer then
+     begin
+       Settings.LastVersion:= sNewVer;
+       AboutBox.LUpdate.Caption := Format(AboutBox.sUpdateAvailable, [sNewVer]);
+       AboutBox.NewVersion:= true;
+       AboutBox.ShowModal;
+     end else
+     begin
+       AboutBox.LUpdate.Caption:= AboutBox.sNoUpdateAvailable;
+     end;
+     Settings.LastUpdChk:= now;
+   end else
+   begin
+    if VersionToInt(Settings.LastVersion)>VersionToInt(version) then
+       AboutBox.LUpdate.Caption := Format(AboutBox.sUpdateAvailable, [Settings.LastVersion]) else
+       AboutBox.LUpdate.Caption:= AboutBox.sNoUpdateAvailable;
+   end;
+   AboutBox.LUpdate.Hint:= AboutBox.sLastUpdateSearch + ': ' + DateToStr(Settings.LastUpdChk);
+
+end;
 
 procedure TFCalendrier.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
-  self.WState:= IntToHex(ord(self.WindowState), 4)+IntToHex(self.Top, 4)+
+  if CanClose then
+  begin
+    self.WState:= IntToHex(ord(self.WindowState), 4)+IntToHex(self.Top, 4)+
                     IntToHex(self.Left, 4)+IntToHex(self.Height, 4)+IntToHex(self.width, 4); ;
-  if (self.WState<>Settings.wstate) or SettingsChanged then SaveSettings(cfgfilename);
-  CloseAction:= caFree;
+    if (self.WState<>Settings.wstate) or SettingsChanged then SaveSettings(cfgfilename);
+    CloseAction:= caFree;
+  end else
+  begin
+    PTMnuIconizeClick(sender);
+    CloseAction := caNone;
+  end;
 end;
 
 function TFCalendrier.LoadSettings(Filename: string): Boolean;
@@ -405,7 +516,6 @@ var
   i: integer;
   CfgXML: TXMLDocument;
   RootNode, SettingsNode, FilesNode :TDOMNode;
-  imghalf: TFichier;
 begin
   If not FileExists(Filename) then
   begin
@@ -427,7 +537,7 @@ begin
   self.Position:= poDesktopCenter;
   ReadXMLFile(CfgXml, filename);
   RootNode := CfgXML.DocumentElement;
-  SettingsNode:= CfgXML.DocumentElement.FindNode('settings');
+  SettingsNode:= RootNode.FindNode('settings');
   if Settingsnode<>nil then
   begin
     Settings.ReadXMLNode(SettingsNode);
@@ -444,12 +554,14 @@ begin
     except
     end;
     if Settings.startwin then SetAutostart(ProgName, Application.exename)  else UnsetAutostart(ProgName);
+    TrayCal.visible:= Settings.miniintray;
+    CanClose:= not Settings.miniintray;
     if Settings.StartMini or (Settings.SavSizePos and (Winstate=wsMinimized)) then
     begin
       WindowState:=wsNormal;
       Application.Minimize;
     end;
-    if Settings.miniintray then TrayCal.visible:= true;
+
     CBVA.CheckColor:= Settings.colvaca;
     CBVB.CheckColor:= Settings.colvacb;
     CBVC.CheckColor:= Settings.colvacc;
@@ -467,7 +579,7 @@ begin
   if Filesnode<>nil then
   begin
     HalfImgsList.ReadXMLNode(FilesNode);
-    loadImage;
+
   end;
   // only now, when settings are loaded
   For i:= 0 to 3 do aSG[i].OnDrawCell:= @SGDrawCell ;
@@ -482,13 +594,13 @@ var
   imgname: string;
 begin
   ImageHalf.Picture:= nil;
-  PMnuAddImg.Caption:= 'Ajouter une image';
+  PMnuAddImg.Caption:= sPMnuAddImgCaption;
   PMnuDelImg.Visible:= false;
   i:= HalfImgsList.FindYearAndHalf(Curyear, Half);
   if i>=0 then
   begin
-    PMnuAddImg.Caption:= 'Modifier l'' image';
-     PMnuDelImg.Visible:= true;
+    PMnuAddImg.Caption:= sPMnuModImgCaption;
+    PMnuDelImg.Visible:= true;
     ImgHalf:= HalfImgsList.GetItem(i);
     if FileExists(ImgHalf.LocalCopy) then imgname:= ImgHalf.LocalCopy
     else imgname:= ImgHalf.name;
@@ -500,8 +612,8 @@ function TFCalendrier.SaveSettings(filename: string): Boolean;
 var
   CfgXML: TXMLDocument;
   RootNode, SettingsNode, FilesNode :TDOMNode;
-  i: Integer;
 begin
+  Result:= true;
   Settings.WState:= '';
   if self.Top < 0 then self.Top:= 0;
   if self.Left < 0 then self.Left:= 0;
@@ -537,8 +649,8 @@ begin
      RootNode.Appendchild(FilesNode);
      writeXMLFile(CfgXML, filename);
 
-   finally
-
+   except
+     Result:= False;
    end;
 end;
 
@@ -554,6 +666,7 @@ end;
 
 procedure TFCalendrier.FormDestroy(Sender: TObject);
 begin
+  if assigned(LangFile) then FreeAndNil(LangFile);
   if assigned(csvsaints) then FreeAndNil(csvsaints);
   if assigned(csvferies) then FreeAndNil(csvferies);
   if assigned(csvvacs) then FreeAndNil(csvvacs);
@@ -627,7 +740,7 @@ begin
     CurImg:= HalfImgsList.GetItem(i);
     FImgResiz.InitialDir:= ExtractFileDir(CurImg.Name);
     FImgResiz.FileName:= ExtractFileName(CurImg.Name) ;
-    PMnuAddImg.Caption:= 'Modifier l''image';
+    PMnuAddImg.Caption:= sPMnuModImgCaption;
   end;
   FImgResiz.ImgWidth:= ImageHalf.Width;
   FImgResiz.ImgHeight:= ImageHalf.Height;
@@ -662,7 +775,7 @@ begin
     DeleteFile(HalfImgsList.GetItem(i).LocalCopy);
     HalfImgsList.Delete(i);
     ImageHalf.Picture:=nil;
-    PMnuAddImg.Caption:= 'Ajouter une image';
+    PMnuAddImg.Caption:= sPMnuAddImgCaption;
     if SettingsChanged then SaveSettings(cfgfilename);
   end;
 end;
@@ -706,14 +819,18 @@ begin
   Application.BringToFront;
 end;
 
+procedure TFCalendrier.SBAboutClick(Sender: TObject);
+begin
+  AboutBox.ShowModal;
+end;
+
 procedure TFCalendrier.SettingsOnChange(sender: TObject);
 begin
   SettingsChanged:= true;
 end;
 
 procedure TFCalendrier.SBNextQClick(Sender: TObject);
-var
-  i: Integer;
+
 begin
   if Half=1 then Half:= 2 else
   begin
@@ -728,8 +845,6 @@ end;
 
 
 procedure TFCalendrier.SBPrevQClick(Sender: TObject);
-var
-  i: Integer;
 begin
   if Half=1 then
   begin
@@ -744,6 +859,7 @@ end;
 
 procedure TFCalendrier.SBQuitClick(Sender: TObject);
 begin
+  CanClose:= true;
   close();
 end;
 
@@ -758,7 +874,7 @@ begin
   Prefs.CBHideinTaskBar.Checked:= Settings.hideintaskbar;
   prefs.CBMoonPhases.checked:= Settings.savemoon;
   prefs.CBSaveVacs.checked:= Settings.savevacs;
-  Prefs.CPcolweek.Color:= Settings.colweekday;
+  Prefs.CPcolUser.Color:= Settings.coluser;
   Prefs.CPcolsunday.Color:= Settings.colsunday;
   Prefs.CPColferie.Color:= Settings.colferie;
   Prefs.CPcolvaca.Color:= Settings.colvaca;
@@ -777,7 +893,7 @@ begin
   Settings.hideintaskbar:= Prefs.CBHideinTaskBar.Checked;
   Settings.savemoon:= prefs.CBMoonPhases.checked;
   Settings.savevacs:= prefs.CBSaveVacs.checked;
-  Settings.colweekday:= Prefs.CPcolweek.Color;
+  Settings.coluser:= Prefs.CPcolUser.Color;
   Settings.colsunday:= Prefs.CPcolsunday.Color;
   Settings.colferie:= Prefs.CPColferie.Color;
   Settings.colvaca:= Prefs.CPcolvaca.Color;
@@ -792,9 +908,14 @@ begin
   CBVB.CheckColor:= Settings.colvacb;
   CBVC.CheckColor:= Settings.colvacc;
   CBVK.CheckColor:= Settings.colvack;
-  if SettingsChanged then SaveSettings(cfgfilename);
-  Invalidate;
-  MemoToday.Text:= DayInfos(now) ;
+  if SettingsChanged then
+  begin
+    SaveSettings(cfgfilename);
+    Invalidate;
+    MemoToday.Text:= DayInfos(now) ;
+    TrayCal.visible:= Settings.miniintray ;
+    Canclose:= not Settings.miniintray ;
+  end;
 end;
 
 procedure TFCalendrier.SGMouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -850,7 +971,7 @@ begin
     end;
 
   end;
-  Result:= Result+LineEnding+Format('%de jour, %de semaine', [doy, WeekOf(dDate)]);
+  Result:= Result+LineEnding+Format(sDayWeekInfo, [doy, WeekOf(dDate)]);
   if Days[doy-1].bMoon then
   begin
     Result:= Result+LineEnding+Days[doy-1].sMoonDesc+' à '+FormatDateTime ('hh'+TimeSepar+'mm', Days[doy-1].dMoon);
@@ -859,8 +980,9 @@ begin
   dtr:= IncMinute(dtr, Settings.TimeZone+60*Integer(IsDST(dDate)));
   dts:= Sunset(dDate, Settings.latitude, Settings.longitude);
   dts:= IncMinute(dts, Settings.TimeZone+60*Integer(IsDST(dDate)));
-  s:= 'Lever et coucher du soleil à '+Settings.town+' à: '+FormatDateTime ('hh'+TimeSepar+'mm', dtr)+' - '+
-                                      FormatDateTime ('hh'+TimeSepar+'mm', dts);
+  s:= Format(sSunRiseAndSet,
+               [Settings.town, FormatDateTime ('hh'+TimeSepar+'mm', dtr),
+                               FormatDateTime ('hh'+TimeSepar+'mm', dts)]);
   Result:= Result+LineEnding+s;
   if Days[doy-1].bSeason then
   begin
@@ -879,7 +1001,6 @@ var
    GridNum: Integer;
    Month: Word;
    s: String;
-   doy: Integer;
 begin
   SGCur := TStringGrid(Sender);
   GridNum := StrToInt(Copy(SgCur.Name, 3, 1));
@@ -898,8 +1019,6 @@ end;
 
 
 procedure TFCalendrier.CBXClick(Sender: TObject);
-var
-  i: integer;
 begin
   SettingsChanged:= true;
   Invalidate;
@@ -1060,7 +1179,8 @@ end;
 
 procedure TFCalendrier.TrayCalClick(Sender: TObject);
 begin
-  if Iconized then PTMnuRestoreClick(Sender) else PTMnuIconizeClick(Sender);
+  if Iconized or (WindowState=wsMinimized) then PTMnuRestoreClick(Sender) else PTMnuIconizeClick(Sender);
+
 end;
 
 procedure TFCalendrier.UpdateCal(Annee: word);
@@ -1195,7 +1315,7 @@ begin
   Days[DOY].dSeason:= dSpr;
   Days[DOY].sSeasonDesc:= 'Printemps';
   dSpr:= IncMinute(dSpr, Settings.TimeZone+60*Integer(IsDST(dSpr)));
-  s:= Days[DOY].sSeasonDesc+' ; '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', Days[DOY].dSeason)+LineEnding;
+  s:= Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', Days[DOY].dSeason)+LineEnding;
   DOY:= trunc(dSum-BegYear);
   Days[DOY].bSeason:= true;
   Days[DOY].dSeason:= dSum;
@@ -1207,7 +1327,7 @@ begin
   Days[DOY].dSeason:= dAut;
   Days[DOY].sSeasonDesc:='Automne';;
   dAut:= IncMinute(dAut, Settings.TimeZone+60*Integer(IsDST(dAut)));
-  s:= Days[DOY].sSeasonDesc+' ; '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dAut)+LineEnding;
+  s:= Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dAut)+LineEnding;
   DOY:= trunc(dWin-BegYear);
   Days[DOY].bSeason:= true;
   Days[DOY].dSeason:= dWin;
@@ -1217,7 +1337,103 @@ begin
   Timer1.enabled:= true;
 end;
 
+procedure TFCalendrier.ModLangue;
+var
+  i, j: integer;
+  cmp: TControl;
+begin
+  With LangFile do
+  begin
+    MoonDescs[0]:= ReadString(LangStr, 'MoonDescs0', 'Nouvelle Lune');
+    MoonDescs[1]:= ReadString(LangStr, 'MoonDescs1', 'Premier quartier');
+    MoonDescs[2]:= ReadString(LangStr, 'MoonDescs2', 'Dernier quartier');
+    MoonDescs[3]:= ReadString(LangStr, 'MoonDescs3', 'Pleine lune');
+    CancelBtn:= ReadString(LangStr, 'CancelBtn', 'Annuler');
+    sPMnuAddImgCaption:= ReadString(LangStr, 'sPMnuAddImgCaption', 'Ajouter une image');
+    sPMnuModImgCaption:= ReadString(LangStr, 'sPMnuModImgCaption', 'Modifier l''image');
+    PMnuDelImg.Caption:= ReadString(LangStr, 'PMnuDelImg.Caption', PMnuDelImg.Caption);
+    PMnuSettings.Caption:= ReadString(LangStr, 'PMnuSettings.Caption', PMnuSettings.Caption);
+    PMnuAbout.Caption:= ReadString(LangStr, 'PMnuAbout.Caption', PMnuAbout.Caption);
+    PMnuQuit.Caption:= ReadString(LangStr, 'PMnuQuit.Caption', PMnuQuit.Caption);
+    PTMnuRestore.Caption:= ReadString(LangStr, 'PTMnuRestore.Caption', PTMnuRestore.Caption);
+    PTMnuMaximize.Caption:= ReadString(LangStr, 'PTMnuMaximize.Caption', PTMnuMaximize.Caption);
+    PTMnuIconize.Caption:= ReadString(LangStr, 'PTMnuIconize.Caption', PTMnuIconize.Caption);;
+    PTMnuSettings.Caption:= PMnuSettings.Caption;
+    PTMnuAbout.Caption:=PMnuAbout.Caption;
+    PTMnuQuit.Caption:= PMnuQuit.Caption;
+    sDayWeekInfo:= ReadString(LangStr, 'sDayWeekInfo', '%de jour, %de semaine');
+    sSunRiseAndSet:= ReadString(LangStr, 'sSunRiseAndSet','Lever et coucher du soleil à %s : %s - %s');
+    sSeasonSpring:= ReadString(LangStr, 'sSeasonSpring', 'Printemps');
+    sSeasonSummer:= ReadString(LangStr, 'sSeasonSummer', 'Eté');
+    sSeasonAutumn:= ReadString(LangStr, 'sSeasonAutumn', 'Automne');
+    sSeasonWinter:= ReadString(LangStr, 'sSeasonWinter', 'Hiver');
+    TabHalf1.Caption:= ReadString(LangStr, 'TabHalf1.Caption', TabHalf1.Caption);
+    TabHalf2.Caption:= ReadString(LangStr, 'TabHalf2.Caption', TabHalf2.Caption);
+    PanToday.Caption:= ReadString(LangStr, 'PanToday.Caption', PanToday.Caption);
+    PanSelDay.Caption:= ReadString(LangStr, 'PanSelDay.Caption', PanSelDay.Caption);
+    PanSeasons.Caption:= ReadString(LangStr, 'PanSeasons.Caption', PanSeasons.Caption);
+    CBVA.Caption:= ReadString(LangStr, 'CBVA.Caption', CBVA.Caption);
+    CBVB.Caption:= ReadString(LangStr, 'CBVB.Caption', CBVB.Caption);
+    CBVC.Caption:= ReadString(LangStr, 'CBVC.Caption', CBVC.Caption);
+    CBVK.Caption:= ReadString(LangStr, 'CBVK.Caption', CBVK.Caption);
+    CBLune.Caption:= ReadString(LangStr, 'CBLune.Caption', CBLune.Caption);
+    sNoLongerChkUpdates:= ReadString(LangStr, 'NoLongerChkUpdates', 'Ne plus rechercher les mises à jour');
+    sUse64bitcaption:=ReadString(LangStr, 'use64bitcaption', 'Utilisez la version 64 bits de ce programme');
 
+    // About
+    AboutBox.LProductName.Caption:= ReadString(LangStr, 'AboutBox.LProductName.Caption', 'Calendrier universel');
+    if not AboutBox.checked then AboutBox.LUpdate.Caption:=ReadString(LangStr,'AboutBox.LUpdate.Caption',AboutBox.LUpdate.Caption) else
+    begin
+      if AboutBox.NewVersion then AboutBox.LUpdate.Caption:= Format(AboutBox.sUpdateAvailable, [AboutBox.LastVersion])
+      else AboutBox.LUpdate.Caption:= AboutBox.sNoUpdateAvailable;
+    end;
+    AboutBox.sLastUpdateSearch:=ReadString(LangStr,'AboutBox.LastUpdateSearch','Dernière recherche de mise à jour');
+    AboutBox.sUpdateAvailable:=ReadString(LangStr,'AboutBox.UpdateAvailable','Nouvelle version %s disponible; Cliquer pour la télécharger');
+    AboutBox.sNoUpdateAvailable:=ReadString(LangStr,'AboutBox.NoUpdateAvailable','Le Calendrier est à jour');
+    Aboutbox.Caption:=ReadString(LangStr,'Aboutbox.Caption','A propos du Calendrier');
+    AboutBox.UrlProgSite:= ReadString(LangStr,'AboutBox.UrlProgSite',AboutBox.UrlProgSite);
+    AboutBox.LWebSite.Caption:= ReadString(LangStr,'AboutBox.LWebSite.Caption', AboutBox.LWebSite.Caption);
+    AboutBox.LSourceCode.Caption:= ReadString(LangStr,'AboutBox.LSourceCode.Caption', AboutBox.LSourceCode.Caption);
+    AboutBox.LSourceCode.Caption:= ReadString(LangStr,'AboutBox.LSourceCode.Caption', 'Page Web du code source');
 
+    // Settings
+    // Enumerate controls to change captions
+    for i:=0 to Prefs.ControlCount-1 do
+    begin
+      cmp:= Prefs.Controls[i];
+      Prefs.Controls[i].Caption:= ReadString(LangStr, 'Prefs.'+cmp.name+'.Caption', cmp.caption);
+      for j:= 0 to TTitlePanel(cmp).ControlCount-1 do
+      begin
+        TTitlePanel(Prefs.Controls[i]).Controls[j].Caption:= ReadString(LangStr,
+                'Prefs.'+ TTitlePanel(cmp).Controls[j].Name+'.Caption',
+                TTitlePanel(cmp).Controls[j].Caption);
+      end;
+    end;
+    {Prefs.PanColors.Caption:= ReadString(LangStr, 'Prefs.PanColors.Caption', Prefs.PanColors.Caption);
+    Prefs.LColUser.Caption:= ReadString(LangStr, 'Prefs.LColUser.Caption', Prefs.LColUser.Caption);
+    Prefs.LColSund.Caption := ReadString(LangStr, 'Prefs.LColSund.Caption', Prefs.LColSund.Caption);
+    Prefs.LColFerie.Caption := ReadString(LangStr, 'Prefs.LColFerie.Caption', Prefs.LColFerie.Caption);
+    Prefs.LColZa.Caption:= ReadString(LangStr, 'Prefs.LColZa.Caption', Prefs.LColZa.Caption);
+    Prefs.LColZb.Caption:= ReadString(LangStr, 'Prefs.LColZb.Caption', Prefs.LColZb.Caption);
+    Prefs.LColZc.Caption:= ReadString(LangStr, 'Prefs.LColZc.Caption', Prefs.LColZc.Caption);
+    Prefs.LColZk.Caption:= ReadString(LangStr, 'Prefs.LColZk.Caption', Prefs.LColZk.Caption);
+    Prefs.PanCoords.Caption:= ReadString(LangStr, 'Prefs.PanCoords.Caption', Prefs.PanCoords.Caption);
+    Prefs.LTown.Caption:= ReadString(LangStr, 'Prefs.LTown.Caption', Prefs.LTown.Caption);
+    Prefs.LLatitude.Caption:= ReadString(LangStr, 'Prefs.LLatitude.Caption', Prefs.LLatitude.Caption);
+    Prefs.LLongitude.Caption:= ReadString(LangStr, 'Prefs.LLongitude.Caption', Prefs.LLongitude.Caption);
+    Prefs.LTimezone.Caption:= ReadString(LangStr, 'Prefs.LTimezone.Caption', Prefs.LTimezone.Caption);
+    Prefs.PanSystem.Caption:= ReadString(LangStr, 'Prefs.PanSystem.Caption', Prefs.PanSystem.Caption);
+    Prefs.CBStartwin.Caption:= ReadString(LangStr, 'Prefs.CBStartwin.Caption', Prefs.CBStartwin.Caption);
+    Prefs.CBStartmini.Caption:= ReadString(LangStr, 'Prefs.CBStartmini.Caption', Prefs.CBStartmini.Caption);
+    Prefs.CBMiniintray.Caption:= ReadString(LangStr, 'Prefs.CBMiniintray.Caption', Prefs.CBMiniintray.Caption);
+    Prefs.CBHideinTaskBar.Caption:= ReadString(LangStr, 'Prefs.CBHideinTaskBar.Caption', Prefs.CBHideinTaskBar.Caption);
+    Prefs.CBSaveSizPos.Caption:= ReadString(LangStr, 'Prefs.CBSaveSizPos.Caption', Prefs.CBSaveSizPos.Caption);
+    Prefs.CBMoonPhases.Caption:= ReadString(LangStr, 'Prefs.CBMoonPhases.Caption', Prefs.CBMoonPhases.Caption);
+    Prefs.CBSaveVacs.Caption:= ReadString(LangStr, 'Prefs.CBSaveVacs.Caption', Prefs.CBSaveVacs.Caption);
+    Prefs.CBNoChkUpdate.Caption:= ReadString(LangStr, 'Prefs.CBNoChkUpdate.Caption', Prefs.CBNoChkUpdate.Caption);
+    }
+        Prefs.BtnCancel.Caption:= CancelBtn;
+  end;
+end;
 
 end.

@@ -1,0 +1,162 @@
+;Languages File/Fichier de langues
+;bb - sdtp - april 2021
+;It is possible to create a new language using its ID as new section
+;Il est possible de créer une nouvelle langue en utilisant son identifiant
+;Danish	[da], Dutch [nl], Finnish [fi], German [de], Greek [el], Hungarian [hu]
+;Icelandic [is], Italian [it], Norwegian [no], Polish [pl], Portuguese [pt]
+;Russian [ru], Serbo Croatian [sr], Slovak [sk], Swedish [sv], Turkish [tr]
+
+;Save this file in a secure place if you change it, it will be replaced by any update !
+;you wiill probably need to add some items.
+;Submit your translation on my site or GitHub
+
+;English
+[en]
+;General
+MoonDescs0=New Moon
+MoonDescs1=First Quarter
+MoonDescs2=Last Quarter
+MoonDescs3=Full Moon
+CancelBtn=Cancel
+sNoLongerChkUpdates=No longer check updates
+sUse64bitcaption=Please use the 64bit version of the program
+sPMnuAddImgCaption=Add an image
+sPMnuModImgCaption=Change image
+PMnuDelImg.Caption=Delete image
+PMnuSettings.Caption=Settings
+PMnuAbout.Caption=About
+PMnuQuit.Caption=Quit
+PTMnuRestore.Caption=Restore
+PTMnuMaximize.Caption=Maximize
+PTMnuIconize.Caption=Minimize
+
+sDayWeekInfo=%de day, %de week
+sSunRiseAndSet=Sunrise and sunset at %s : %s - %s
+sSeasonSpring=Spring
+sSeasonSummer=Summer
+sSeasonAutumn=Autumn
+sSeasonWinter=Winter
+TabHalf1.Caption=1st Half
+TabHalf2.Caption=2nd Half
+PanToday.Caption=Today
+PanSelDay.Caption=Selected day
+PanSeasons.Caption=Seasons
+CBVA.Caption=Zone A holidays
+CBVB.Caption=Zone B holidays
+CBVC.Caption=Zone C holidays
+CBVK.Caption=Corsica holidays
+CBLune.Caption=Moon's phases
+
+;About
+AboutBox.LProductName.Caption=Universal Calendar
+Aboutbox.Caption=About Calendar
+AboutBox.LUpdate.Caption=Search update
+AboutBox.UpdateAvailable=New version %s available. Click to download it
+AboutBox.NoUpdateAvailable=Calendar is up to date.
+AboutBox.LastUpdateSearch=Last update check
+AboutBox.UrlProgSite=https://github.com/bb84000/calendrier
+AboutBox.LWebSite.Caption=Web site home page
+AboutBox.LSourceCode.Caption=Source code Web page
+sNoLongerChkUpdates=No longer check updates
+UpdateAlertBox=Current version: %sA new version %s is available
+
+//Settings
+Prefs.PanColors.Caption=Colors
+Prefs.LColUser.Caption=User
+Prefs.LColSund.Caption=Sundays
+Prefs.LColFerie.Caption=Public Holid.
+Prefs.LColText.Caption=Text
+Prefs.LColZa.Caption=Zone A
+Prefs.LColZb.Caption=Zone B
+Prefs.LColZc.Caption=Zone C
+Prefs.LColZk.Caption=Corsica
+Prefs.PanCoords.Caption=Coordinates for sunrise and sunset times
+Prefs.LTown.Caption=Town
+Prefs.LLatitude.Caption=Latitude
+Prefs.LLongitude.Caption=Longitude
+Prefs.LTimezone.Caption=Timezone offset (mn)
+Prefs.PanSystem.Caption=System
+Prefs.CBStartwin.Caption=Launch at startup
+Prefs.CBStartmini.Caption=Strart minimized
+Prefs.CBMiniintray.Caption=Minimize in tray area
+Prefs.CBHideinTaskBar.Caption=Hide icon from tasks bar
+Prefs.CBSaveSizPos.Caption=Save Calendar size and position
+Prefs.CBMoonPhases.Caption=Save moonphases display
+Prefs.CBSaveVacs.Caption=Save holidays display
+Prefs.CBNoChkUpdate.Caption=No check updates
+
+;Français
+[fr]
+;General
+MoonDescs0=Nouvelle Lune
+MoonDescs1=Premier quartier
+MoonDescs2=Dernier quartier
+MoonDescs3=Pleine lune
+CancelBtn=Annuler
+sUse64bitcaption=Utilisez la version 64 bits de ce programme
+sPMnuAddImgCaption=Ajouter une image
+sPMnuModImgCaption=Modifier l'image
+PMnuDelImg.Caption=Supprimer l'image
+PMnuSettings.Caption=Préférences
+PMnuAbout.Caption=A propos
+PMnuQuit.Caption=Quitter
+PTMnuRestore.Caption=Restaurer
+PTMnuMaximize.Caption=Agrandir
+PTMnuIconize.Caption=Réduire
+
+
+sDayWeekInfo=%de jour, %de semaine
+sSunRiseAndSet=Lever et coucher du soleil à %s : %s - %s
+sSeasonSpring=Printemps
+sSeasonSummer=Eté
+sSeasonAutumn=Automne
+sSeasonWinter=Hiver
+TabHalf1.Caption=1er semestre
+TabHalf2.Caption=2ème semestre
+PanToday.Caption=Aujourd'hui
+PanSelDay.Caption=Jour sélectionné
+PanSeasons.Caption=Saisons
+CBVA.Caption=Vacances zone A
+CBVB.Caption=Vacances zone B
+CBVC.Caption=Vacances zone C
+CBVK.Caption=Vacances Corse
+CBLune.Caption=Phases de la Lune
+
+
+;About
+AboutBox.LProductName.Caption=Calendrier universel
+Aboutbox.Caption=A propos du Calendrier
+AboutBox.LUpdate.Caption=Recherche de mise à jour
+AboutBox.UpdateAvailable=Nouvelle version %s disponible. Cliquer pour la télécharger
+AboutBox.NoUpdateAvailable=Le Calendrier est à jour.
+AboutBox.LastUpdateSearch=Dernière recherche de mise à jour
+AboutBox.UrlProgSite=https://github.com/bb84000/calendrier/
+AboutBox.LWebSite.Caption=Page d'accueil du site Web
+AboutBox.LSourceCode.Caption=Page Web du code source
+sNoLongerChkUpdates=Ne plus rechercher les mises à jour
+UpdateAlertBox=Current version: %sUne nouvelle version %s est disponible
+
+//Settings
+Prefs.PanColors.Caption=Couleurs
+Prefs.LColUser.Caption=Utilisateur
+Prefs.LColSund.Caption=Dimanches
+Prefs.LColFerie.Caption=Fériés
+Prefs.LColText.Caption=Texte
+Prefs.LColZa.Caption=Zone A
+Prefs.LColZb.Caption=Zone B
+Prefs.LColZc.Caption=Zone C
+Prefs.LColZk.Caption=Corse
+Prefs.PanCoords.Caption=Coordonnées pour le lever et le coucher du soleil
+Prefs.LTown.Caption=Ville
+Prefs.LLatitude.Caption=Latitude
+Prefs.LLongitude.Caption=Longitude
+Prefs.LTimezone.Caption=Décalage horaire (mn)
+Prefs.PanSystem.Caption=Système
+Prefs.CBStartwin.Caption=Lancer au démarrage
+Prefs.CBStartmini.Caption=Démarrer minimisé
+Prefs.CBMiniintray.Caption=Minimiser dans la zone de notification
+Prefs.CBHideinTaskBar.Caption=Masquer l'icone dans la barre des tâches
+Prefs.CBSaveSizPos.Caption=Sauvegarde position et taille
+Prefs.CBMoonPhases.Caption=Sauvegarde des phases de la lune
+Prefs.CBSaveVacs.Caption=Sauvegarde des vacances scolaires
+Prefs.CBNoChkUpdate.Caption=Ne pas rechercher de mises à jour
