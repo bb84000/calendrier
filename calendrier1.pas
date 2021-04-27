@@ -182,6 +182,7 @@ type
     sDayWeekInfo: String;
     sSunRiseAndSet: String;
     sSeasonSpring, sSeasonSummer, sSeasonAutumn, sSeasonWinter: String;
+    sUrlProgSite: String;
     procedure OnAppMinimize(Sender: TObject);
     procedure OnQueryendSession(var Cancel: Boolean);
     procedure UpdateCal(Annee: word);
@@ -360,9 +361,7 @@ begin
   MemoCurDay.Lines.Text:='';
   MemoSeasons1.Lines.Text:='';
   MemoSeasons2.Lines.Text:='';
-
   TrayCal.Icon:= Application.Icon;
-
 end;
 
 procedure TFCalendrier.FormActivate(Sender: TObject);
@@ -372,6 +371,7 @@ var
 begin
   if not Initialized then
   begin
+
     Initialized:= true;
     CurYear := YearOf(now);
     if MonthOf(now) < 7 then half:= 1 else half:=2;
@@ -402,6 +402,7 @@ begin
     InitAboutBox;
     LoadSettings(cfgfilename);
     ModLangue;
+
     Settings.OnChange:= @SettingsOnChange;
     HalfImgsList.OnChange:= @SettingsOnChange;
     if (Pos('64', OSVersion.Architecture)>0) and (OsTarget='32 bits') then
@@ -410,8 +411,9 @@ begin
     end;
     Application.QueueAsyncCall(@CheckUpdate, ChkVerInterval);       // async call to let icons loading
     UpdateCal(curyear);
+    Invalidate;
     loadimage;
-  end;
+   end;
 end;
 
 // About Box initialization
@@ -420,17 +422,14 @@ procedure TFCalendrier.InitAboutBox;
 var
   IniFile: TBbInifile;
 begin
-
-  // Check inifile with URLs, if not present, then use default
+   // Check inifile with URLs, if not present, then use default
   IniFile:= TBbInifile.Create(ProgName+'.ini');
   AboutBox.ChkVerURL := IniFile.ReadString('urls', 'ChkVerURL','https://github.com/bb84000/calendrier/raw/main/history.txt');
   AboutBox.UrlWebsite:= IniFile.ReadString('urls', 'UrlWebSite','https://www.sdtp.com');
   AboutBox.UrlSourceCode:=IniFile.ReadString('urls', 'UrlSourceCode','https://github.com/bb84000/calendrier');
-  AboutBox.UrlProgSite:= IniFile.ReadString('urls','UrlProgSite','https://github.com/bb84000/calendrier');
-
+  sUrlProgSite:= IniFile.ReadString('urls','UrlProgSite','https://github.com/bb84000/calendrier');   // Link Localized in modlangue
   ChkVerInterval:= IniFile.ReadInt64('urls', 'ChkVerInterval', 3);
   if Assigned(IniFile) then FreeAndNil(IniFile);
-  //Aboutbox.Caption:= 'A propos du Calendrier';   Some infos in Modlangue
   AboutBox.Image1.Picture.LoadFromLazarusResource('calendrier32');
   AboutBox.LProductName.Caption := GetVersionInfo.FileDescription;
   AboutBox.LCopyright.Caption := GetVersionInfo.CompanyName + ' - ' + DateTimeToStr(CompileDateTime);
@@ -459,7 +458,7 @@ begin
      Settings.LastUpdChk := Trunc(Now);
      AboutBox.Checked:= true;
      AboutBox.ErrorMessage:='';
-     //AboutBox.version:= '0.1.0.0' ;
+     //AboutBox.version:= '0.1.0.0' ;   // This is to check the procedure works properly
      sNewVer:= AboutBox.ChkNewVersion;
      errmsg:= AboutBox.ErrorMessage;
      if length(sNewVer)=0 then
@@ -497,6 +496,7 @@ end;
 
 procedure TFCalendrier.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
+  // If the application can be minimized in tray, then don't close but iconize
   if CanClose then
   begin
     self.WState:= IntToHex(ord(self.WindowState), 4)+IntToHex(self.Top, 4)+
@@ -517,6 +517,7 @@ var
   CfgXML: TXMLDocument;
   RootNode, SettingsNode, FilesNode :TDOMNode;
 begin
+  result:= true;
   If not FileExists(Filename) then
   begin
     FilNamWoExt:= TrimFileExt(FileName);
@@ -552,6 +553,7 @@ begin
       PrevLeft:= self.left;
       PrevTop:= self.top;
     except
+      result:= false;
     end;
     if Settings.startwin then SetAutostart(ProgName, Application.exename)  else UnsetAutostart(ProgName);
     TrayCal.visible:= Settings.miniintray;
@@ -561,7 +563,6 @@ begin
       WindowState:=wsNormal;
       Application.Minimize;
     end;
-
     CBVA.CheckColor:= Settings.colvaca;
     CBVB.CheckColor:= Settings.colvacb;
     CBVC.CheckColor:= Settings.colvacc;
@@ -579,11 +580,9 @@ begin
   if Filesnode<>nil then
   begin
     HalfImgsList.ReadXMLNode(FilesNode);
-
   end;
   // only now, when settings are loaded
-  For i:= 0 to 3 do aSG[i].OnDrawCell:= @SGDrawCell ;
-  INvalidate;
+
 end;
 
 
@@ -612,6 +611,8 @@ function TFCalendrier.SaveSettings(filename: string): Boolean;
 var
   CfgXML: TXMLDocument;
   RootNode, SettingsNode, FilesNode :TDOMNode;
+  FilNamWoExt: String;
+  i: Integer;
 begin
   Result:= true;
   Settings.WState:= '';
@@ -647,8 +648,16 @@ begin
      FilesNode:= CfgXML.CreateElement('files');
      HalfImgsList.SaveToXMLnode(FilesNode);
      RootNode.Appendchild(FilesNode);
+     // On sauvegarde les versions précédentes
+     FilNamWoExt:= TrimFileExt(filename);
+     if FileExists (FilNamWoExt+'.bk5')                   // Efface la plus ancienne
+     then  DeleteFile(FilNamWoExt+'.bk5');                // si elle existe
+     For i:= 4 downto 0
+      do if FileExists (FilNamWoExt+'.bk'+IntToStr(i))     // Renomme les précédentes si elles existent
+        then  RenameFile(FilNamWoExt+'.bk'+IntToStr(i), FilNamWoExt+'.bk'+IntToStr(i+1));
+     if FileExists (filename) then  RenameFile(filename, FilNamWoExt+'.bk0');
+     // Et on sauvegarde la nouvelle config
      writeXMLFile(CfgXML, filename);
-
    except
      Result:= False;
    end;
@@ -929,6 +938,8 @@ var
   MOnth: Word;
   s: String;
 begin
+  aCol:= 0;
+  aRow:= 0;
   SGCur:= TStringGrid(Sender);
   GridNum := StrToInt(Copy(SgCur.Name, 3, 1));
   SGCur.MouseToCell(X, Y, aCol, aRow);
@@ -977,9 +988,9 @@ begin
     Result:= Result+LineEnding+Days[doy-1].sMoonDesc+' à '+FormatDateTime ('hh'+TimeSepar+'mm', Days[doy-1].dMoon);
   end;
   dtr:= Sunrise(dDate, Settings.latitude, Settings.longitude);
-  dtr:= IncMinute(dtr, Settings.TimeZone+60*Integer(IsDST(dDate)));
+  dtr:= IncMinute(dtr, Settings.TimeZone+60*Int64(IsDST(dDate)));
   dts:= Sunset(dDate, Settings.latitude, Settings.longitude);
-  dts:= IncMinute(dts, Settings.TimeZone+60*Integer(IsDST(dDate)));
+  dts:= IncMinute(dts, Settings.TimeZone+60*Int64(IsDST(dDate)));
   s:= Format(sSunRiseAndSet,
                [Settings.town, FormatDateTime ('hh'+TimeSepar+'mm', dtr),
                                FormatDateTime ('hh'+TimeSepar+'mm', dts)]);
@@ -987,7 +998,7 @@ begin
   if Days[doy-1].bSeason then
   begin
     dtsz:= Days[doy-1].dSeason;
-    dtsz:= IncMinute(dtsz, Settings.TimeZone+60*Integer(IsDST(dDate)));
+    dtsz:= IncMinute(dtsz, Settings.TimeZone+60*Int64(IsDST(dDate)));
     s:= Days[DOY-1].sSeasonDesc+' à '+FormatDateTime ('hh'+TimeSepar+'mm', dtsz);
     Result:= Result+LineEnding+s
   end;
@@ -1082,8 +1093,13 @@ begin
   begin
     Count := aMonths[(acol + 1) + (quarter - 1) * 3];
     max := aMonths[(acol + 2) + (quarter - 1) * 3];
-    s := IntToStr(Days[Count + arow - 1].iDay) + ' ' + UpCase(Days[Count + arow - 1].sday[1]);
+
+    s := IntToStr(Days[Count + arow - 1].iDay)+ ' ' + UpCase(Days[Count + arow - 1].sday[1]);
+
+
+
     s1 := Days[Count + arow - 1].sSaint;
+
     if (Count + arow - 1) < max then
     begin
       if (Days[Count+arow-1].bSunday) then
@@ -1198,6 +1214,8 @@ var
   dt: TDateTime;
   dSpr, dSum, DAut, dWin: TDateTime;
 begin
+  // Disable grids update during clandar update
+  For i:= 0 to 3 do aSG[i].OnDrawCell:= nil;
   // Sans objet avant l'année 1583 (calendrier julien)
   if Annee < 1583 then Annee := 1583;
   // Ni après l'année 9998
@@ -1225,6 +1243,7 @@ begin
   BegYear := EncodeDate(Annee, 1, 1);
 
   setlength(Days, DaysCnt);
+
   j := 0;
   for i := 1 to DaysCnt do
   begin
@@ -1300,7 +1319,7 @@ begin
       Days[DOY].bMoon:= true;
       Days[DOY].sMoon:= LuneYr[i].MType;
       dt:= LuneYr[i].MDays;
-      dt:= IncMinute(dt, Settings.TimeZone+60*Integer(IsDST(dt)));
+      dt:= IncMinute(dt, Settings.TimeZone+60*Int64(IsDST(dt)));
       Days[DOY].dMoon:= dt;
       Days[DOY].sMoonDesc:= MoonDescs[Pos(Days[DOY].sMoon, s) div 2];
     end;
@@ -1314,27 +1333,29 @@ begin
   Days[DOY].bSeason:= true;
   Days[DOY].dSeason:= dSpr;
   Days[DOY].sSeasonDesc:= 'Printemps';
-  dSpr:= IncMinute(dSpr, Settings.TimeZone+60*Integer(IsDST(dSpr)));
+  dSpr:= IncMinute(dSpr, Settings.TimeZone+60*Int64(IsDST(dSpr)));
   s:= Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', Days[DOY].dSeason)+LineEnding;
   DOY:= trunc(dSum-BegYear);
   Days[DOY].bSeason:= true;
   Days[DOY].dSeason:= dSum;
   Days[DOY].sSeasonDesc:= 'Eté';
-  dSum:= IncMinute(dSum, Settings.TimeZone+60*Integer(IsDST(dSum)));
+  dSum:= IncMinute(dSum, Settings.TimeZone+60*Int64(IsDST(dSum)));
   MemoSeasons1.Lines.text:=s+Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dSum);
   DOY:= trunc(dAut-BegYear);
   Days[DOY].bSeason:= true;
   Days[DOY].dSeason:= dAut;
   Days[DOY].sSeasonDesc:='Automne';;
-  dAut:= IncMinute(dAut, Settings.TimeZone+60*Integer(IsDST(dAut)));
+  dAut:= IncMinute(dAut, Settings.TimeZone+60*Int64(IsDST(dAut)));
   s:= Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dAut)+LineEnding;
   DOY:= trunc(dWin-BegYear);
   Days[DOY].bSeason:= true;
   Days[DOY].dSeason:= dWin;
   Days[DOY].sSeasonDesc:='Hiver';
-  dWin:= IncMinute(dWin, Settings.TimeZone+60*Integer(IsDST(dWin)));
+  dWin:= IncMinute(dWin, Settings.TimeZone+60*Int64(IsDST(dWin)));
   MemoSeasons2.Lines.text:=s+Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dWin);
   Timer1.enabled:= true;
+  Application.ProcessMessages;
+  For i:= 0 to 3 do aSG[i].OnDrawCell:= @SGDrawCell ;
 end;
 
 procedure TFCalendrier.ModLangue;
@@ -1349,6 +1370,21 @@ begin
     MoonDescs[2]:= ReadString(LangStr, 'MoonDescs2', 'Dernier quartier');
     MoonDescs[3]:= ReadString(LangStr, 'MoonDescs3', 'Pleine lune');
     CancelBtn:= ReadString(LangStr, 'CancelBtn', 'Annuler');
+    CBVA.Caption:= ReadString(LangStr, 'CBVA.Caption', CBVA.Caption);
+    CBVB.Caption:= ReadString(LangStr, 'CBVB.Caption', CBVB.Caption);
+    CBVC.Caption:= ReadString(LangStr, 'CBVC.Caption', CBVC.Caption);
+    CBVK.Caption:= ReadString(LangStr, 'CBVK.Caption', CBVK.Caption);
+    CBLune.Caption:= ReadString(LangStr, 'CBLune.Caption', CBLune.Caption);
+    SBSettings.Hint:= ReadString(LangStr, 'SBSettings.Hint', SBSettings.Hint);
+    SBAbout.Hint:= ReadString(LangStr, 'SBAbout.Hint', SBAbout.Hint);
+    SBQuit.Hint:= ReadString(LangStr, 'SBQuit.Hint', SBQuit.Hint);
+    SBPrevQ.Hint:= ReadString(LangStr, 'SBPrevQ.Hint', SBPrevQ.Hint);
+    SBNextQ.Hint:= ReadString(LangStr, 'SBNextQ.Hint', SBNextQ.Hint);
+    CBLune.Hint:= ReadString(LangStr, 'CBLune.Hint', CBLune.Hint);
+    CBVA.Hint:= ReadString(LangStr, 'CBVA.Hint', CBVA.Hint);
+    CBVB.Hint:= ReadString(LangStr, 'CBVB.Hint', CBVB.Hint);
+    CBVC.Hint:= ReadString(LangStr, 'CBVC.Hint', CBVC.Hint);
+    CBVK.Hint:= ReadString(LangStr, 'CBVK.Hint', CBVK.Hint);
     sPMnuAddImgCaption:= ReadString(LangStr, 'sPMnuAddImgCaption', 'Ajouter une image');
     sPMnuModImgCaption:= ReadString(LangStr, 'sPMnuModImgCaption', 'Modifier l''image');
     PMnuDelImg.Caption:= ReadString(LangStr, 'PMnuDelImg.Caption', PMnuDelImg.Caption);
@@ -1372,11 +1408,6 @@ begin
     PanToday.Caption:= ReadString(LangStr, 'PanToday.Caption', PanToday.Caption);
     PanSelDay.Caption:= ReadString(LangStr, 'PanSelDay.Caption', PanSelDay.Caption);
     PanSeasons.Caption:= ReadString(LangStr, 'PanSeasons.Caption', PanSeasons.Caption);
-    CBVA.Caption:= ReadString(LangStr, 'CBVA.Caption', CBVA.Caption);
-    CBVB.Caption:= ReadString(LangStr, 'CBVB.Caption', CBVB.Caption);
-    CBVC.Caption:= ReadString(LangStr, 'CBVC.Caption', CBVC.Caption);
-    CBVK.Caption:= ReadString(LangStr, 'CBVK.Caption', CBVK.Caption);
-    CBLune.Caption:= ReadString(LangStr, 'CBLune.Caption', CBLune.Caption);
     sNoLongerChkUpdates:= ReadString(LangStr, 'NoLongerChkUpdates', 'Ne plus rechercher les mises à jour');
     sUse64bitcaption:=ReadString(LangStr, 'use64bitcaption', 'Utilisez la version 64 bits de ce programme');
 
@@ -1391,7 +1422,7 @@ begin
     AboutBox.sUpdateAvailable:=ReadString(LangStr,'AboutBox.UpdateAvailable','Nouvelle version %s disponible; Cliquer pour la télécharger');
     AboutBox.sNoUpdateAvailable:=ReadString(LangStr,'AboutBox.NoUpdateAvailable','Le Calendrier est à jour');
     Aboutbox.Caption:=ReadString(LangStr,'Aboutbox.Caption','A propos du Calendrier');
-    AboutBox.UrlProgSite:= ReadString(LangStr,'AboutBox.UrlProgSite',AboutBox.UrlProgSite);
+    AboutBox.UrlProgSite:= sUrlProgSite+ ReadString(LangStr,'AboutBox.UrlProgSite','Accueil');
     AboutBox.LWebSite.Caption:= ReadString(LangStr,'AboutBox.LWebSite.Caption', AboutBox.LWebSite.Caption);
     AboutBox.LProgPage.Caption:= ReadString(LangStr,'AboutBox.LProgPage.Caption', AboutBox.LProgPage.Caption);      ;
     AboutBox.LSourceCode.Caption:= ReadString(LangStr,'AboutBox.LSourceCode.Caption', AboutBox.LSourceCode.Caption);

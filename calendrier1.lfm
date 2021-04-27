@@ -36,6 +36,7 @@ object FCalendrier: TFCalendrier
     object CBVA: TCheckBoxX
       Left = 682
       Height = 17
+      Hint = 'Académies de Besançon, Bordeaux, Clermont-Ferrand, Dijon, Grenoble, Limoges, Lyon, Poitiers'
       Top = 13
       Width = 113
       Alignment = taRightJustify
@@ -45,6 +46,8 @@ object FCalendrier: TFCalendrier
       CheckColor = 4705528
       Checked = False
       Color = clDefault
+      ParentShowHint = False
+      ShowHint = True
       State = cbUnchecked
       TabOrder = 1
       TabStop = True
@@ -53,6 +56,7 @@ object FCalendrier: TFCalendrier
     object CBVB: TCheckBoxX
       Left = 802
       Height = 17
+      Hint = 'Académies d''Aix-Marseille, Amiens, Caen, Lille, Nancy-Metz, Nantes, Nice, Orléans-Tours, Reims, Rennes, Rouen, Strasbourg'
       Top = 14
       Width = 114
       Alignment = taRightJustify
@@ -62,6 +66,8 @@ object FCalendrier: TFCalendrier
       CheckColor = clRed
       Checked = False
       Color = clDefault
+      ParentShowHint = False
+      ShowHint = True
       State = cbUnchecked
       TabOrder = 2
       TabStop = True
@@ -70,6 +76,7 @@ object FCalendrier: TFCalendrier
     object CBVC: TCheckBoxX
       Left = 922
       Height = 17
+      Hint = 'Académies de Créteil, Montpellier, Paris, Toulouse, Versailles'
       Top = 14
       Width = 113
       Alignment = taRightJustify
@@ -79,6 +86,8 @@ object FCalendrier: TFCalendrier
       CheckColor = clGreen
       Checked = False
       Color = clDefault
+      ParentShowHint = False
+      ShowHint = True
       State = cbUnchecked
       TabOrder = 3
       TabStop = True
@@ -87,6 +96,7 @@ object FCalendrier: TFCalendrier
     object SBNextQ: TSpeedButton
       Left = 640
       Height = 18
+      Hint = 'Semestre suivant'
       Top = 14
       Width = 23
       Glyph.Data = {
@@ -126,10 +136,13 @@ object FCalendrier: TFCalendrier
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
       OnClick = SBNextQClick
+      ShowHint = True
+      ParentShowHint = False
     end
     object SBPrevQ: TSpeedButton
       Left = 554
       Height = 18
+      Hint = 'Semestre précédent'
       Top = 13
       Width = 23
       Glyph.Data = {
@@ -169,10 +182,13 @@ object FCalendrier: TFCalendrier
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
       OnClick = SBPrevQClick
+      ShowHint = True
+      ParentShowHint = False
     end
     object CBVK: TCheckBoxX
       Left = 1040
       Height = 17
+      Hint = 'Académie de Corse'
       Top = 14
       Width = 105
       Alignment = taRightJustify
@@ -182,6 +198,8 @@ object FCalendrier: TFCalendrier
       CheckColor = clMenuHighlight
       Checked = False
       Color = clDefault
+      ParentShowHint = False
+      ShowHint = True
       State = cbUnchecked
       TabOrder = 4
       TabStop = True
@@ -190,6 +208,7 @@ object FCalendrier: TFCalendrier
     object CBLune: TCheckBoxX
       Left = 416
       Height = 17
+      Hint = 'Afficher les phases de la Lune'
       Top = 13
       Width = 113
       Alignment = taLeftJustify
@@ -199,6 +218,8 @@ object FCalendrier: TFCalendrier
       CheckColor = clBlack
       Checked = False
       Color = clDefault
+      ParentShowHint = False
+      ShowHint = True
       State = cbUnchecked
       TabOrder = 5
       TabStop = True
@@ -376,6 +397,8 @@ object FCalendrier: TFCalendrier
       }
       NumGlyphs = 2
       OnClick = SBAboutClick
+      ShowHint = True
+      ParentShowHint = False
     end
     object SBQuit: TSpeedButton
       Left = 96
@@ -640,6 +663,7 @@ object FCalendrier: TFCalendrier
       ClientWidth = 605
       Color = clNone
       ParentColor = False
+      PopupMenu = PMnuTray
       TabOrder = 5
       object PanToday: TTitlePanel
         Left = 1

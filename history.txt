@@ -38,6 +38,8 @@ Version 0.6.4.0 - 26/04/2021
   Les autres traductions sont listées dans le fichier lng. Si le système n'est pas
   en langue française, l'anglais est utilisé. Les saints, fériés et villes restent inchangés.
 
-Version 0.6.4.1 - 26/04/2021
+Version 0.6.4.1 - 27/04/2021
 - prise en compte des modifications de la boite A Propos
+- Correction de divers bugs
+- Installateur Windows 32/64 bits
 

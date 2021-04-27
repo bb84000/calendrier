@@ -46,6 +46,16 @@ CBVB.Caption=Zone B holidays
 CBVC.Caption=Zone C holidays
 CBVK.Caption=Corsica holidays
 CBLune.Caption=Moon's phases
+SBSettings.Hint=Calendarf settings
+SBAbout.Hint=About Calendar
+SBQuit.Hint=Quit Calendar
+SBPrevQ.Hint=Display previous half
+SBNextQ.Hint=Display next half
+CBLune.Hint=Display Moon's phases
+CBVA.Hint=Besançon, Bordeaux, Clermont-Ferrand, Dijon, Grenoble, Limoges, Lyon, Poitiers Acédemies
+CBVB.Hint=Aix-Marseille, Amiens, Caen, Lille, Nancy-Metz, Nantes, Nice, Orléans-Tours, Reims, Rennes, Rouen, Strasbourg Academies
+CBVC.Hint=Créteil, Montpellier, Paris, Toulouse, Versailles Academies
+CBVK.Hint=Corsica Academy
 
 ;About
 AboutBox.LProductName.Caption=Universal Calendar
@@ -54,7 +64,7 @@ AboutBox.LUpdate.Caption=Search update
 AboutBox.UpdateAvailable=New version %s available. Click to download it
 AboutBox.NoUpdateAvailable=Calendar is up to date.
 AboutBox.LastUpdateSearch=Last update check
-AboutBox.UrlProgSite=https://github.com/bb84000/calendrier
+AboutBox.UrlProgSite=
 AboutBox.LWebSite.Caption=Web site home page
 AboutBox.LProgPage.Caption=Program home page
 AboutBox.LSourceCode.Caption=Source code Web page
@@ -122,7 +132,16 @@ CBVB.Caption=Vacances zone B
 CBVC.Caption=Vacances zone C
 CBVK.Caption=Vacances Corse
 CBLune.Caption=Phases de la Lune
-
+SBSettings.Hint=Configuration du Calendrier
+SBAbout.Hint=A propos du Calendrier
+SBQuit.Hint=Quitter le Calendrier
+SBPrevQ.Hint=Afficher le semestre précédent
+SBNextQ.Hint=Afficher le semestre suivant
+CBLune.Hint=Afficher les phases de la Lune
+CBVA.Hint=Académies de Besançon, Bordeaux, Clermont-Ferrand, Dijon, Grenoble, Limoges, Lyon, Poitiers
+CBVB.Hint=Académies d'Aix-Marseille, Amiens, Caen, Lille, Nancy-Metz, Nantes, Nice, Orléans-Tours, Reims, Rennes, Rouen, Strasbourg
+CBVC.Hint=Académies de Créteil, Montpellier, Paris, Toulouse, Versailles
+CBVK.Hint=Académie de Corse
 
 ;About
 AboutBox.LProductName.Caption=Calendrier universel
@@ -131,7 +150,7 @@ AboutBox.LUpdate.Caption=Recherche de mise à jour
 AboutBox.UpdateAvailable=Nouvelle version %s disponible. Cliquer pour la télécharger
 AboutBox.NoUpdateAvailable=Le Calendrier est à jour.
 AboutBox.LastUpdateSearch=Dernière recherche de mise à jour
-AboutBox.UrlProgSite=https://github.com/bb84000/calendrier/
+AboutBox.UrlProgSite=Accueil
 AboutBox.LWebSite.Caption=Page d'accueil du site Web
 AboutBox.LProgPage.Caption=Page d'accueil du programme
 AboutBox.LSourceCode.Caption=Page Web du code source
