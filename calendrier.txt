@@ -1,1 +1,66 @@
-Calendrier universel
+Calendrier - Version 0.6.4.2
+
+OBJET
+Calendrier perpétuel (1483 à 2100+).
+Saints, jours fériés, saisons, lunaisons, vacances scolaires, lever et coucher du soleil (approx.)
+
+INSTALLATION
+Exécuter le  fichier d'installation contenu dans l'archive.
+
+UTILISATION
+Le Calendrier peut être lancé automatiquement minimisé dans la zone de notification
+au démarrage de Windows, double cliquer sur son icone pour l'afficher.
+Le lancement manuel est possible à partir de son raccourci dans le menu "Démarrer",
+"Tous les programmes".
+
+Par défaut, l'année et le semetre en cours sont affichés. Pour afficher une image
+dans l'onglet du semestre, cliquer avec le bouton  droit de la souris dans la partie
+libre de l'onglet.
+
+Affichage possible des lunaisons et des vacances scolaires.
+
+Les préférences sont modifiables et accessibles dans le menu "Préférences" de la fenêtre
+
+DESINSTALLATION
+Utiliser la focntion de désinstallation des programmes du système.
+
+AVERTISSEMENT
+
+L'utilisateur emploie ce programme à ses risques et périls.
+L'auteur et l'éditeur du programme déclinent toute responsabilité en cas
+de corruption ou de perte de données suite à l'utilisation du programme.
+
+LICENCE D'UTILISATION
+
+Le programme Calendrier peut être utilisé librement.
+Licence OpenSSL http://www.openssl.org .
+bb - sdtp - Avril 2021
+Web : https://www.sdtp.com
+Sources disponibles à https://github.com/bb84000/calendrier
+
+Calendar
+
+Perpetual calendar (1483 to 2100+) with a layout similar to french postmen almanach.
+Displays French Saints, holidays, seasons, moon phases, school holidays, sunrise and sunset (approx.)
+
+INSTALLATION
+
+Download archive, extract and run Installcalendar.exe, then follow instructions of the setup program.
+
+USAGE
+
+The program can be run at windows start and minimized, click the Settings button.
+In regular conditions, Calendar can run minimized in the system tray. It can onbly be closed by click on Quit button, or in the Quit item in the tray menu.
+At launch, current year and half are displayed. To display an image Pour afficher une image for the half, click the right mouse button and select "Add  an image".
+
+UNINSTALL
+
+Use control panel's program management system to uninstall the program.
+
+LICENSE
+
+Calendar software can be used fee of charge. Use the program at your own risks.
+OpenSSL license http://www.openssl.org .
+bb - sdtp - April 2021
+Web : https://www.sdtp.com
+Sources available at https://github.com/bb84000/calendrier

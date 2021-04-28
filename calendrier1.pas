@@ -402,17 +402,17 @@ begin
     InitAboutBox;
     LoadSettings(cfgfilename);
     ModLangue;
-
     Settings.OnChange:= @SettingsOnChange;
     HalfImgsList.OnChange:= @SettingsOnChange;
+    UpdateCal(curyear);
+    For i:= 0 to 3 do aSG[i].OnDrawCell:= @SGDrawCell;
+    Invalidate;
+    loadimage;
     if (Pos('64', OSVersion.Architecture)>0) and (OsTarget='32 bits') then
     begin
       ShowMessage(sUse64bitcaption);
     end;
     Application.QueueAsyncCall(@CheckUpdate, ChkVerInterval);       // async call to let icons loading
-    UpdateCal(curyear);
-    Invalidate;
-    loadimage;
    end;
 end;
 
@@ -424,7 +424,7 @@ var
 begin
    // Check inifile with URLs, if not present, then use default
   IniFile:= TBbInifile.Create(ProgName+'.ini');
-  AboutBox.ChkVerURL := IniFile.ReadString('urls', 'ChkVerURL','https://github.com/bb84000/calendrier/raw/main/history.txt');
+  AboutBox.ChkVerURL := IniFile.ReadString('urls', 'ChkVerURL','https://github.com/bb84000/calendrier/releases/latest');
   AboutBox.UrlWebsite:= IniFile.ReadString('urls', 'UrlWebSite','https://www.sdtp.com');
   AboutBox.UrlSourceCode:=IniFile.ReadString('urls', 'UrlSourceCode','https://github.com/bb84000/calendrier');
   sUrlProgSite:= IniFile.ReadString('urls','UrlProgSite','https://github.com/bb84000/calendrier');   // Link Localized in modlangue
@@ -789,8 +789,6 @@ begin
   end;
 end;
 
-
-
 procedure TFCalendrier.PMnuTrayPopup(Sender: TObject);
 begin
   PTMnuRestore.Enabled:= (WindowState=wsMaximized) or (WindowState=wsMinimized);
@@ -846,6 +844,7 @@ begin
     half:= 1;
     CurYear:= CurYear+1;
     UpdateCal(CurYear);
+    Application.ProcessMessages;
     Invalidate;
   end;
   showHalf(half);
@@ -859,6 +858,7 @@ begin
   begin
     CurYear:= CurYear-1;
     UpdateCal(CurYear);
+    Application.ProcessMessages;
     Invalidate;
     Half:=2;
   end else Half:= 1;
@@ -883,9 +883,11 @@ begin
   Prefs.CBHideinTaskBar.Checked:= Settings.hideintaskbar;
   prefs.CBMoonPhases.checked:= Settings.savemoon;
   prefs.CBSaveVacs.checked:= Settings.savevacs;
-  Prefs.CPcolUser.Color:= Settings.coluser;
+  Prefs.CPcolback.Color:= Settings.colback;
   Prefs.CPcolsunday.Color:= Settings.colsunday;
   Prefs.CPColferie.Color:= Settings.colferie;
+  Prefs.CPcolUser.Color:= Settings.coluser;
+  Prefs.CPcolText.Color:= Settings.coltext;
   Prefs.CPcolvaca.Color:= Settings.colvaca;
   Prefs.CPcolvacb.Color:= Settings.colvacb;
   Prefs.CPcolvacc.Color:= Settings.colvacc;
@@ -902,9 +904,11 @@ begin
   Settings.hideintaskbar:= Prefs.CBHideinTaskBar.Checked;
   Settings.savemoon:= prefs.CBMoonPhases.checked;
   Settings.savevacs:= prefs.CBSaveVacs.checked;
-  Settings.coluser:= Prefs.CPcolUser.Color;
+  Settings.colback:= Prefs.CPcolback.Color;
   Settings.colsunday:= Prefs.CPcolsunday.Color;
   Settings.colferie:= Prefs.CPColferie.Color;
+  Settings.coluser:= Prefs.CPcolUser.Color;
+  Settings.coltext:= Prefs.CPcolText.Color;
   Settings.colvaca:= Prefs.CPcolvaca.Color;
   Settings.colvacb:= Prefs.CPcolvacb.Color;
   Settings.colvacc:= Prefs.CPcolvacc.Color;
@@ -965,27 +969,31 @@ var
   s, s1: string;
   doy: Integer;
   dtr, dts, dtsz : TDateTime;
-
+  curDay: TDay;
 begin
   doy:= DayOfTheYear(dDate);
-  s:= Days[doy-1].sStDesc;
-  if s='' then s:= Days[doy-1].sSaint;
+  try
+    curDay:= Days[doy-1];
+  except
+    exit;
+  end;
+  s:= curDay.sStDesc;
+  if s='' then s:= curDay.sSaint;
   Result:= s;
-  if Days[doy-1].bFerie then
+  if curDay.bFerie then
   begin
-    s1:= Days[doy-1].sFerie;
+    s1:= curDay.sFerie;
     if (s1<>s) then
     begin
-      s:= Days[doy-1].sFeDesc;
+      s:= curDay.sFeDesc;
       if s='' then s:= s1;
       Result:= Result+LineEnding+s;
     end;
-
   end;
   Result:= Result+LineEnding+Format(sDayWeekInfo, [doy, WeekOf(dDate)]);
-  if Days[doy-1].bMoon then
+  if curDay.bMoon then
   begin
-    Result:= Result+LineEnding+Days[doy-1].sMoonDesc+' à '+FormatDateTime ('hh'+TimeSepar+'mm', Days[doy-1].dMoon);
+    Result:= Result+LineEnding+curDay.sMoonDesc+' à '+FormatDateTime ('hh'+TimeSepar+'mm', curDay.dMoon);
   end;
   dtr:= Sunrise(dDate, Settings.latitude, Settings.longitude);
   dtr:= IncMinute(dtr, Settings.TimeZone+60*Int64(IsDST(dDate)));
@@ -995,11 +1003,11 @@ begin
                [Settings.town, FormatDateTime ('hh'+TimeSepar+'mm', dtr),
                                FormatDateTime ('hh'+TimeSepar+'mm', dts)]);
   Result:= Result+LineEnding+s;
-  if Days[doy-1].bSeason then
+  if curDay.bSeason then
   begin
-    dtsz:= Days[doy-1].dSeason;
+    dtsz:= curDay.dSeason;
     dtsz:= IncMinute(dtsz, Settings.TimeZone+60*Int64(IsDST(dDate)));
-    s:= Days[DOY-1].sSeasonDesc+' à '+FormatDateTime ('hh'+TimeSepar+'mm', dtsz);
+    s:= curDay.sSeasonDesc+' à '+FormatDateTime ('hh'+TimeSepar+'mm', dtsz);
     Result:= Result+LineEnding+s
   end;
 end;
@@ -1052,7 +1060,6 @@ var
   X, Y: integer;
   S, s1: string;
   w: integer;
-//  Bmp: TBitmap;
   SGCur: TStringGrid;
   GridNum: word;
   Month: word;
@@ -1062,16 +1069,19 @@ var
   Count: integer;
   max: integer;
   imgNum: integer;
+  curDay: TDay;
+  numDay: Integer;
 begin
   SGCur := TStringGrid(Sender);
   GridNum := StrToInt(Copy(SgCur.Name, 3, 1));
   Month := ACol + 1 + 3 * (GridNum - 1);
   try
-  MyDate:= EncodeDate(CurYear, Month, ARow);
+    MyDate:= EncodeDate(CurYear, Month, ARow);
   except
+    exit;    // Wrong cell
   end;
   s := SGCur.Cells[ACol, ARow];
-  // On centre les mois
+  // On centre les mois, dont le nom est déjà placé par UpdateCal
   if ARow = 0 then
   begin
     SGCur.Canvas.Font := PanStatus.Font;
@@ -1084,39 +1094,41 @@ begin
     SGCur.Canvas.TextOut(x, y, s);
     SGCur.Canvas.Font := SGCur.Font;
   end;
-
   // Get current day
   x := 2 + aRect.Left;
   y := 1 + aRect.Top;
   Quarter := StrToInt(SGCur.Name[3]);
   if aRow > 0 then
   begin
-    Count := aMonths[(acol + 1) + (quarter - 1) * 3];
-    max := aMonths[(acol + 2) + (quarter - 1) * 3];
-
-    s := IntToStr(Days[Count + arow - 1].iDay)+ ' ' + UpCase(Days[Count + arow - 1].sday[1]);
-
-
-
-    s1 := Days[Count + arow - 1].sSaint;
-
-    if (Count + arow - 1) < max then
+    Count:= aMonths[(acol + 1) + (quarter - 1) * 3];
+    max:= aMonths[(acol + 2) + (quarter - 1) * 3];
+    numDay:= Count+arow-1;
+    try
+      curDay:= Days[numDay];
+    except
+      exit;
+    end;
+    s := IntToStr(curDay.iDay)+ ' ' + UpCase(curDay.sday[1]);
+    s1 := curDay.sSaint;
+    // default color
+    SGCur.Canvas.Brush.Color := Settings.colback;
+    if numDay<max then
     begin
-      if (Days[Count+arow-1].bSunday) then
+      if (curDay.bSunday) then
       begin
         SGCur.Canvas.Brush.Color := Settings.colsunday;
-        SGCur.Canvas.FillRect(Rect(aRect.Left,aRect.Top,aRect.Right,aRect.Bottom));
-      end;
-      if (Days[Count+arow-1].bferie) then
+       end;
+      if (curDay.bferie) then
       begin
         SGCur.Canvas.Brush.Color := Settings.colferie;
-        SGCur.Canvas.FillRect(Rect(aRect.Left,aRect.Top,aRect.Right,aRect.Bottom));
-        s1 := Days[Count + arow - 1].sferie;
+        s1 := curDay.sferie;
       end;
+      SGCur.Canvas.FillRect(Rect(aRect.Left,aRect.Top,aRect.Right,aRect.Bottom));
+      SGCur.Canvas.Font.Color:= Settings.coltext ;
       SGCur.Canvas.TextOut(x, y, s + ' ' + s1);
-      if (Days[Count+arow-1].bHoliday) then
+      if curDay.bHoliday then
       begin
-        s1:= Days[Count+arow-1].sHoliday;
+        s1:= curDay.sHoliday;
         DefBrushColor:= Brush.Color;  // pour remettre à la couleur d'origine
         SGCur.Canvas.Pen.Style:=psClear;
         SGCur.Canvas.Brush.Style:=bsSolid;
@@ -1146,26 +1158,26 @@ begin
         end;
         SGCur.Canvas.Pen.Style:=psSolid;
       end;
+      // Outline current day
+     if MyDate=trunc(now) then
+     begin
+       SGCur.Canvas.brush.style:= bsClear;
+       SGCur.Canvas.Pen.Color:= clRed;
+       SGCur.Canvas.Rectangle(aRect.Left, aRect.Top, aRect.Right-1, aRect.Bottom-1);
+       SGCur.Canvas.brush.style:= bsSolid;
+     end;
       // Affiche les phases de la lune
-      if (CBLune.Checked) and (Days[Count+arow-1].bMoon) then
+      if (CBLune.Checked) and (curDay.bMoon) then
       begin
         aRect.Top:= aRect.Top+(aRect.Bottom-aRect.Top-10) div 2;    // L'image doit faire 10 px
         aRect.Bottom:= aRect.Top+ 10;
         aRect.Right:= aRect.Right-2;                                 // Espace de 2 px à droite
         aRect.Left:= aRect.Right-10;
         s:='NLPQDQPL';
-        ImgNum:= Pos(Days[Count+arow-1].sMoon, s) div 2;
+        ImgNum:= Pos(curDay.sMoon, s) div 2;
         ImgLMoon.StretchDraw(SGCur.Canvas, ImgNum, aRect);
       end;
     end ;
-  end;
-  // Outline current day
-  if MyDate=trunc(now) then
-  begin
-    SGCur.Canvas.brush.style:= bsClear;
-    SGCur.Canvas.Pen.Color:= clRed;
-    SGCur.Canvas.Rectangle(aRect.Left, aRect.Top, aRect.Right-1, aRect.Bottom-1);
-    //SGCur.Canvas.brush.style:= bsSolid;
   end;
 end;
 
@@ -1214,8 +1226,10 @@ var
   dt: TDateTime;
   dSpr, dSum, DAut, dWin: TDateTime;
 begin
-  // Disable grids update during clandar update
-  For i:= 0 to 3 do aSG[i].OnDrawCell:= nil;
+  // Disable grids update during calendar update
+  // causes exception errors days data is not completed
+  //For i:= 0 to 3 do aSG[i].OnDrawCell:= nil;
+  Application.ProcessMessages;
   // Sans objet avant l'année 1583 (calendrier julien)
   if Annee < 1583 then Annee := 1583;
   // Ni après l'année 9998
@@ -1241,17 +1255,15 @@ begin
   end;
   // Ecrit les jours
   BegYear := EncodeDate(Annee, 1, 1);
-
+  // reset array
+  setlength(Days, 0);
   setlength(Days, DaysCnt);
-
   j := 0;
   for i := 1 to DaysCnt do
   begin
     CurrentDay:= BegYear + i - 1;
     DecodeDate(CurrentDay, CYear, CMonth, CDay);
-    //s1 := csvsaints.Cells[1, j];
-    if (DaysCnt = 365) and (j = 58) then
-      Inc(j); // on saute le 29 février !
+    if (DaysCnt = 365) and (j = 58) then  Inc(j); // on saute le 29 février !
     Days[i - 1].index := i;
     Days[i - 1].ddate := CurrentDay;
     Days[i - 1].sday := DefaultFormatSettings.ShortDayNames[DayOfWeek(CurrentDay)];
@@ -1269,7 +1281,7 @@ begin
   DepDay:= GetDeportes(Annee);
   MerDay:= GetFetMeres(Annee);
   // reLoad and Update csvFerie
-  csvferies.CSVText:= FeriesTxt;
+  csvferies.CSVText:= Copy(FeriesTxt, 1, length(FeriesTxt));
   csvferies.CSVText:= StringReplace(csvferies.CSVText, 'YYYY', InttoStr(Annee), [rfReplaceAll]);
   csvferies.CSVText:= StringReplace(csvferies.CSVText, 'DIPAQ', DateToStr(PaqDay), []);
   csvferies.CSVText:= StringReplace(csvferies.CSVText, 'LUPAQ', DateToStr(PaqDay+1), [rfIgnoreCase]);
@@ -1353,9 +1365,10 @@ begin
   Days[DOY].sSeasonDesc:='Hiver';
   dWin:= IncMinute(dWin, Settings.TimeZone+60*Int64(IsDST(dWin)));
   MemoSeasons2.Lines.text:=s+Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dWin);
-  Timer1.enabled:= true;
   Application.ProcessMessages;
-  For i:= 0 to 3 do aSG[i].OnDrawCell:= @SGDrawCell ;
+  Timer1.enabled:= true;
+  //For i:= 0 to 3 do aSG[i].OnDrawCell:= @SGDrawCell ;
+
 end;
 
 procedure TFCalendrier.ModLangue;

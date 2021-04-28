@@ -74,6 +74,7 @@ UpdateAlertBox=Current version: %sA new version %s is available
 //Settings
 Prefs.PanColors.Caption=Colors
 Prefs.LColUser.Caption=User
+Prefs.LColBack.Caption=Normal day
 Prefs.LColSund.Caption=Sundays
 Prefs.LColFerie.Caption=Public Holid.
 Prefs.LColText.Caption=Text
@@ -159,6 +160,7 @@ UpdateAlertBox=Current version: %sUne nouvelle version %s est disponible
 
 //Settings
 Prefs.PanColors.Caption=Couleurs
+Prefs.LColBack.Caption=Jour normal
 Prefs.LColUser.Caption=Utilisateur
 Prefs.LColSund.Caption=Dimanches
 Prefs.LColFerie.Caption=Fériés

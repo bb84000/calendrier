@@ -1,18 +1,18 @@
 object Prefs: TPrefs
   Left = 702
-  Height = 428
+  Height = 448
   Top = 205
   Width = 468
   BorderStyle = bsDialog
   Caption = 'Préférences'
-  ClientHeight = 428
+  ClientHeight = 448
   ClientWidth = 468
   Position = poMainFormCenter
   LCLVersion = '2.0.12.0'
   object PanButtons: TPanel
     Left = 0
     Height = 40
-    Top = 363
+    Top = 383
     Width = 468
     Align = alBottom
     BevelInner = bvLowered
@@ -41,7 +41,7 @@ object Prefs: TPrefs
   object PanStatus: TPanel
     Left = 0
     Height = 25
-    Top = 403
+    Top = 423
     Width = 468
     Align = alBottom
     Alignment = taLeftJustify
@@ -50,14 +50,14 @@ object Prefs: TPrefs
   end
   object PanColors: TTitlePanel
     Left = 8
-    Height = 115
+    Height = 136
     Top = 8
     Width = 448
     Alignment = taLeftJustify
     BorderLine = bsSingle
     BorderColor = clActiveBorder
     Caption = 'Couleurs'
-    ClientHeight = 115
+    ClientHeight = 136
     ClientWidth = 448
     Font.Style = [fsBold]
     ParentColor = False
@@ -66,7 +66,7 @@ object Prefs: TPrefs
     object LColUser: TLabel
       Left = 8
       Height = 15
-      Top = 18
+      Top = 87
       Width = 72
       AutoSize = False
       Caption = 'Utilisateur'
@@ -76,7 +76,7 @@ object Prefs: TPrefs
     object LColSund: TLabel
       Left = 8
       Height = 15
-      Top = 40
+      Top = 41
       Width = 72
       AutoSize = False
       Caption = 'Dimanches'
@@ -86,7 +86,7 @@ object Prefs: TPrefs
     object LColFerie: TLabel
       Left = 8
       Height = 15
-      Top = 62
+      Top = 64
       Width = 72
       AutoSize = False
       Caption = 'Fériés'
@@ -136,7 +136,7 @@ object Prefs: TPrefs
     object CPcoluser: TColorPicker
       Left = 80
       Height = 21
-      Top = 15
+      Top = 84
       Width = 140
       ItemHeight = 15
       ItemWidth = 0
@@ -220,7 +220,7 @@ object Prefs: TPrefs
     object LColText: TLabel
       Left = 8
       Height = 15
-      Top = 85
+      Top = 110
       Width = 72
       AutoSize = False
       Caption = 'Texte'
@@ -230,7 +230,7 @@ object Prefs: TPrefs
     object CPcolText: TColorPicker
       Left = 80
       Height = 21
-      Top = 84
+      Top = 107
       Width = 141
       ItemHeight = 15
       ItemWidth = 0
@@ -239,11 +239,33 @@ object Prefs: TPrefs
       MnuPasteCaption = '&Paste'
       TabOrder = 7
     end
+    object CPcolback: TColorPicker
+      Left = 80
+      Height = 21
+      Top = 15
+      Width = 140
+      ItemHeight = 15
+      ItemWidth = 0
+      Color = clDefault
+      MnuCopyCaption = '&Copy'
+      MnuPasteCaption = '&Paste'
+      TabOrder = 8
+    end
+    object LColBack: TLabel
+      Left = 8
+      Height = 15
+      Top = 18
+      Width = 72
+      AutoSize = False
+      Caption = 'Fond'
+      ParentColor = False
+      ParentFont = False
+    end
   end
   object PanCoords: TTitlePanel
     Left = 8
     Height = 106
-    Top = 128
+    Top = 147
     Width = 452
     Alignment = taLeftJustify
     BorderLine = bsSingle
@@ -481,7 +503,7 @@ object Prefs: TPrefs
   object PanSystem: TTitlePanel
     Left = 8
     Height = 112
-    Top = 240
+    Top = 260
     Width = 452
     Alignment = taLeftJustify
     BorderLine = bsSingle

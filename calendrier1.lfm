@@ -243,7 +243,7 @@ object FCalendrier: TFCalendrier
       }
     end
     object SBSettings: TSpeedButton
-      Left = 16
+      Left = 20
       Height = 22
       Hint = 'Préférences'
       Top = 12
@@ -322,7 +322,7 @@ object FCalendrier: TFCalendrier
       ParentShowHint = False
     end
     object SBAbout: TSpeedButton
-      Left = 56
+      Left = 60
       Height = 22
       Hint = 'A propos du Calendrier'
       Top = 12
@@ -401,7 +401,7 @@ object FCalendrier: TFCalendrier
       ParentShowHint = False
     end
     object SBQuit: TSpeedButton
-      Left = 96
+      Left = 100
       Height = 22
       Hint = 'Quitter'
       Top = 12

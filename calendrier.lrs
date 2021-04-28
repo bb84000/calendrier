@@ -147,12 +147,12 @@ LazarusResources.Add('fr_saints','CSV',[
   +'t Lucien",""'#10'"09/01","Ste Alix",""'#10'"10/01","St Guillaume",""'#10'"1'
   +'1/01","St Paulin",""'#10'"12/01","Ste Tatiana",""'#10'"13/01","Ste Yvette",'
   +'""'#10'"14/01","Ste Nina",""'#10'"15/01","St R'#195#169'mi",""'#10'"16/01",'
-  +'"St Marcel"," "'#10'"17/01","Ste Roseline",""'#10'"18/01","Ste Prisca",""'
-  +#10'"19/01","St Marius",""'#10'"20/01","St S'#195#169'bastien",""'#10'"21/01'
-  +'","Ste Agn'#195#168's",""'#10'"22/01","St Vincent",""'#10'"23/01","St Barna'
-  +'rd",""'#10'"24/01","St Fr. de Sales","St Fran'#195#167'ois de Sales"'#10'"2'
-  +'5/01","Conv. S. Paul","Conversion de St Paul"'#10'"26/01","Ste Paule",""'#10
-  +'"27/01","Ste Ang'#195#168'le",""'#10'"28/01","St Th. d''Aquin","St Thomas d'
+  +'"St Marcel",""'#10'"17/01","Ste Roseline",""'#10'"18/01","Ste Prisca",""'#10
+  +'"19/01","St Marius",""'#10'"20/01","St S'#195#169'bastien",""'#10'"21/01","'
+  +'Ste Agn'#195#168's",""'#10'"22/01","St Vincent",""'#10'"23/01","St Barnard"'
+  +',""'#10'"24/01","St Fr. de Sales","St Fran'#195#167'ois de Sales"'#10'"25/0'
+  +'1","Conv. S. Paul","Conversion de St Paul"'#10'"26/01","Ste Paule",""'#10'"'
+  +'27/01","Ste Ang'#195#168'le",""'#10'"28/01","St Th. d''Aquin","St Thomas d'
   +'''Acquin"'#10'"29/01","St Gildas",""'#10'"30/01","Ste Martine",""'#10'"31/0'
   +'1","Ste Marcelle",""'#10'"01/02","Ste Ella",""'#10'"02/02","Pr. du seigneur'
   +'","Pr'#195#169'sentation du seigneur"'#10'"03/02","St Blaise",""'#10'"04/02'

@@ -38,7 +38,7 @@ type
       ftown: String;
       ftownIndex: Integer;
       fTimezone: Integer;
-      fDaysColors: array [0..2] of TColor;
+      fDaysColors: array [0..4] of TColor;
       fVacsColors: array [0..3] of TColor;
       fChkBoxs: array [0..4] of Boolean;
       fCoords: array [0..1] of Double;
@@ -89,9 +89,11 @@ type
       property timezone: integer read fTimezone write setTimezone;
       property latitude: Double index 0 read GetCoord write SetCoord;
       property longitude: Double index 1 read GetCoord write SetCoord;
-      property coluser: TColor index 0 read GetDaysColor write SetDaysColor;
+      property colback: TColor index 0 read GetDaysColor write SetDaysColor;
       property colsunday: Tcolor index 1 read GetDaysColor write SetDaysColor;
       property colferie: TColor index 2 read GetDaysColor write SetDaysColor;
+      property coluser: TColor index 3 read GetDaysColor write SetDaysColor;
+      property coltext: Tcolor index 4 read GetDaysColor write SetDaysColor;
       property colvaca: Tcolor index 0 read GetVacsColor write SetVacsColor;
       property colvacb: TColor index 1 read GetVacsColor write SetVacsColor;
       property colvacc: Tcolor index 2 read GetVacsColor write SetVacsColor;
@@ -154,6 +156,7 @@ type
     CBSaveVacs: TCheckBox;
     CBStartmini: TCheckBox;
     CBStartwin: TCheckBox;
+    CPcolback: TColorPicker;
     CPcolText: TColorPicker;
     CPcolsunday: TColorPicker;
     CPColferie: TColorPicker;
@@ -174,6 +177,7 @@ type
     EDeglon: TEdit;
     EMinLon: TEdit;
     ESeclon: TEdit;
+    LColBack: TLabel;
     LColText: TLabel;
     LLatitude: TLabel;
     Llatdeg: TLabel;
@@ -574,9 +578,10 @@ begin
     TDOMElement(iNode).SetAttribute ('timezone', IntToStr(fTimezone));
     TDOMElement(iNode).SetAttribute ('latitude', FloatToString(fCoords[0]));     // latitude
     TDOMElement(iNode).SetAttribute ('longitude', FloatToString(fCoords[1]));    // longitude
-    TDOMElement(iNode).SetAttribute ('coluser', ColorToString(coluser));
+    TDOMElement(iNode).SetAttribute ('colback', ColorToString(colback));
     TDOMElement(iNode).SetAttribute ('colsunday', ColorToString(colsunday));
     TDOMElement(iNode).SetAttribute ('colferie', ColorToString(colferie));
+    TDOMElement(iNode).SetAttribute ('coluser', ColorToString(coluser));
     TDOMElement(iNode).SetAttribute ('colvaca', ColorToString(colvaca));
     TDOMElement(iNode).SetAttribute ('colvacb', ColorToString(colvacb));
     TDOMElement(iNode).SetAttribute ('colvacc', ColorToString(colvacc));
@@ -618,9 +623,11 @@ begin
     fTimezone:= StringToInt(TDOMElement(iNode).GetAttribute('timezone'));
     fCoords[0]:= StringToFloat(TDOMElement(iNode).GetAttribute('latitude'));
     fCoords[1]:= StringToFloat(TDOMElement(iNode).GetAttribute('longitude'));
-    fDaysColors[0]:= StringToColour(TDOMElement(iNode).GetAttribute('coluser'));
+    fDaysColors[0]:= StringToColour(TDOMElement(iNode).GetAttribute('colback'));
     fDaysColors[1]:= StringToColour(TDOMElement(iNode).GetAttribute('colsunday'));
     fDaysColors[2]:= StringToColour(TDOMElement(iNode).GetAttribute('colferie'));
+    fDaysColors[3]:= StringToColour(TDOMElement(iNode).GetAttribute('coluser'));
+    fDaysColors[4]:= StringToColour(TDOMElement(iNode).GetAttribute('coltext'));
     fVacsColors[0]:= StringToColour(TDOMElement(iNode).GetAttribute('colvaca'));
     fVacsColors[1]:= StringToColour(TDOMElement(iNode).GetAttribute('colvacb'));
     fVacsColors[2]:= StringToColour(TDOMElement(iNode).GetAttribute('colvacc'));
