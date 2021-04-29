@@ -19,8 +19,8 @@
       <UseVersionInfo Value="True"/>
       <MinorVersionNr Value="6"/>
       <RevisionNr Value="4"/>
-      <BuildNr Value="2"/>
-      <StringTable Comments="Calendrier universel français" CompanyName="sdtp - bb - April 2021" FileDescription="Calendrier universel" InternalName="calendrier" LegalCopyright="sdtp - bb -April 2021" LegalTrademarks="sdtp - bb -April 2021" OriginalFilename="calendrier.exe" ProductName="calendrier" ProductVersion="0.6.4.2"/>
+      <BuildNr Value="3"/>
+      <StringTable Comments="Calendrier universel français" CompanyName="sdtp - bb - April 2021" FileDescription="Calendrier universel" InternalName="calendrier" LegalCopyright="sdtp - bb -April 2021" LegalTrademarks="sdtp - bb -April 2021" OriginalFilename="calendrier.exe" ProductName="calendrier" ProductVersion="0.6.4.3"/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
@@ -44,7 +44,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="7">
+    <Units Count="8">
       <Unit0>
         <Filename Value="calendrier.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -86,6 +86,13 @@
         <Filename Value="calendrier.ini"/>
         <IsPartOfProject Value="True"/>
       </Unit6>
+      <Unit7>
+        <Filename Value="towns1.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FTowns"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit7>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -106,6 +113,7 @@
     <Linking>
       <Debugging>
         <GenerateDebugInfo Value="False"/>
+        <UseValgrind Value="True"/>
       </Debugging>
       <Options>
         <Win32>

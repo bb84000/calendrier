@@ -1,18 +1,18 @@
 object Prefs: TPrefs
   Left = 702
-  Height = 448
+  Height = 416
   Top = 205
   Width = 468
   BorderStyle = bsDialog
   Caption = 'Préférences'
-  ClientHeight = 448
+  ClientHeight = 416
   ClientWidth = 468
   Position = poMainFormCenter
   LCLVersion = '2.0.12.0'
   object PanButtons: TPanel
     Left = 0
     Height = 40
-    Top = 383
+    Top = 351
     Width = 468
     Align = alBottom
     BevelInner = bvLowered
@@ -41,7 +41,7 @@ object Prefs: TPrefs
   object PanStatus: TPanel
     Left = 0
     Height = 25
-    Top = 423
+    Top = 391
     Width = 468
     Align = alBottom
     Alignment = taLeftJustify
@@ -264,14 +264,14 @@ object Prefs: TPrefs
   end
   object PanCoords: TTitlePanel
     Left = 8
-    Height = 106
+    Height = 80
     Top = 147
     Width = 452
     Alignment = taLeftJustify
     BorderLine = bsSingle
     BorderColor = clActiveBorder
     Caption = 'Coordonnées pour le lever et le coucher du soleil'
-    ClientHeight = 106
+    ClientHeight = 80
     ClientWidth = 452
     Font.Style = [fsBold]
     ParentFont = False
@@ -311,87 +311,15 @@ object Prefs: TPrefs
       Left = 72
       Height = 23
       Top = 47
-      Width = 112
-      NumbersOnly = True
-      OnChange = ELatitudeChange
+      Width = 140
+      OnKeyPress = ECoordKeyPress
       ParentFont = False
       TabOrder = 1
     end
-    object EDegLat: TEdit
-      Left = 200
-      Height = 23
-      Top = 47
-      Width = 30
-      NumbersOnly = True
-      OnChange = EDegLatChange
-      ParentFont = False
-      TabOrder = 2
-    end
-    object Llatdeg: TLabel
-      Left = 232
-      Height = 15
-      Top = 50
-      Width = 25
-      AutoSize = False
-      Caption = 'deg.'
-      ParentColor = False
-      ParentFont = False
-    end
-    object EMinLat: TEdit
-      Left = 260
-      Height = 23
-      Top = 47
-      Width = 30
-      NumbersOnly = True
-      OnChange = EDegLatChange
-      ParentFont = False
-      TabOrder = 3
-    end
-    object LLatmin: TLabel
-      Left = 294
-      Height = 15
-      Top = 50
-      Width = 25
-      AutoSize = False
-      Caption = 'mn'
-      ParentColor = False
-      ParentFont = False
-    end
-    object ESecLat: TEdit
-      Left = 320
-      Height = 23
-      Top = 47
-      Width = 76
-      NumbersOnly = True
-      OnChange = EDegLatChange
-      ParentFont = False
-      TabOrder = 4
-    end
-    object Llatsec: TLabel
-      Left = 401
-      Height = 15
-      Top = 50
-      Width = 15
-      AutoSize = False
-      Caption = 's'
-      ParentColor = False
-      ParentFont = False
-    end
-    object ENSLat: TEdit
-      Left = 416
-      Height = 23
-      Top = 47
-      Width = 20
-      Alignment = taCenter
-      OnChange = EDegLatChange
-      ParentFont = False
-      TabOrder = 5
-      Text = 'N'
-    end
     object LLongitude: TLabel
-      Left = 8
+      Left = 224
       Height = 15
-      Top = 77
+      Top = 50
       Width = 58
       AutoSize = False
       Caption = 'Longitude'
@@ -399,85 +327,13 @@ object Prefs: TPrefs
       ParentFont = False
     end
     object ELongitude: TEdit
-      Left = 72
+      Left = 295
       Height = 23
-      Top = 74
-      Width = 112
-      NumbersOnly = True
-      OnChange = ELongitudeChange
+      Top = 47
+      Width = 140
+      OnKeyPress = ECoordKeyPress
       ParentFont = False
-      TabOrder = 6
-    end
-    object EDeglon: TEdit
-      Left = 200
-      Height = 23
-      Top = 74
-      Width = 30
-      NumbersOnly = True
-      OnChange = EDeglonChange
-      ParentFont = False
-      TabOrder = 7
-    end
-    object Llondeg: TLabel
-      Left = 232
-      Height = 15
-      Top = 77
-      Width = 25
-      AutoSize = False
-      Caption = 'deg.'
-      ParentColor = False
-      ParentFont = False
-    end
-    object EMinLon: TEdit
-      Left = 260
-      Height = 23
-      Top = 74
-      Width = 30
-      NumbersOnly = True
-      OnChange = EDeglonChange
-      ParentFont = False
-      TabOrder = 8
-    end
-    object Llonmin: TLabel
-      Left = 294
-      Height = 15
-      Top = 77
-      Width = 25
-      AutoSize = False
-      Caption = 'mn'
-      ParentColor = False
-      ParentFont = False
-    end
-    object ESeclon: TEdit
-      Left = 320
-      Height = 23
-      Top = 74
-      Width = 76
-      NumbersOnly = True
-      OnChange = EDeglonChange
-      ParentFont = False
-      TabOrder = 9
-    end
-    object Llonsec: TLabel
-      Left = 401
-      Height = 15
-      Top = 77
-      Width = 15
-      AutoSize = False
-      Caption = 's'
-      ParentColor = False
-      ParentFont = False
-    end
-    object EEOlon: TEdit
-      Left = 416
-      Height = 23
-      Top = 74
-      Width = 20
-      Alignment = taCenter
-      OnChange = EDeglonChange
-      ParentFont = False
-      TabOrder = 10
-      Text = 'E'
+      TabOrder = 2
     end
     object LTimezone: TLabel
       Left = 270
@@ -497,13 +353,13 @@ object Prefs: TPrefs
       AutoSize = False
       NumbersOnly = True
       ParentFont = False
-      TabOrder = 11
+      TabOrder = 3
     end
   end
   object PanSystem: TTitlePanel
     Left = 8
     Height = 112
-    Top = 260
+    Top = 235
     Width = 452
     Alignment = taLeftJustify
     BorderLine = bsSingle

@@ -16,9 +16,9 @@ begin
   Application.Scaled:=True;
   Application.Initialize;
   Application.CreateForm(TFCalendrier, FCalendrier);
+  Application.CreateForm(TAboutBox, AboutBox);
   Application.CreateForm(TPrefs, Prefs);
   Application.CreateForm(TFImgResiz, FImgResiz);
-  Application.CreateForm(TAboutBox, AboutBox);
   Application.Run;
 end.
 

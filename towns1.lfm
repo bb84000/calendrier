@@ -1,0 +1,311 @@
+object FTowns: TFTowns
+  Left = 824
+  Height = 314
+  Top = 212
+  Width = 469
+  Caption = 'FTowns'
+  ClientHeight = 314
+  ClientWidth = 469
+  OnShow = FormShow
+  LCLVersion = '2.0.12.0'
+  object PanCoords: TTitlePanel
+    Left = 8
+    Height = 106
+    Top = 147
+    Width = 452
+    Alignment = taLeftJustify
+    BorderLine = bsSingle
+    BorderColor = clActiveBorder
+    Caption = 'Détails'
+    ClientHeight = 106
+    ClientWidth = 452
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 0
+    object LTown: TLabel
+      Left = 8
+      Height = 15
+      Top = 23
+      Width = 58
+      AutoSize = False
+      Caption = 'Ville'
+      ParentColor = False
+      ParentFont = False
+    end
+    object LLatitude: TLabel
+      Left = 8
+      Height = 15
+      Top = 50
+      Width = 58
+      AutoSize = False
+      Caption = 'Latitude'
+      ParentColor = False
+      ParentFont = False
+    end
+    object ELatitude: TEdit
+      Left = 72
+      Height = 23
+      Top = 47
+      Width = 112
+      OnChange = ELatitudeChange
+      OnKeyPress = ECoordKeyPress
+      ParentFont = False
+      TabOrder = 0
+    end
+    object EDegLat: TEdit
+      Left = 200
+      Height = 23
+      Top = 47
+      Width = 30
+      NumbersOnly = True
+      OnChange = EDegLatChange
+      ParentFont = False
+      TabOrder = 1
+    end
+    object Llatdeg: TLabel
+      Left = 232
+      Height = 15
+      Top = 50
+      Width = 25
+      AutoSize = False
+      Caption = 'deg.'
+      ParentColor = False
+      ParentFont = False
+    end
+    object EMinLat: TEdit
+      Left = 260
+      Height = 23
+      Top = 47
+      Width = 30
+      NumbersOnly = True
+      OnChange = EDegLatChange
+      ParentFont = False
+      TabOrder = 2
+    end
+    object LLatmin: TLabel
+      Left = 294
+      Height = 15
+      Top = 50
+      Width = 25
+      AutoSize = False
+      Caption = 'mn'
+      ParentColor = False
+      ParentFont = False
+    end
+    object ESecLat: TEdit
+      Left = 320
+      Height = 23
+      Top = 47
+      Width = 76
+      OnChange = EDegLatChange
+      OnKeyPress = ECoordKeyPress
+      ParentFont = False
+      TabOrder = 3
+    end
+    object Llatsec: TLabel
+      Left = 401
+      Height = 15
+      Top = 50
+      Width = 15
+      AutoSize = False
+      Caption = 's'
+      ParentColor = False
+      ParentFont = False
+    end
+    object ENSLat: TEdit
+      Left = 416
+      Height = 23
+      Top = 47
+      Width = 20
+      Alignment = taCenter
+      OnChange = EDegLatChange
+      ParentFont = False
+      TabOrder = 4
+      Text = 'N'
+    end
+    object LLongitude: TLabel
+      Left = 8
+      Height = 15
+      Top = 77
+      Width = 58
+      AutoSize = False
+      Caption = 'Longitude'
+      ParentColor = False
+      ParentFont = False
+    end
+    object ELongitude: TEdit
+      Left = 72
+      Height = 23
+      Top = 74
+      Width = 112
+      OnChange = ELongitudeChange
+      OnKeyPress = ECoordKeyPress
+      ParentFont = False
+      TabOrder = 5
+    end
+    object EDeglon: TEdit
+      Left = 200
+      Height = 23
+      Top = 74
+      Width = 30
+      NumbersOnly = True
+      OnChange = EDeglonChange
+      ParentFont = False
+      TabOrder = 6
+    end
+    object Llondeg: TLabel
+      Left = 232
+      Height = 15
+      Top = 77
+      Width = 25
+      AutoSize = False
+      Caption = 'deg.'
+      ParentColor = False
+      ParentFont = False
+    end
+    object EMinLon: TEdit
+      Left = 260
+      Height = 23
+      Top = 74
+      Width = 30
+      NumbersOnly = True
+      OnChange = EDeglonChange
+      ParentFont = False
+      TabOrder = 7
+    end
+    object Llonmin: TLabel
+      Left = 294
+      Height = 15
+      Top = 77
+      Width = 25
+      AutoSize = False
+      Caption = 'mn'
+      ParentColor = False
+      ParentFont = False
+    end
+    object ESeclon: TEdit
+      Left = 320
+      Height = 23
+      Top = 74
+      Width = 76
+      OnChange = EDeglonChange
+      OnKeyPress = ECoordKeyPress
+      ParentFont = False
+      TabOrder = 8
+    end
+    object Llonsec: TLabel
+      Left = 401
+      Height = 15
+      Top = 77
+      Width = 15
+      AutoSize = False
+      Caption = 's'
+      ParentColor = False
+      ParentFont = False
+    end
+    object EEOlon: TEdit
+      Left = 416
+      Height = 23
+      Top = 74
+      Width = 20
+      Alignment = taCenter
+      OnChange = EDeglonChange
+      ParentFont = False
+      TabOrder = 9
+      Text = 'E'
+    end
+    object LTimezone: TLabel
+      Left = 270
+      Height = 15
+      Top = 23
+      Width = 120
+      AutoSize = False
+      Caption = 'Décalage horaire'
+      ParentColor = False
+      ParentFont = False
+    end
+    object ETimeZone: TEdit
+      Left = 390
+      Height = 23
+      Top = 20
+      Width = 45
+      AutoSize = False
+      NumbersOnly = True
+      ParentFont = False
+      TabOrder = 10
+    end
+    object ETown: TEdit
+      Left = 72
+      Height = 23
+      Top = 20
+      Width = 176
+      OnChange = ETownChange
+      ParentFont = False
+      TabOrder = 11
+    end
+  end
+  object ListTowns: TListBox
+    Left = 8
+    Height = 120
+    Top = 14
+    Width = 272
+    ItemHeight = 0
+    OnClick = ListTownsClick
+    Sorted = True
+    TabOrder = 1
+  end
+  object BtnAdd: TButton
+    Left = 376
+    Height = 25
+    Top = 16
+    Width = 75
+    Caption = 'Ajouter'
+    Enabled = False
+    OnClick = BtnAddClick
+    TabOrder = 2
+  end
+  object BtnChange: TButton
+    Left = 376
+    Height = 25
+    Top = 80
+    Width = 75
+    Caption = 'Supprimer'
+    Enabled = False
+    TabOrder = 3
+  end
+  object Button4: TButton
+    Left = 144
+    Height = 25
+    Top = 272
+    Width = 75
+    Caption = 'OK'
+    ModalResult = 1
+    TabOrder = 4
+  end
+  object Button5: TButton
+    Left = 256
+    Height = 25
+    Top = 272
+    Width = 75
+    Caption = 'Annuler'
+    ModalResult = 2
+    TabOrder = 5
+  end
+  object Button6: TButton
+    Left = 376
+    Height = 25
+    Top = 112
+    Width = 75
+    Caption = 'Restaurer'
+    Enabled = False
+    TabOrder = 6
+  end
+  object Button1: TButton
+    Left = 376
+    Height = 25
+    Top = 48
+    Width = 75
+    Caption = 'Modifier'
+    TabOrder = 7
+  end
+end

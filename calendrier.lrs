@@ -359,7 +359,7 @@ LazarusResources.Add('fr_villes','CSV',[
   +',,48.86223,2.351074,60'#10'Rouen,Seine-Maritime,49.443889,1.103333,60'#10'M'
   +'elun,Seine-et-Marne,48.540556,2.66,60'#10'Versailles,Yvelines,48.8053,2.135'
   +',60'#10'Niort,Deux-S'#195#168'vres,46.325833,-0.460556,60'#10'Amiens,Somme,'
-  +'49.9,2.3,,60'#10'Albi,Tarn,43.928889,2.146389,60'#10'Montauban,Tarn-et-Garo'
+  +'49.9,2.3,60,'#10'Albi,Tarn,43.928889,2.146389,60'#10'Montauban,Tarn-et-Garo'
   +'nne,44.018056,1.355833,60'#10'Toulon,Var,43.073,5.983,60'#10'Avignon,Vauclu'
   +'se,43.94284,4.8089,60'#10'La Roche-sur-Yon,Vend'#195#169'e,46.670556,-1.426'
   +'667,60'#10'Poitiers,Vienne,46.581945,0.336112,60'#10'Limoges,Haute-Vienne,4'

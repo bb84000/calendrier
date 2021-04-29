@@ -537,7 +537,7 @@ object FCalendrier: TFCalendrier
     ClientHeight = 616
     ClientWidth = 1280
     TabOrder = 2
-    object SG3: TStringGrid
+    object SG1: TStringGrid
       Left = 0
       Height = 610
       Top = 0
@@ -560,7 +560,7 @@ object FCalendrier: TFCalendrier
       OnMouseMove = SGMouseMove
       OnSelectCell = SGSelectCell
     end
-    object SG4: TStringGrid
+    object SG2: TStringGrid
       Left = 938
       Height = 610
       Top = 0
@@ -583,52 +583,6 @@ object FCalendrier: TFCalendrier
       OnMouseMove = SGMouseMove
       OnSelectCell = SGSelectCell
     end
-    object SG1: TStringGrid
-      Left = 0
-      Height = 610
-      Top = 0
-      Width = 333
-      AutoEdit = False
-      ColCount = 3
-      DefaultColWidth = 110
-      DefaultRowHeight = 19
-      ExtendedSelect = False
-      FixedCols = 0
-      Font.Height = -12
-      Font.Name = 'Arial Narrow'
-      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goSmoothScroll, goFixedRowNumbering, goFixedColSizing]
-      ParentFont = False
-      ParentShowHint = False
-      RowCount = 32
-      ScrollBars = ssNone
-      ShowHint = True
-      TabOrder = 2
-      OnMouseMove = SGMouseMove
-      OnSelectCell = SGSelectCell
-    end
-    object SG2: TStringGrid
-      Left = 938
-      Height = 610
-      Top = 0
-      Width = 333
-      AutoEdit = False
-      ColCount = 3
-      DefaultColWidth = 110
-      DefaultRowHeight = 19
-      ExtendedSelect = False
-      FixedCols = 0
-      Font.Height = -12
-      Font.Name = 'Arial Narrow'
-      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goSmoothScroll, goFixedRowNumbering, goFixedColSizing]
-      ParentFont = False
-      ParentShowHint = False
-      RowCount = 32
-      ScrollBars = ssNone
-      ShowHint = True
-      TabOrder = 3
-      OnMouseMove = SGMouseMove
-      OnSelectCell = SGSelectCell
-    end
     object PanImg: TPanel
       Left = 333
       Height = 420
@@ -640,7 +594,7 @@ object FCalendrier: TFCalendrier
       Color = clNone
       ParentColor = False
       PopupMenu = PMnuMain
-      TabOrder = 4
+      TabOrder = 2
       object ImageHalf: TImage
         Left = 2
         Height = 416
@@ -664,7 +618,7 @@ object FCalendrier: TFCalendrier
       Color = clNone
       ParentColor = False
       PopupMenu = PMnuTray
-      TabOrder = 5
+      TabOrder = 3
       object PanToday: TTitlePanel
         Left = 1
         Height = 128

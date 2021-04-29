@@ -44,6 +44,11 @@ Version 0.6.4.1 - 27/04/2021
 - Installateur Windows 32/64 bits
 
 Version 0.6.4.2 - 28/04/2021
-- Corrected feries errors by reinitializing and checking validity of array of days
-- Corrected exception in update check when a wrong URL is given
+- Correction des erreurs de jours fériés en réinitialisant et et védrifiant la validité
+  de l'array de Days
+- Correction de l'erreur d'exception avec un mauvais URL de mise à jour
+
+Version 0.6.4.3 - 29/04/2021
+- Simplification de l'affichage des jours, utilisation de deux grilles.
+- Simplification des préférences de latitude et longitude, uniquement en valeurs décimales
 

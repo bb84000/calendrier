@@ -101,8 +101,6 @@ type
     ScrollBox2: TScrollBox;
     SG1: TStringGrid;
     SG2: TStringGrid;
-    SG3: TStringGrid;
-    SG4: TStringGrid;
     Timer1: TTimer;
     TrayCal: TTrayIcon;
     UniqueInstance1: TUniqueInstance;
@@ -118,7 +116,6 @@ type
     procedure PMnuTrayPopup(Sender: TObject);
     procedure PTMnuIconizeClick(Sender: TObject);
     procedure PTMnuMaximizeClick(Sender: TObject);
-    procedure PTMnuQuitClick(Sender: TObject);
     procedure PTMnuRestoreClick(Sender: TObject);
     procedure SBAboutClick(Sender: TObject);
     procedure SBNextQClick(Sender: TObject);
@@ -159,7 +156,7 @@ type
     MoonDescs: array [0..3] of string;
     csvsaints, csvferies,csvvacs: TCSVDocument;
     FeriesTxt: String;
-    aSG: array[0..3] of TStringGrid;
+    aSG: array[0..1] of TStringGrid;
     ColorDay, ColorSunday, ColorFerie: TColor;
     Days: array of TDay;
     aMonths: array [1..13] of integer;
@@ -197,7 +194,7 @@ type
     procedure CheckUpdate(ndays: iDays);
     procedure ModLangue;
   public
-    csvtowns: TCSVDocument;
+   // csvtowns: TCSVDocument;
   end;
 
 const
@@ -330,13 +327,9 @@ begin
   PanInfos.left:= SG1.Width+1;
   PanInfos.top:= PanImg.Height+4;
   SG2.Left := PanImg.left+PanImg.Width + 1;
-  SG3.Left := 0;
-  SG4.Left := SG2.left;
   // populate array of quarters
   aSG[0] := SG1;
   aSG[1] := SG2;
-  aSG[2] := SG3;
-  aSG[3] := SG4;
   ColorDay := clDefault;
   ColorSunday := RGBToColor(128, 255, 255);
   ColorFerie:= RGBToColor(128, 255, 255);
@@ -371,7 +364,6 @@ var
 begin
   if not Initialized then
   begin
-
     Initialized:= true;
     CurYear := YearOf(now);
     if MonthOf(now) < 7 then half:= 1 else half:=2;
@@ -405,15 +397,18 @@ begin
     Settings.OnChange:= @SettingsOnChange;
     HalfImgsList.OnChange:= @SettingsOnChange;
     UpdateCal(curyear);
-    For i:= 0 to 3 do aSG[i].OnDrawCell:= @SGDrawCell;
-    Invalidate;
     loadimage;
     if (Pos('64', OSVersion.Architecture)>0) and (OsTarget='32 bits') then
     begin
       ShowMessage(sUse64bitcaption);
     end;
     Application.QueueAsyncCall(@CheckUpdate, ChkVerInterval);       // async call to let icons loading
-   end;
+    For i:= 0 to 1 do
+    begin
+      aSG[i].OnDrawCell:= @SGDrawCell;
+      aSG[i].Invalidate;
+    end;
+  end;
 end;
 
 // About Box initialization
@@ -461,13 +456,12 @@ begin
      //AboutBox.version:= '0.1.0.0' ;   // This is to check the procedure works properly
      sNewVer:= AboutBox.ChkNewVersion;
      errmsg:= AboutBox.ErrorMessage;
-     if length(sNewVer)=0 then
+    if length(sNewVer)=0 then
      begin
        if length(errmsg)=0 then alertmsg:= sCannotGetNewVerList
        else alertmsg:= errmsg;
        if AlertDlg(Caption,  alertmsg, ['OK', CancelBtn, sNoLongerChkUpdates],
                     true, mtError, alertpos)= mrYesToAll then Settings.NoChkNewVer:= true;
-       exit;
      end;
      NewVer := VersionToInt(sNewVer);
      // Cannot get new version
@@ -581,8 +575,6 @@ begin
   begin
     HalfImgsList.ReadXMLNode(FilesNode);
   end;
-  // only now, when settings are loaded
-
 end;
 
 
@@ -682,7 +674,6 @@ begin
 end;
 
 // The three following procedures mimics tabs
-// We hide grids which must not appears in the corresponding tag
 // We use "tag" property to define the number of the tab (coresponding to ActiveTab)
 // Tabs are done with panels
 
@@ -690,24 +681,18 @@ procedure TFCalendrier.showHalf(n: integer);
 begin
   if half=1 then
   begin
-    SG1.Visible:= true;
-    SG2.Visible:= true;
-    SG3.Visible:= false;
-    SG4.Visible:= false;
     TabHalf1.font.style:= [fsBold];
     TabHalf1.color:= clNone;
     TabHalf2.font.style:= [];
     TabHalf2.color:= clDefault;
+    Invalidate;
   end else
   begin
-    SG1.Visible:= false;
-    SG2.Visible:= false;
-    SG3.Visible:= true;
-    SG4.Visible:= true;
     TabHalf1.font.style:= [];
     TabHalf1.color:= clDefault;
     TabHalf2.font.style:= [fsBold];
     TabHalf2.color:= clNone;
+    Invalidate;
   end;
 end;
 
@@ -810,11 +795,6 @@ begin
   Visible:= true;
 end;
 
-procedure TFCalendrier.PTMnuQuitClick(Sender: TObject);
-begin
-
-end;
-
 procedure TFCalendrier.PTMnuRestoreClick(Sender: TObject);
 begin
   iconized:= false;
@@ -893,9 +873,11 @@ begin
   Prefs.CPcolvacc.Color:= Settings.colvacc;
   Prefs.CPcolvack.Color:= Settings.colvack;
   Prefs.CBTowns.Text:= Settings.town;
-  Prefs.CBTowns.ItemIndex:= Settings.townIndex;
+  // Search town in list instead use itemindex too prone to exception
+  Prefs.CBTowns.ItemIndex:= Prefs.CBFind(Settings.town);
   Prefs.ELatitude.Text:= FloatToString(Settings.latitude, '.');
   Prefs.ELongitude.Text:= FloatToString(Settings.longitude, '.');
+  Prefs.ETimeZone.Text:= InttoStr(Settings.timezone);
   if Prefs.ShowModal<>mrOK then exit;              // Pas OK ? on ne change rien
   Settings.startwin:= Prefs.CBStartwin.Checked;
   Settings.savsizepos:= Prefs.CBSaveSizPos.Checked;
@@ -917,6 +899,7 @@ begin
   Settings.town:= Prefs.CBTowns.Text;
   Settings.latitude:= StringToFloat(Prefs.ELatitude.text, '.');
   Settings.longitude:= StringToFloat(Prefs.ELongitude.text, '.');
+  Settings.timezone:= StringToInt(Prefs.ETimeZone.Text);
   CBVA.CheckColor:= Settings.colvaca;
   CBVB.CheckColor:= Settings.colvacb;
   CBVC.CheckColor:= Settings.colvacc;
@@ -947,7 +930,9 @@ begin
   SGCur:= TStringGrid(Sender);
   GridNum := StrToInt(Copy(SgCur.Name, 3, 1));
   SGCur.MouseToCell(X, Y, aCol, aRow);
-  Month:= aCol+1+ 3*(GridNum-1);
+  if half= 1 then Month := ACol + 1 + 3 * (GridNum - 1)
+  else Month:= ACol + 7 + 3 * (GridNum - 1) ;
+
   if (aRow<>curRow) or (aCol<>curCol) then
   begin
     curRow:= aRow;
@@ -1022,9 +1007,10 @@ var
    s: String;
 begin
   SGCur := TStringGrid(Sender);
-  GridNum := StrToInt(Copy(SgCur.Name, 3, 1));
-  Month := ACol + 1 + 3 * (GridNum - 1);
   try
+    GridNum := StrToInt(Copy(SgCur.Name, 3, 1));
+    if half= 1 then Month := ACol + 1 + 3 * (GridNum - 1)
+    else Month:= ACol + 7 + 3 * (GridNum - 1) ;
     SelDate:= EncodeDate(CurYear, Month, ARow);
     s:= FormatDateTime (DefaultFormatSettings.LongDateFormat, SelDate);
     s[1]:= UpCase(s[1]);
@@ -1071,16 +1057,17 @@ var
   imgNum: integer;
   curDay: TDay;
   numDay: Integer;
-begin
+begin;
   SGCur := TStringGrid(Sender);
   GridNum := StrToInt(Copy(SgCur.Name, 3, 1));
-  Month := ACol + 1 + 3 * (GridNum - 1);
+  if half= 1 then Month := ACol + 1 + 3 * (GridNum - 1)
+  else Month:= ACol + 7 + 3 * (GridNum - 1) ;
+
   try
-    MyDate:= EncodeDate(CurYear, Month, ARow);
+    s:= DefaultFormatSettings.LongMonthNames[Month];
+    s[1]:= Upcase(s[1]);
   except
-    exit;    // Wrong cell
   end;
-  s := SGCur.Cells[ACol, ARow];
   // On centre les mois, dont le nom est déjà placé par UpdateCal
   if ARow = 0 then
   begin
@@ -1089,7 +1076,7 @@ begin
     w := SGCur.Canvas.TextWidth(s);
     x := aRect.Left + (aRect.Right - aRect.Left - w) div 2;
     y := 1 + aRect.Top;
-    SGCur.Canvas.Brush.Color := clBtnface;
+    SGCur.Canvas.Brush.Color := clBtnFace;
     SGCur.Canvas.Rectangle(aRect.Left, aRect.Top, aRect.Right, aRect.Bottom);
     SGCur.Canvas.TextOut(x, y, s);
     SGCur.Canvas.Font := SGCur.Font;
@@ -1097,7 +1084,8 @@ begin
   // Get current day
   x := 2 + aRect.Left;
   y := 1 + aRect.Top;
-  Quarter := StrToInt(SGCur.Name[3]);
+  if half= 1 then  Quarter := StrToInt(SGCur.Name[3])
+  else Quarter := StrToInt(SGCur.Name[3])+2;
   if aRow > 0 then
   begin
     Count:= aMonths[(acol + 1) + (quarter - 1) * 3];
@@ -1136,14 +1124,12 @@ begin
         begin
           SGCur.Canvas.Brush.Color:= Settings.colvaca;
           SGCur.Canvas.Rectangle(aRect.Right-9,aRect.Top,aRect.Right-6,aRect.Bottom);
-          //SGCur.Canvas.Brush.Color:= DefBrushColor;
         end;
         if (CBVB.Checked) and (Pos('B', s1) > 0) then
         begin
           SGCur.Canvas.Brush.Color:= Settings.colvacb;
           SGCur.Canvas.Rectangle(aRect.Right-6,aRect.Top,aRect.Right-3,aRect.Bottom);
-          // SGCur.Canvas.Brush.Color:= DefBrushColor;
-        end;
+         end;
         if (CBVC.Checked) and (Pos('C', s1) > 0) then
         begin
           SGCur.Canvas.Brush.Color:= Settings.colvacc;
@@ -1159,13 +1145,18 @@ begin
         SGCur.Canvas.Pen.Style:=psSolid;
       end;
       // Outline current day
-     if MyDate=trunc(now) then
-     begin
-       SGCur.Canvas.brush.style:= bsClear;
-       SGCur.Canvas.Pen.Color:= clRed;
-       SGCur.Canvas.Rectangle(aRect.Left, aRect.Top, aRect.Right-1, aRect.Bottom-1);
-       SGCur.Canvas.brush.style:= bsSolid;
-     end;
+      try
+        MyDate:= EncodeDate(CurYear, Month, ARow);
+        if MyDate=trunc(now) then
+        begin
+          SGCur.Canvas.brush.style:= bsClear;
+          SGCur.Canvas.Pen.Color:= clRed;
+          SGCur.Canvas.Rectangle(aRect.Left, aRect.Top, aRect.Right-1, aRect.Bottom-1);
+          SGCur.Canvas.brush.style:= bsSolid;
+        end;
+      except
+       // Wrong cell pass
+      end;
       // Affiche les phases de la lune
       if (CBLune.Checked) and (curDay.bMoon) then
       begin
@@ -1180,13 +1171,6 @@ begin
     end ;
   end;
 end;
-
-
-
-
-
-
-
 
 procedure TFCalendrier.Timer1Timer(Sender: TObject);
 var
@@ -1247,12 +1231,12 @@ begin
   Caption := 'Calendrier ' + IntToStr(Annee);
   EYear.Text := IntToStr(Annee);
   Application.Title := Caption;
-  for i := 0 to 11 do
+  {for i := 0 to 11 do
   begin
     s := DefaultFormatSettings.LongMonthNames[i + 1];
     s[1] := upcase(s[1]);
     aSG[i div 3].Cells[i - 3 * (i div 3), 0] := s;
-  end;
+  end; }
   // Ecrit les jours
   BegYear := EncodeDate(Annee, 1, 1);
   // reset array
@@ -1367,7 +1351,7 @@ begin
   MemoSeasons2.Lines.text:=s+Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dWin);
   Application.ProcessMessages;
   Timer1.enabled:= true;
-  //For i:= 0 to 3 do aSG[i].OnDrawCell:= @SGDrawCell ;
+  For i:= 0 to 1 do aSG[i].OnDrawCell:= @SGDrawCell ;
 
 end;
 

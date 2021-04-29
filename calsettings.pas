@@ -167,26 +167,12 @@ type
     CBTowns: TComboBox;
     CPcolvaca: TColorPicker;
     ELatitude: TEdit;
-    EEOlon: TEdit;
     ETimeZone: TEdit;
-    EDegLat: TEdit;
-    EMinLat: TEdit;
-    ESecLat: TEdit;
-    ENSLat: TEdit;
     ELongitude: TEdit;
-    EDeglon: TEdit;
-    EMinLon: TEdit;
-    ESeclon: TEdit;
     LColBack: TLabel;
     LColText: TLabel;
     LLatitude: TLabel;
-    Llatdeg: TLabel;
-    LLatmin: TLabel;
-    Llatsec: TLabel;
     LLongitude: TLabel;
-    Llondeg: TLabel;
-    Llonmin: TLabel;
-    Llonsec: TLabel;
     LTown: TLabel;
     LTimezone: TLabel;
     LColZk: TLabel;
@@ -203,14 +189,13 @@ type
     PanSystem: TTitlePanel;
     procedure CBMiniintrayClick(Sender: TObject);
     procedure CBTownsSelect(Sender: TObject);
-    procedure EDegLatChange(Sender: TObject);
-    procedure EDeglonChange(Sender: TObject);
-    procedure ELatitudeChange(Sender: TObject);
-    procedure ELongitudeChange(Sender: TObject);
+    procedure ECoordKeyPress(Sender: TObject; var Key: char);
   private
-    function findtown(tname: string): Integer;
+    //
   public
     csvtowns: TcsvDocument;
+    function CBFind(tname: String): Integer;
+    function findtown(tname: string): Integer;
   end;
 
 var
@@ -229,42 +214,14 @@ var  ClesTri: array[0..Ord(High(TChampsCompare))] of TChampsCompare;
 { TPrefs }
 
 
-procedure TPrefs.ELatitudeChange(Sender: TObject);
-var
-  lat: Double;
-  deg: Integer;
-  min: Integer;
-  sec: Double;
+
+
+procedure TPrefs.ECoordKeyPress(Sender: TObject; var Key: char);
 begin
-  lat:= StringToFloat(ELatitude.text, '.') ;
-  if lat < 0 then  lat:= lat*(-1);
-  deg:= trunc(lat);
-  min:= trunc((lat-deg)*60);
-  sec:= (((lat-deg)*60)-min)*60;
-  sec:= floatround(sec, 6);
-  EDegLat.OnChange:= nil;
-  EDegLat.Text:= InttoStr(deg);
-  EminLat.Text:= InttoStr(min);
-  ESecLat.text:= FloatToString (sec, '.');
-  if lat>0 then ENSLat.text:= 'N' else   ENSLat.text:= 'S';
-  EDegLat.OnChange:= @EDegLatChange;
+   if not (Key in ['0'..'9', '.', #8, #9]) then Key := #0;
 end;
 
-procedure TPrefs.EDegLatChange(Sender: TObject);
-var
-  min: double;
-  sec: double;
-  lat: double;
-begin
-  ELatitude.OnChange:= nil;
-  lat:= StringToInt(EDegLat.text);
-  min:= StringToInt(EMinLat.text) / 60;
-  sec:= StringToFloat(ESecLat.text, '.')/3600;
-  lat:= lat+min+sec;
-  if uppercase(ENSLat.text)='S' then lat:= lat*(-1);
-  Elatitude.Text:= FloatToString(lat, '.');
-  ELatitude.OnChange:= @ELatitudeChange;
-end;
+
 
 procedure TPrefs.CBTownsSelect(Sender: TObject);
 var
@@ -281,6 +238,20 @@ begin
   CBHideinTaskBar.Enabled:= (CBMiniintray.checked=true);
 end;
 
+function TPrefs.CBFind(tname: String): Integer;
+var
+  i: Integer;
+begin
+  result:=-1;  //Not found
+  for i:= 0 to CBTowns.Items.count-1 do
+  begin
+    if CBTowns.Items[i]=tname then
+    begin
+      result:=i;
+      break;
+    end;
+  end;
+end;
 
 function TPrefs.findtown(tname: string): Integer;
 var
@@ -298,44 +269,9 @@ begin
   end;
 end;
 
-procedure TPrefs.ELongitudeChange(Sender: TObject);
-var
-  lon: Double;
-  deg: Integer;
-  min: Integer;
-  sec: Double;
-begin
-  lon:= StringToFloat(ELongitude.text, '.') ;
-  if lon < 0 then  lon:= lon*(-1);
-  deg:= trunc(lon);
-  min:= trunc((lon-deg)*60);
-  sec:= (((lon-deg)*60)-min)*60;
-  sec:= floatround(sec, 6);
-  EDeglon.OnChange:= nil;
-  EDegLon.Text:= InttoStr(deg);
-  EminLon.Text:= InttoStr(min);
-  ESecLon.text:= FloatToString (sec, '.');
-  if lon>0 then EEOlon.text:= 'E' else   EEOLon.text:= 'O';
-  EDeglon.OnChange:= @EDeglonChange;
-end;
 
 
-procedure TPrefs.EDeglonChange(Sender: TObject);
-var
-  min: double;
-  sec: double;
-  lon: double;
-begin
-  ELongitude.OnChange:= nil;
-  lon:= StringToInt(EDegLon.text);
-  min:= StringToInt(EMinLon.text) / 60;
-  sec:= StringToFloat(ESecLon.text, '.')/3600;
-  lon:= lon+min+sec;
-  if uppercase(EEOlon.text)='O' then lon:= lon*(-1);
-  Elongitude.Text:= FloatToString(lon, '.');
-  ELongitude.OnChange:= @ELongitudeChange;
 
-end;
 
 
 
