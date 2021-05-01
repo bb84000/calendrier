@@ -12,7 +12,7 @@ uses
   Grids, StdCtrls, lazbbcontrols, csvdocument, Types, DateUtils, lazbbastro,
   LResources, Buttons, Menus, UniqueInstance, registry, lazbbutils,
   lazbbautostart, LazUTF8, lazbbosver, laz2_DOM, laz2_XMLRead, laz2_XMLWrite,
-  calsettings, ImgResiz, lazbbaboutupdate, lazbbinifiles;
+  calsettings, ImgResiz, lazbbaboutupdate, lazbbinifiles, Towns1, Clipbrd;
 
 
 type
@@ -58,15 +58,17 @@ type
     CBVC: TCheckBoxX;
     CBVK: TCheckBoxX;
     CBLune: TCheckBoxX;
-    ETodayTime: TEdit;
     EYear: TEdit;
     ILMenus: TImageList;
     ImageHalf: TImage;
     ImgLMoon: TImageList;
-    MemoCurDay: TMemo;
-    MemoSeasons1: TMemo;
-    MemoSeasons2: TMemo;
-    MemoToday: TMemo;
+    LSeasons1: TLabel;
+    LSelDay: TLabel;
+    LSeasons2: TLabel;
+    LTodayDesc: TLabel;
+    LTodayTime: TLabel;
+    LImageInsert: TLabel;
+    PMnuCopy: TMenuItem;
     MnuSep3: TMenuItem;
     MnuSep4: TMenuItem;
     MnuSep1: TMenuItem;
@@ -102,17 +104,21 @@ type
     SG1: TStringGrid;
     SG2: TStringGrid;
     Timer1: TTimer;
+    Timer2: TTimer;
     TrayCal: TTrayIcon;
     UniqueInstance1: TUniqueInstance;
 
     procedure CBXClick(Sender: TObject);
     procedure ETodayTimeChange(Sender: TObject);
+    procedure EYearChange(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure PMnuAddImgClick(Sender: TObject);
+    procedure PMnuCopyClick(Sender: TObject);
     procedure PMnuDelImgClick(Sender: TObject);
+    procedure PMnuMainPopup(Sender: TObject);
     procedure PMnuTrayPopup(Sender: TObject);
     procedure PTMnuIconizeClick(Sender: TObject);
     procedure PTMnuMaximizeClick(Sender: TObject);
@@ -131,6 +137,7 @@ type
     procedure TabHalfMouseEnter(Sender: TObject);
     procedure TabHalfClick(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
+    procedure Timer2Timer(Sender: TObject);
     procedure TrayCalClick(Sender: TObject);
   private
     Half: Integer;
@@ -156,7 +163,6 @@ type
     MoonDescs: array [0..3] of string;
     csvsaints, csvferies,csvvacs: TCSVDocument;
     FeriesTxt: String;
-    aSG: array[0..1] of TStringGrid;
     ColorDay, ColorSunday, ColorFerie: TColor;
     Days: array of TDay;
     aMonths: array [1..13] of integer;
@@ -171,7 +177,7 @@ type
     sUse64bitcaption: string;
     ChkVerInterval: Integer;
     LangFile: TBbInifile;
-    CancelBtn: string;
+    CancelBtn, YesBtn, NoBtn : String;
     sNoLongerChkUpdates: String;
     sCannotGetNewVerList: String;
     sPMnuAddImgCaption: String;
@@ -180,6 +186,9 @@ type
     sSunRiseAndSet: String;
     sSeasonSpring, sSeasonSummer, sSeasonAutumn, sSeasonWinter: String;
     sUrlProgSite: String;
+    sConfirmDelImg: String;
+    sMainCaption: String;
+    sHolidayZone: String;
     procedure OnAppMinimize(Sender: TObject);
     procedure OnQueryendSession(var Cancel: Boolean);
     procedure UpdateCal(Annee: word);
@@ -284,18 +293,18 @@ begin
   Application.OnQueryEndSession:= @OnQueryendSession;
   CanClose:= false;
   Initialized := False;
-   CompileDateTime:= StringToTimeDate({$I %DATE%}+' '+{$I %TIME%}, 'yyyy/mm/dd hh:nn:ss');
- Iconized:= false;
+  CompileDateTime:= StringToTimeDate({$I %DATE%}+' '+{$I %TIME%}, 'yyyy/mm/dd hh:nn:ss');
+  Iconized:= false;
   OS := 'Unk';
   ProgName := 'calendrier';
   CalExecPath:=ExtractFilePath(Application.ExeName);
- {$IFDEF CPU32}
+  {$IFDEF CPU32}
      OSTarget := '32 bits';
   {$ENDIF}
   {$IFDEF CPU64}
      OSTarget := '64 bits';
   {$ENDIF}
-   {$IFDEF Linux}
+  {$IFDEF Linux}
     OS := 'Linux';
     LangStr := GetEnvironmentVariable('LANG');
     x := pos('.', LangStr);
@@ -321,15 +330,6 @@ begin
   // Chargement des chaînes de langue...
   LangFile:= TBbIniFile.create(CalExecPath+ProgName+'.lng');
   if Langstr<>'fr' then LangStr:='en';
-  // place properly grids and panels
-  SG1.Left := 0;
-  PanImg.left := SG1.Width+1;
-  PanInfos.left:= SG1.Width+1;
-  PanInfos.top:= PanImg.Height+4;
-  SG2.Left := PanImg.left+PanImg.Width + 1;
-  // populate array of quarters
-  aSG[0] := SG1;
-  aSG[1] := SG2;
   ColorDay := clDefault;
   ColorSunday := RGBToColor(128, 255, 255);
   ColorFerie:= RGBToColor(128, 255, 255);
@@ -350,22 +350,30 @@ begin
     csvvacs.CSVText:= r.value;
   end;
   TimeSepar:= DefaultFormatSettings.TimeSeparator;
-  MemoToday.Lines.Text:='';
-  MemoCurDay.Lines.Text:='';
-  MemoSeasons1.Lines.Text:='';
-  MemoSeasons2.Lines.Text:='';
-  TrayCal.Icon:= Application.Icon;
+  LTodayDesc.Caption:='';
+  LSelDay.Caption:='';
+  LSeasons1.Caption:='';
+  LSeasons2.Caption:='';
 end;
 
 procedure TFCalendrier.FormActivate(Sender: TObject);
 var
   i: Integer;
   r: TLResource;
+  s: String;
 begin
   if not Initialized then
   begin
     Initialized:= true;
+    TrayCal.Icon:= Application.Icon;
+    // place properly grids and panels
+    SG1.Left := 0;
+    PanImg.left := SG1.Width+1;
+    PanInfos.left:= SG1.Width+1;
+    PanInfos.top:= PanImg.Height+4;
+    SG2.Left := PanImg.left+PanImg.Width + 1;
     CurYear := YearOf(now);
+    Today:= DayofTheYear(now);
     if MonthOf(now) < 7 then half:= 1 else half:=2;
     Showhalf(half);
     Settings:= TSettings.create(self);
@@ -374,6 +382,7 @@ begin
     Settings.coluser:= clDefault;
     Settings.colsunday:= StringToColour('$00FFFF80');
     Settings.colferie:= StringToColour('$00FFFF80');
+    Settings.colback:= clDefault; ;
     Settings.colvaca:= CBVA.CheckColor;
     Settings.colvacb:= CBVB.CheckColor;
     Settings.colvacc:= CBVC.CheckColor;
@@ -381,8 +390,8 @@ begin
     Settings.Timezone:= 60; // Paris tz
     Settings.latitude:= 43.94284;
     Settings.longitude:= 4.8089;
-    // load towns from resources
-    Prefs.csvtowns:= TCSVDocument.Create;
+    Prefs.CalAppDataPath:= CalAppDataPath;
+    // load towns from resources in prefs form
     if FileExists(CalAppDataPath+'fr_villes.csv')then Prefs.csvtowns.LoadFromFile(CalAppDataPath+'fr_villes.csv') else
     begin
       r:= LazarusResources.Find('fr_villes');
@@ -393,21 +402,25 @@ begin
     Prefs.CBTowns.ItemIndex:= 0;
     InitAboutBox;
     LoadSettings(cfgfilename);
+    //LangStr:= Settings.langstr;
     ModLangue;
     Settings.OnChange:= @SettingsOnChange;
     HalfImgsList.OnChange:= @SettingsOnChange;
     UpdateCal(curyear);
     loadimage;
+    s:= FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm'+TimeSepar+'ss', now);
+    s[1]:= UpCase(s[1]);
+    LTodayTime.Caption:= s;
+    LTodayDesc.Caption:= DayInfos(now);
     if (Pos('64', OSVersion.Architecture)>0) and (OsTarget='32 bits') then
     begin
       ShowMessage(sUse64bitcaption);
     end;
     Application.QueueAsyncCall(@CheckUpdate, ChkVerInterval);       // async call to let icons loading
-    For i:= 0 to 1 do
-    begin
-      aSG[i].OnDrawCell:= @SGDrawCell;
-      aSG[i].Invalidate;
-    end;
+    SG1.OnDrawCell:= @SGDrawCell;
+    SG1.Invalidate;
+    SG2.OnDrawCell:= @SGDrawCell;
+    SG2.Invalidate;
   end;
 end;
 
@@ -585,11 +598,13 @@ var
   imgname: string;
 begin
   ImageHalf.Picture:= nil;
+  LImageInsert.Visible:= true;
   PMnuAddImg.Caption:= sPMnuAddImgCaption;
   PMnuDelImg.Visible:= false;
   i:= HalfImgsList.FindYearAndHalf(Curyear, Half);
   if i>=0 then
   begin
+    LImageInsert.Visible:= false;
     PMnuAddImg.Caption:= sPMnuModImgCaption;
     PMnuDelImg.Visible:= true;
     ImgHalf:= HalfImgsList.GetItem(i);
@@ -738,6 +753,7 @@ begin
   end;
   FImgResiz.ImgWidth:= ImageHalf.Width;
   FImgResiz.ImgHeight:= ImageHalf.Height;
+
   if FImgResiz.showModal=mrOK then
   begin
     CurImg.Year:= CurYear;
@@ -759,6 +775,19 @@ begin
   end;
 end;
 
+procedure TFCalendrier.PMnuCopyClick(Sender: TObject);
+var
+  FromCmp: TComponent;
+  s: String;
+begin
+  s:= '';
+  FromCmp:= PMnuMain.PopupComponent;
+  if FromCmp=PanToday then s:= LTodayTime.Caption+LineEnding+LTodayDesc.Caption;
+  if FromCmp=PanSelDay then s:= LSelDay.Caption;
+  if FromCmp=PanSeasons then s:= LSeasons1.Caption+LineEnding+LSeasons2.Caption;
+  Clipboard.AsText:= s;;
+end;
+
 procedure TFCalendrier.PMnuDelImgClick(Sender: TObject);
 var
   i: integer;
@@ -766,12 +795,30 @@ begin
   i:= HalfImgsList.FindYearAndHalf(CurYear, half);
   if i>=0 then
   begin
-    DeleteFile(HalfImgsList.GetItem(i).LocalCopy);
-    HalfImgsList.Delete(i);
-    ImageHalf.Picture:=nil;
-    PMnuAddImg.Caption:= sPMnuAddImgCaption;
-    if SettingsChanged then SaveSettings(cfgfilename);
+    if  MsgDlg('Calendrier', sConfirmDelImg, mtWarning,
+            [mbYes, mbNo], [YesBtn, NoBtn])=mrYes then
+    begin
+      DeleteFile(HalfImgsList.GetItem(i).LocalCopy);
+      HalfImgsList.Delete(i);
+      ImageHalf.Picture:=nil;
+      PMnuAddImg.Caption:= sPMnuAddImgCaption;
+      if SettingsChanged then SaveSettings(cfgfilename);
+    end;
   end;
+end;
+
+procedure TFCalendrier.PMnuMainPopup(Sender: TObject);
+begin
+  PMnuAddImg.visible:= false;
+  PMnuDelImg.Visible:= false;
+  PMnuCopy.Visible:= true;
+  if PMnuMain.PopupComponent=PanImg then
+  begin
+    PMnuAddImg.visible:= true;
+    PMnuDelImg.Visible:= true;
+    PmnuCopy.visible:= False;
+  end;
+
 end;
 
 procedure TFCalendrier.PMnuTrayPopup(Sender: TObject);
@@ -824,7 +871,7 @@ begin
     half:= 1;
     CurYear:= CurYear+1;
     UpdateCal(CurYear);
-    Application.ProcessMessages;
+    //Application.ProcessMessages;
     Invalidate;
   end;
   showHalf(half);
@@ -836,11 +883,12 @@ procedure TFCalendrier.SBPrevQClick(Sender: TObject);
 begin
   if Half=1 then
   begin
+     Half:=2;
     CurYear:= CurYear-1;
     UpdateCal(CurYear);
-    Application.ProcessMessages;
+    //Application.ProcessMessages;
     Invalidate;
-    Half:=2;
+
   end else Half:= 1;
   showHalf(half);
   loadimage;
@@ -904,11 +952,16 @@ begin
   CBVB.CheckColor:= Settings.colvacb;
   CBVC.CheckColor:= Settings.colvacc;
   CBVK.CheckColor:= Settings.colvack;
+  // Towns list has changed
+  if Prefs.TownsListChanged then
+  begin
+    Prefs.csvtowns.SaveToFile(CalAppDataPath+'fr_villes.csv');
+  end;
   if SettingsChanged then
   begin
     SaveSettings(cfgfilename);
     Invalidate;
-    MemoToday.Text:= DayInfos(now) ;
+    LTodayDesc.Caption:= DayInfos(now) ;
     TrayCal.visible:= Settings.miniintray ;
     Canclose:= not Settings.miniintray ;
   end;
@@ -932,7 +985,6 @@ begin
   SGCur.MouseToCell(X, Y, aCol, aRow);
   if half= 1 then Month := ACol + 1 + 3 * (GridNum - 1)
   else Month:= ACol + 7 + 3 * (GridNum - 1) ;
-
   if (aRow<>curRow) or (aCol<>curCol) then
   begin
     curRow:= aRow;
@@ -952,7 +1004,7 @@ end;
 function TFCalendrier.DayInfos(dDate: TDateTime): String;
 var
   s, s1: string;
-  doy: Integer;
+  i, doy: Integer;
   dtr, dts, dtsz : TDateTime;
   curDay: TDay;
 begin
@@ -995,6 +1047,18 @@ begin
     s:= curDay.sSeasonDesc+' à '+FormatDateTime ('hh'+TimeSepar+'mm', dtsz);
     Result:= Result+LineEnding+s
   end;
+  if Curday.bHoliday then
+  begin
+    s:= curDay.sHoliday;
+    s1:= '';
+    for i:= 1 to length (s) do
+    s1:= s1+s[i]+', ';
+    s1:= StringReplace(s1, 'K,', 'Corse,', []);
+    SetLength(s1, length(s1)-2); //remove trailing comma
+    s:= sHolidayZone;
+    if length(curDay.sHoliday)>1 then s:= s+'s';
+    Result:= Result+LineEnding+s+' '+s1;
+  end;
 end;
 
 procedure TFCalendrier.SGSelectCell(Sender: TObject; aCol, aRow: Integer;
@@ -1015,7 +1079,7 @@ begin
     s:= FormatDateTime (DefaultFormatSettings.LongDateFormat, SelDate);
     s[1]:= UpCase(s[1]);
     s:=s+LineEnding+DayInfos(SelDate);
-    MemoCurDay.Lines.text:=  s;
+    LSelDay.Caption:=  s;
   except
     // We are in a wrong place, do nothing
   end;
@@ -1036,8 +1100,26 @@ begin
   //ETodayTime2.text:= ETodayTime.text;
 end;
 
+procedure TFCalendrier.EYearChange(Sender: TObject);
+var
+  cyr: Integer;
+begin
+  if length(EYear.Text)<>4 then
+  begin
+    Timer2.Enabled:=true;       // On remettra la bonne année un peu plus tard
+    exit;
+  end;
+  try
+    Timer2.Enabled:=false;
+    cyr:= StrToInt(EYear.Text);
+    UpdateCal(cyr);
+    CurYear:= cyr;
+    loadimage;
+    Invalidate;
+  except
 
-
+  end;
+end;
 
 
 procedure TFCalendrier.SGDrawCell(Sender: TObject; aCol, aRow: integer;
@@ -1062,13 +1144,12 @@ begin;
   GridNum := StrToInt(Copy(SgCur.Name, 3, 1));
   if half= 1 then Month := ACol + 1 + 3 * (GridNum - 1)
   else Month:= ACol + 7 + 3 * (GridNum - 1) ;
-
   try
     s:= DefaultFormatSettings.LongMonthNames[Month];
     s[1]:= Upcase(s[1]);
   except
   end;
-  // On centre les mois, dont le nom est déjà placé par UpdateCal
+  // On centre les mois
   if ARow = 0 then
   begin
     SGCur.Canvas.Font := PanStatus.Font;
@@ -1080,6 +1161,7 @@ begin;
     SGCur.Canvas.Rectangle(aRect.Left, aRect.Top, aRect.Right, aRect.Bottom);
     SGCur.Canvas.TextOut(x, y, s);
     SGCur.Canvas.Font := SGCur.Font;
+    exit;
   end;
   // Get current day
   x := 2 + aRect.Left;
@@ -1168,7 +1250,8 @@ begin;
         ImgNum:= Pos(curDay.sMoon, s) div 2;
         ImgLMoon.StretchDraw(SGCur.Canvas, ImgNum, aRect);
       end;
-    end ;
+    end;
+
   end;
 end;
 
@@ -1179,14 +1262,20 @@ var
 begin
   s:= FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm'+TimeSepar+'ss', now);
   s[1]:= UpCase(s[1]);
-  ETodayTime.Caption:= s;
+  LTodayTime.Caption:= s;
   Curday:= DayofTheYear(now);
   if Curday>Today then
   begin
     s:= DayInfos(now);
-    MemoToday.Lines.Text:= s;
+    LTodayDesc.Caption:= s;;
     Today:=Curday;
   end;
+end;
+
+procedure TFCalendrier.Timer2Timer(Sender: TObject);
+begin
+  Eyear.text:= InttoStr(curyear);
+  Timer2.Enabled:= false;
 end;
 
 procedure TFCalendrier.TrayCalClick(Sender: TObject);
@@ -1212,7 +1301,7 @@ var
 begin
   // Disable grids update during calendar update
   // causes exception errors days data is not completed
-  //For i:= 0 to 3 do aSG[i].OnDrawCell:= nil;
+
   Application.ProcessMessages;
   // Sans objet avant l'année 1583 (calendrier julien)
   if Annee < 1583 then Annee := 1583;
@@ -1228,15 +1317,12 @@ begin
     aMonths := noleapyear;
     DaysCnt := 365;
   end;
-  Caption := 'Calendrier ' + IntToStr(Annee);
+  EYear.OnChange:= nil;
+  Caption := sMainCaption +' '+ IntToStr(Annee);
   EYear.Text := IntToStr(Annee);
   Application.Title := Caption;
-  {for i := 0 to 11 do
-  begin
-    s := DefaultFormatSettings.LongMonthNames[i + 1];
-    s[1] := upcase(s[1]);
-    aSG[i div 3].Cells[i - 3 * (i div 3), 0] := s;
-  end; }
+  CBLune.SetFocus;
+  EYear.OnChange:= @EYearChange;
   // Ecrit les jours
   BegYear := EncodeDate(Annee, 1, 1);
   // reset array
@@ -1328,31 +1414,32 @@ begin
   DOY:= trunc(dSpr-BegYear);
   Days[DOY].bSeason:= true;
   Days[DOY].dSeason:= dSpr;
-  Days[DOY].sSeasonDesc:= 'Printemps';
+  Days[DOY].sSeasonDesc:= sSeasonSpring;
   dSpr:= IncMinute(dSpr, Settings.TimeZone+60*Int64(IsDST(dSpr)));
   s:= Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', Days[DOY].dSeason)+LineEnding;
   DOY:= trunc(dSum-BegYear);
   Days[DOY].bSeason:= true;
   Days[DOY].dSeason:= dSum;
-  Days[DOY].sSeasonDesc:= 'Eté';
+  Days[DOY].sSeasonDesc:= sSeasonSummer;
   dSum:= IncMinute(dSum, Settings.TimeZone+60*Int64(IsDST(dSum)));
-  MemoSeasons1.Lines.text:=s+Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dSum);
+  LSeasons1.Caption:=s+Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dSum);
   DOY:= trunc(dAut-BegYear);
   Days[DOY].bSeason:= true;
   Days[DOY].dSeason:= dAut;
-  Days[DOY].sSeasonDesc:='Automne';;
+  Days[DOY].sSeasonDesc:= sSeasonAutumn;
   dAut:= IncMinute(dAut, Settings.TimeZone+60*Int64(IsDST(dAut)));
   s:= Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dAut)+LineEnding;
   DOY:= trunc(dWin-BegYear);
   Days[DOY].bSeason:= true;
   Days[DOY].dSeason:= dWin;
-  Days[DOY].sSeasonDesc:='Hiver';
+  Days[DOY].sSeasonDesc:= sSeasonWinter;
   dWin:= IncMinute(dWin, Settings.TimeZone+60*Int64(IsDST(dWin)));
-  MemoSeasons2.Lines.text:=s+Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dWin);
+  LSeasons2.Caption:=s+Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dWin);
+  Application.ProcessMessages;
+  SG1.OnDrawCell:= @SGDrawCell ;
+  SG2.OnDrawCell:= @SGDrawCell ;
   Application.ProcessMessages;
   Timer1.enabled:= true;
-  For i:= 0 to 1 do aSG[i].OnDrawCell:= @SGDrawCell ;
-
 end;
 
 procedure TFCalendrier.ModLangue;
@@ -1366,7 +1453,10 @@ begin
     MoonDescs[1]:= ReadString(LangStr, 'MoonDescs1', 'Premier quartier');
     MoonDescs[2]:= ReadString(LangStr, 'MoonDescs2', 'Dernier quartier');
     MoonDescs[3]:= ReadString(LangStr, 'MoonDescs3', 'Pleine lune');
+    sHolidayZone:= ReadString(LangStr, 'sHolidayZone', 'Vacances zone');
     CancelBtn:= ReadString(LangStr, 'CancelBtn', 'Annuler');
+    YesBtn:= ReadString(LangStr, 'YesBtn', 'Oui');
+    NoBtn:= ReadString(LangStr, 'NoBtn', 'Non');
     CBVA.Caption:= ReadString(LangStr, 'CBVA.Caption', CBVA.Caption);
     CBVB.Caption:= ReadString(LangStr, 'CBVB.Caption', CBVB.Caption);
     CBVC.Caption:= ReadString(LangStr, 'CBVC.Caption', CBVC.Caption);
@@ -1407,6 +1497,10 @@ begin
     PanSeasons.Caption:= ReadString(LangStr, 'PanSeasons.Caption', PanSeasons.Caption);
     sNoLongerChkUpdates:= ReadString(LangStr, 'NoLongerChkUpdates', 'Ne plus rechercher les mises à jour');
     sUse64bitcaption:=ReadString(LangStr, 'use64bitcaption', 'Utilisez la version 64 bits de ce programme');
+    sConfirmDelImg:=ReadString(LangStr, 'sConfirmDelImg', 'Voulez-vous supprimer cette image ?');
+    sMainCaption:= ReadString(LangStr, 'sMainCaption', 'Calendrier');
+    LImageInsert.Caption:= ReadString(LangStr, 'LImageInsert.Caption', LImageInsert.Caption); ;
+
 
     // About
     AboutBox.LProductName.Caption:= ReadString(LangStr, 'AboutBox.LProductName.Caption', 'Calendrier universel');
@@ -1459,9 +1553,25 @@ begin
     Prefs.CBSaveSizPos.Caption:= ReadString(LangStr, 'Prefs.CBSaveSizPos.Caption', Prefs.CBSaveSizPos.Caption);
     Prefs.CBMoonPhases.Caption:= ReadString(LangStr, 'Prefs.CBMoonPhases.Caption', Prefs.CBMoonPhases.Caption);
     Prefs.CBSaveVacs.Caption:= ReadString(LangStr, 'Prefs.CBSaveVacs.Caption', Prefs.CBSaveVacs.Caption);
-    Prefs.CBNoChkUpdate.Caption:= ReadString(LangStr, 'Prefs.CBNoChkUpdate.Caption', Prefs.CBNoChkUpdate.Caption);
-    }
-        Prefs.BtnCancel.Caption:= CancelBtn;
+    Prefs.CBNoChkUpdate.Caption:= ReadString(LangStr, 'Prefs.CBNoChkUpdate.Caption', Prefs.CBNoChkUpdate.Caption); }
+    Prefs.SBEditTowns.Hint:= ReadString(LangStr, 'Prefs.SBEditTowns.Hint', Prefs.SBEditTowns.Hint);
+    Prefs.BtnCancel.Caption:= CancelBtn;
+    Prefs.Caption:= sMainCaption+ ' - '+PMnuSettings.Caption;
+
+    FImgResiz.Caption:= sMainCaption+' - '+ReadString(LangStr, 'sFImgResiz.Caption', 'Choix d''une image');
+    FImgResiz.BtnCancel.Caption:= CancelBtn;
+    FImgResiz.LInfos.Caption:= ReadString(LangStr, 'FImgResiz.LInfos.Caption', FImgResiz.LInfos.Caption);
+    FImgResiz.OPD1.Title:= ReadString(LangStr, 'FImgResiz.OPD1.Title', FImgResiz.OPD1.Title);
+
+    FTowns.Caption:= sMainCaption;
+    FTowns.BtnAdd.Caption:= ReadString(LangStr, 'FTowns.BtnAdd.Caption', FTowns.BtnAdd.Caption);
+    FTowns.BtnDelete.Caption:= ReadString(LangStr, 'FTowns.BtnDelete.Caption', FTowns.BtnDelete.Caption);
+    FTowns.BtnCancel.Caption:= CancelBtn;
+    FTowns.PanCoords.Caption:= ReadString(LangStr, 'FTowns.PanCoords.Caption', FTowns.PanCoords.Caption);
+    FTowns.sConfirmDelTown:= ReadString(LangStr, 'FTowns.sConfirmDelTown', 'Voulez-vous supprimer');
+    FTowns.LTown.Caption:= Prefs.LTown.Caption;
+    FTowns.LTimezone.Caption:= Prefs.LTimezone.Caption;
+
   end;
 end;
 

@@ -30,6 +30,8 @@ object FCalendrier: TFCalendrier
       Top = 12
       Width = 40
       Alignment = taCenter
+      MaxLength = 4
+      NumbersOnly = True
       TabOrder = 0
       Text = '2020'
     end
@@ -140,7 +142,7 @@ object FCalendrier: TFCalendrier
       ParentShowHint = False
     end
     object SBPrevQ: TSpeedButton
-      Left = 554
+      Left = 552
       Height = 18
       Hint = 'Semestre précédent'
       Top = 13
@@ -550,7 +552,7 @@ object FCalendrier: TFCalendrier
       FixedCols = 0
       Font.Height = -12
       Font.Name = 'Arial Narrow'
-      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goSmoothScroll, goFixedRowNumbering, goFixedColSizing]
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goSmoothScroll, goFixedRowNumbering, goFixedColSizing]
       ParentFont = False
       ParentShowHint = False
       RowCount = 32
@@ -573,7 +575,7 @@ object FCalendrier: TFCalendrier
       FixedCols = 0
       Font.Height = -12
       Font.Name = 'Arial Narrow'
-      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goSmoothScroll, goFixedRowNumbering, goFixedColSizing]
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goSmoothScroll, goFixedRowNumbering, goFixedColSizing]
       ParentFont = False
       ParentShowHint = False
       RowCount = 32
@@ -605,6 +607,16 @@ object FCalendrier: TFCalendrier
         Proportional = True
         Stretch = True
       end
+      object LImageInsert: TLabel
+        Left = 72
+        Height = 15
+        Top = 208
+        Width = 450
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 'Cliquez avec le bouton droit de la souris pour insérer une image'
+        ParentColor = False
+      end
     end
     object PanInfos: TPanel
       Left = 333
@@ -617,7 +629,6 @@ object FCalendrier: TFCalendrier
       ClientWidth = 605
       Color = clNone
       ParentColor = False
-      PopupMenu = PMnuTray
       TabOrder = 3
       object PanToday: TTitlePanel
         Left = 1
@@ -632,28 +643,26 @@ object FCalendrier: TFCalendrier
         ClientWidth = 298
         Font.Style = [fsBold]
         ParentFont = False
+        PopupMenu = PMnuMain
         TabOrder = 0
-        object ETodayTime: TEdit
-          Left = 8
+        object LTodayTime: TLabel
+          Left = 5
           Height = 15
           Top = 18
-          Width = 285
-          BorderStyle = bsNone
+          Width = 288
+          AutoSize = False
+          ParentColor = False
           ParentFont = False
-          TabOrder = 0
         end
-        object MemoToday: TMemo
+        object LTodayDesc: TLabel
           Left = 5
-          Height = 80
+          Height = 87
           Top = 33
-          Width = 290
-          BorderStyle = bsNone
-          Lines.Strings = (
-            'MemoToday1'
-          )
+          Width = 288
+          AutoSize = False
+          ParentColor = False
           ParentFont = False
-          ReadOnly = True
-          TabOrder = 1
+          WordWrap = True
         end
       end
       object PanSelDay: TTitlePanel
@@ -669,19 +678,17 @@ object FCalendrier: TFCalendrier
         ClientWidth = 298
         Font.Style = [fsBold]
         ParentFont = False
+        PopupMenu = PMnuMain
         TabOrder = 1
-        object MemoCurDay: TMemo
-          Left = 4
-          Height = 95
-          Top = 18
-          Width = 290
-          BorderStyle = bsNone
-          Lines.Strings = (
-            'MemoToday1'
-          )
+        object LSelDay: TLabel
+          Left = 6
+          Height = 105
+          Top = 16
+          Width = 288
+          AutoSize = False
+          ParentColor = False
           ParentFont = False
-          ReadOnly = True
-          TabOrder = 0
+          WordWrap = True
         end
       end
       object PanSeasons: TTitlePanel
@@ -697,32 +704,27 @@ object FCalendrier: TFCalendrier
         ClientWidth = 604
         Font.Style = [fsBold]
         ParentFont = False
+        PopupMenu = PMnuMain
         TabOrder = 2
-        object MemoSeasons1: TMemo
-          Left = 8
+        object LSeasons1: TLabel
+          Left = 5
           Height = 33
           Top = 15
-          Width = 290
-          BorderStyle = bsNone
-          Lines.Strings = (
-            'MemoSeasons11'
-          )
+          Width = 288
+          AutoSize = False
+          ParentColor = False
           ParentFont = False
-          ReadOnly = True
-          TabOrder = 0
+          WordWrap = True
         end
-        object MemoSeasons2: TMemo
+        object LSeasons2: TLabel
           Left = 311
           Height = 33
           Top = 15
-          Width = 290
-          BorderStyle = bsNone
-          Lines.Strings = (
-            'MemoSeasons11'
-          )
+          Width = 288
+          AutoSize = False
+          ParentColor = False
           ParentFont = False
-          ReadOnly = True
-          TabOrder = 1
+          WordWrap = True
         end
       end
     end
@@ -799,6 +801,7 @@ object FCalendrier: TFCalendrier
   end
   object PMnuMain: TPopupMenu
     Images = ILMenus
+    OnPopup = PMnuMainPopup
     Left = 480
     Top = 40
     object PMnuAddImg: TMenuItem
@@ -811,6 +814,11 @@ object FCalendrier: TFCalendrier
       ImageIndex = 2
       Visible = False
       OnClick = PMnuDelImgClick
+    end
+    object PMnuCopy: TMenuItem
+      Caption = 'Copier'
+      ImageIndex = 16
+      OnClick = PMnuCopyClick
     end
     object MnuSep1: TMenuItem
       Caption = '-'
@@ -831,6 +839,7 @@ object FCalendrier: TFCalendrier
     object PMnuQuit: TMenuItem
       Caption = 'Quitter'
       ImageIndex = 8
+      OnClick = SBQuitClick
     end
   end
   object TrayCal: TTrayIcon
@@ -884,7 +893,7 @@ object FCalendrier: TFCalendrier
     Left = 366
     Top = 117
     Bitmap = {
-      4C69100000001000000010000000000000000000000000000000000000000000
+      4C69110000001000000010000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -1396,12 +1405,51 @@ object FCalendrier: TFCalendrier
       FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
       FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
       FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF00FFFFFF00FFFFFF00
+      FF00FFFFFF00FFFFFF00FFFFFF00CE9C73FFCE845AFFCE8452FFCE845AFFCE84
+      5AFFCE845AFFCE8452FFD6AD84FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00CE845AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFEFBD8CFFC68C63FFFFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00CE8452FFFFFFFFFFF7D6BDFFFFDEC6FFF7D6
+      BDFFF7D6ADFFFFFFFFFFFFDEC6FFEFBD8CFFCE9C73FFFFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00CE8452FFFFFFFFFFFFDEC6FFFFDEC6FFFFDE
+      C6FFF7D6BDFFFFE7D6FFFFFFFFFFFFFFFFFFCE8452FFFFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00CE8452FFFFFFFFFFFFDEC6FFFFDECEFFFFDE
+      C6FFFFDEC6FFEFBD8CFFD6AD7BFFD6AD7BFFEFBD8CFFCE8452FFCE8452FFCE84
+      52FFCE9C73FFFFFFFF00FFFFFF00CE8452FFFFFFFFFFFFDECEFFFFDECEFFFFDE
+      CEFFFFDECEFFD6AD84FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFEFBD8CFFC68C63FFFFFFFF00CE8452FFFFFFFFFFFFDECEFFFFDECEFFFFDE
+      CEFFFFE7D6FFD6AD7BFFFFFFFFFFF7D6BDFFFFDEC6FFF7D6BDFFF7D6ADFFFFFF
+      FFFFFFE7CEFFEFBD8CFFCE9C73FFCE8452FFFFFFFFFFFFDECEFFFFE7D6FFFFE7
+      D6FFFFE7D6FFD6AD7BFFFFFFFFFFFFDEC6FFFFE7CEFFFFDEC6FFF7D6B5FFFFE7
+      D6FFFFFFFFFFFFFFFFFFCE7342FFCE8452FFFFFFFFFFFFDECEFFFFE7D6FFFFDE
+      CEFFFFE7D6FFD6AD7BFFFFFFFFFFFFE7CEFFFFDECEFFFFE7CEFFFFDEC6FFF7D6
+      B5FFEFC694FFFFFFFFFFC67B4AFFC67B52FFFFFFFFFFFFDECEFFFFE7D6FFFFDE
+      CEFFFFE7D6FFD6AD7BFFFFFFFFFFFFDECEFFFFDECEFFFFDECEFFFFDEC6FFFFDE
+      C6FFF7D6B5FFFFFFFFFFC67B4AFFC67B52FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFD6AD84FFFFFFFFFFFFDECEFFFFDECEFFFFDECEFFFFDECEFFFFE7
+      CEFFF7D6BDFFFFFFFFFFC67B4AFFC68C63FFCE7342FFCE7342FFCE7342FFCE73
+      42FFCE7342FFCE7342FFFFFFFFFFFFDECEFFFFE7D6FFFFE7D6FFFFE7D6FFFFDE
+      CEFFFFDEC6FFFFFFFFFFCE7342FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00CE7342FFFFFFFFFFFFDECEFFFFE7D6FFFFE7D6FFFFDECEFFFFDE
+      CEFFFFDEC6FFFFFFFFFFCE7342FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00CE7342FFFFFFFFFFFFDECEFFFFE7D6FFFFE7D6FFFFDECEFFFFE7
+      CEFFFFDEC6FFFFFFFFFFCE7342FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00CE7342FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFCE7342FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00CE845AFFCE7342FFCE7342FFCE7342FFCE7342FFCE7342FFCE73
+      42FFCE7342FFCE7342FFCE845AFF
     }
   end
   object UniqueInstance1: TUniqueInstance
     Enabled = True
     Left = 423
     Top = 117
+  end
+  object Timer2: TTimer
+    Enabled = False
+    Interval = 10000
+    OnTimer = Timer2Timer
+    Left = 656
+    Top = 46
   end
 end

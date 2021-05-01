@@ -1,17 +1,19 @@
 object FTowns: TFTowns
   Left = 824
-  Height = 314
+  Height = 352
   Top = 212
   Width = 469
-  Caption = 'FTowns'
-  ClientHeight = 314
+  BorderStyle = bsDialog
+  Caption = 'Calendrier'
+  ClientHeight = 352
   ClientWidth = 469
   OnShow = FormShow
+  Position = poMainFormCenter
   LCLVersion = '2.0.12.0'
   object PanCoords: TTitlePanel
     Left = 8
     Height = 106
-    Top = 147
+    Top = 190
     Width = 452
     Alignment = taLeftJustify
     BorderLine = bsSingle
@@ -239,16 +241,15 @@ object FTowns: TFTowns
       Height = 23
       Top = 20
       Width = 176
-      OnChange = ETownChange
       ParentFont = False
       TabOrder = 11
     end
   end
   object ListTowns: TListBox
     Left = 8
-    Height = 120
+    Height = 170
     Top = 14
-    Width = 272
+    Width = 320
     ItemHeight = 0
     OnClick = ListTownsClick
     Sorted = True
@@ -264,48 +265,43 @@ object FTowns: TFTowns
     OnClick = BtnAddClick
     TabOrder = 2
   end
-  object BtnChange: TButton
-    Left = 376
-    Height = 25
-    Top = 80
-    Width = 75
-    Caption = 'Supprimer'
-    Enabled = False
-    TabOrder = 3
-  end
-  object Button4: TButton
-    Left = 144
-    Height = 25
-    Top = 272
-    Width = 75
-    Caption = 'OK'
-    ModalResult = 1
-    TabOrder = 4
-  end
-  object Button5: TButton
-    Left = 256
-    Height = 25
-    Top = 272
-    Width = 75
-    Caption = 'Annuler'
-    ModalResult = 2
-    TabOrder = 5
-  end
-  object Button6: TButton
-    Left = 376
-    Height = 25
-    Top = 112
-    Width = 75
-    Caption = 'Restaurer'
-    Enabled = False
-    TabOrder = 6
-  end
-  object Button1: TButton
+  object BtnDelete: TButton
     Left = 376
     Height = 25
     Top = 48
     Width = 75
-    Caption = 'Modifier'
-    TabOrder = 7
+    Caption = 'Supprimer'
+    Enabled = False
+    OnClick = BtnDeleteClick
+    TabOrder = 3
+  end
+  object PanStatus: TPanel
+    Left = 0
+    Height = 50
+    Top = 302
+    Width = 469
+    Align = alBottom
+    BevelInner = bvLowered
+    ClientHeight = 50
+    ClientWidth = 469
+    TabOrder = 4
+    object BtnOK: TButton
+      Left = 144
+      Height = 25
+      Top = 12
+      Width = 75
+      Caption = 'OK'
+      ModalResult = 1
+      TabOrder = 0
+    end
+    object BtnCancel: TButton
+      Left = 256
+      Height = 25
+      Top = 12
+      Width = 75
+      Caption = 'Annuler'
+      ModalResult = 2
+      TabOrder = 1
+    end
   end
 end

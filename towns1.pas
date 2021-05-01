@@ -5,7 +5,7 @@ unit towns1;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
   lazbbcontrols, csvDocument, lazbbutils;
 
 type
@@ -14,11 +14,9 @@ type
 
   TFTowns = class(TForm)
     BtnAdd: TButton;
-    Button1: TButton;
-    BtnChange: TButton;
-    Button4: TButton;
-    Button5: TButton;
-    Button6: TButton;
+    BtnCancel: TButton;
+    BtnDelete: TButton;
+    BtnOK: TButton;
     EDegLat: TEdit;
     EDeglon: TEdit;
     ETown: TEdit;
@@ -43,7 +41,10 @@ type
     LTimezone: TLabel;
     LTown: TLabel;
     PanCoords: TTitlePanel;
+    PanStatus: TPanel;
     procedure BtnAddClick(Sender: TObject);
+    procedure BtnChangeClick(Sender: TObject);
+    procedure BtnDeleteClick(Sender: TObject);
     procedure EDegLatChange(Sender: TObject);
     procedure EDeglonChange(Sender: TObject);
     procedure ELatitudeChange(Sender: TObject);
@@ -55,13 +56,15 @@ type
 
   private
     CurIndex: integer;
-    csv: TCSVDocument;
+
     prevTown, prevLatitude, prevLongitude, prevTimezone: String;
-    TownChanged: Boolean;
-    function findtown(tcsv: TcsvDocument; tname: string): Integer;
+    function findlsttown(tlst: TListBox; tname: string): Integer;
+    function findcsvtown(tcsv: TcsvDocument; tname: string): Integer;
 
   public
-
+    TownsListChanged: Boolean;
+    csv: TCSVDocument;
+    sConfirmDelTown: String;
   end;
 
 var
@@ -80,7 +83,7 @@ var
   i: Integer;
 begin
   if not assigned(csv) then csv:= TCSVDocument.Create;
-  Townchanged:= False;
+  TownsListChanged:= False;
   if not assigned (Prefs.csvtowns) then ModalResult:= mrcancel;
   csv.CSVText:= Prefs.csvtowns.csvText;
   ListTowns.Clear;
@@ -88,13 +91,28 @@ begin
   begin
     ListTowns.Items.Add(csv.Cells[0, i]);
   end;
-  ListTowns.ItemIndex:= 0;
-  ListTownsClick(self);
+  Etown.Text:= Prefs.CBTowns.Text;
+  ELongitude.Text:= Prefs.ELongitude.Text;
+  ELatitude.Text:= Prefs.ELatitude.Text;
+  ETimeZone.Text:= Prefs.ETimeZone.Text;
+  ListTowns.ItemIndex:= Prefs.CBTowns.ItemIndex;
+  if ListTowns.ItemIndex=-1 then
+  begin
+    BtnAdd.Enabled:= true;
+    BtnDelete.Enabled:= false;
+  end else
+  begin
+    BtnAdd.Enabled:= false;
+    BtnDelete.Enabled:= true;
+  end;
+  ETown.OnChange:= @ETownChange;
 end;
 
 procedure TFTowns.ListTownsClick(Sender: TObject);
 begin
-  if ListTowns.ItemIndex>=0 then CurIndex:= findtown(csv, ListTowns.Items[ListTowns.ItemIndex]);
+  if ListTowns.ItemIndex>=0 then CurIndex:= findcsvtown(csv, ListTowns.Items[ListTowns.ItemIndex])
+  else exit;
+  ETown.OnChange:= nil;
   prevTown:= csv.Cells[0,CurIndex] ;
   ETown.Text:= prevTown;
   prevLatitude:= csv.Cells[2,CurIndex] ;
@@ -103,8 +121,8 @@ begin
   Elongitude.Text:= prevLongitude;
   prevTimezone:= csv.Cells[4,CurIndex] ;
   ETimeZone.Text:= prevTimezone;
-  BtnAdd.enabled:= true;
-  BtnChange.Enabled:= true;
+  BtnAdd.enabled:= false;
+  BtnDelete.Enabled:= true;
   ETown.OnChange:= @EtownChange;;
 end;
 
@@ -127,6 +145,7 @@ begin
   ESecLat.text:= FloatToString (sec, '.');
   if lat>0 then ENSLat.text:= 'N' else   ENSLat.text:= 'S';
   EDegLat.OnChange:= @EDegLatChange;
+  BtnAdd.Enabled:= true;
 end;
 
 
@@ -154,11 +173,12 @@ begin
   ESecLon.text:= FloatToString (sec, '.');
   if lon>0 then EEOlon.text:= 'E' else   EEOLon.text:= 'O';
   EDeglon.OnChange:= @EDeglonChange;
+  BtnAdd.Enabled:= True;
 end;
 
 procedure TFTowns.ETownChange(Sender: TObject);
 begin
-
+  BtnAdd.Enabled:= True;
 end;
 
 
@@ -195,13 +215,34 @@ begin
     csv.AddCell(csv.RowCount-1, ELatitude.Text);
     csv.AddCell(csv.RowCount-1, ELongitude.Text);
     csv.AddCell(csv.RowCount-1, ETimeZone.Text);
-    // reload towns in the combo
+    // reload towns in the list
     ListTowns.Items.Clear;
     for i:= 0 to csv.RowCount-1 do ListTowns.Items.Add(csv.Cells[0,i]);
-    //ListTowns.ItemIndex:= CBFind(s);
-  end else           // Change
-  begin
+    ListTowns.ItemIndex:= findlsttown(ListTowns, ETown.text);
+    TownsListChanged:= true;
+  end;
+end;
 
+procedure TFTowns.BtnChangeClick(Sender: TObject);
+begin
+
+end;
+
+procedure TFTowns.BtnDeleteClick(Sender: TObject);
+var
+  i: Integer;
+  s: String;
+begin
+  s:= ListTowns.Items[ListTowns.ItemIndex];
+  if  MsgDlg(Caption, sConfirmDelTown+' '+s+' ?',mtWarning,
+            [mbYes, mbNo], ['Oui','Non'])=mrYes then
+  begin
+    i:= findcsvtown(csv, s);
+    csv.RemoveRow(i);
+    ListTowns.Items.Clear;
+    for i:= 0 to csv.RowCount-1 do ListTowns.Items.Add(csv.Cells[0,i]);
+    ListTowns.ItemIndex:= 0;
+    TownsListChanged:= true;
   end;
 end;
 
@@ -225,10 +266,9 @@ begin
   ELongitude.OnChange:= @ELongitudeChange;
 end;
 
-function TFTowns.findtown(tcsv: TcsvDocument; tname: string): Integer;
+function TFTowns.findcsvtown(tcsv: TcsvDocument; tname: string): Integer;
 var
   i: Integer;
-  curtown: TTown;
 begin
  result:= -1;
  for i:= 0 to tcsv.RowCount-1 do
@@ -240,6 +280,22 @@ begin
     end;
   end;
 end;
+
+function TFTowns.findlsttown(tlst: TListBox; tname: string): Integer;
+var
+  i: Integer;
+begin
+ result:= -1;
+ for i:= 0 to tlst.Count-1 do
+  begin
+    if tname=tlst.Items[i] then
+    begin
+      result:= i;
+      break;
+    end;
+  end;
+end;
+
 
 end.
 

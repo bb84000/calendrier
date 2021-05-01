@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  laz2_DOM, lazbbutils, lazbbcontrols, csvdocument;
+  LResources, Buttons, laz2_DOM, lazbbutils, lazbbcontrols, csvdocument, towns1;
 
 type
     TTown = record
@@ -34,7 +34,6 @@ type
       fVersion: String;
       flastversion: String;
       flangstr: String;
-      fColferie: Tcolor;
       ftown: String;
       ftownIndex: Integer;
       fTimezone: Integer;
@@ -139,10 +138,6 @@ type
 
   end;
 
-
-
-
-
   { TPrefs preferences dialog}
 
   TPrefs = class(TForm)
@@ -187,13 +182,19 @@ type
     PanStatus: TPanel;
     PanColors: TTitlePanel;
     PanSystem: TTitlePanel;
+    SBEditTowns: TSpeedButton;
     procedure CBMiniintrayClick(Sender: TObject);
     procedure CBTownsSelect(Sender: TObject);
     procedure ECoordKeyPress(Sender: TObject; var Key: char);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure SBEditTownsClick(Sender: TObject);
   private
     //
   public
+    CalAppDataPath: String;
     csvtowns: TcsvDocument;
+    TownsListChanged: Boolean;
     function CBFind(tname: String): Integer;
     function findtown(tname: string): Integer;
   end;
@@ -219,6 +220,47 @@ var  ClesTri: array[0..Ord(High(TChampsCompare))] of TChampsCompare;
 procedure TPrefs.ECoordKeyPress(Sender: TObject; var Key: char);
 begin
    if not (Key in ['0'..'9', '.', #8, #9]) then Key := #0;
+end;
+
+procedure TPrefs.FormCreate(Sender: TObject);
+var
+  r: TLResource;
+  i: Integer;
+begin
+  {$I calendrier.lrs}
+  csvtowns:= TCSVDocument.Create;
+  if FileExists(CalAppDataPath+'fr_villes.csv')then csvtowns.LoadFromFile(CalAppDataPath+'fr_villes.csv') else
+  begin
+    r:= LazarusResources.Find('fr_villes');
+    csvtowns.CSVText:= r.value;
+  end;
+  for i:= 0 to csvtowns.RowCount-1 do CBTowns.Items.Add(csvtowns.Cells[0,i]);
+  CBTowns.ItemIndex:= 0;
+end;
+
+procedure TPrefs.FormDestroy(Sender: TObject);
+begin
+    if assigned(csvtowns) then FreeAndNil(csvTowns);
+end;
+
+
+// Edit towns list
+procedure TPrefs.SBEditTownsClick(Sender: TObject);
+var
+  i: Integer;
+  s: String;
+begin
+  FTowns.ShowModal;
+  TownsListChanged:= FTowns.TownsListChanged;
+  if TownsListChanged then
+  begin
+    s:= CBTowns.Text;
+    csvtowns.csvText:= FTowns.csv.csvText;
+    CBTowns.Clear;
+    for i:= 0 to csvtowns.RowCount-1 do
+      CBTowns.Items.Add(csvtowns.Cells[0,i]);
+    CBTowns.ItemIndex:= CBFind(s);
+  end;
 end;
 
 
@@ -256,7 +298,6 @@ end;
 function TPrefs.findtown(tname: string): Integer;
 var
   i: Integer;
-  curtown: TTown;
 begin
  result:= -1;
  for i:= 0 to csvtowns.RowCount-1 do
@@ -641,7 +682,6 @@ end;
 function TFichierList.FindYearAndHalf(yr, hf: Integer): integer;
 var
  i: integer;
- yr1, hf1: Integer;
 begin
   result:=-1;
 for i:= 0 to count-1 do

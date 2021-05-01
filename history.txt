@@ -44,11 +44,19 @@ Version 0.6.4.1 - 27/04/2021
 - Installateur Windows 32/64 bits
 
 Version 0.6.4.2 - 28/04/2021
-- Correction des erreurs de jours fériés en réinitialisant et et védrifiant la validité
+- Correction des erreurs de jours fériés en réinitialisant et et vérifiant la validité
   de l'array de Days
 - Correction de l'erreur d'exception avec un mauvais URL de mise à jour
 
 Version 0.6.4.3 - 29/04/2021
 - Simplification de l'affichage des jours, utilisation de deux grilles.
 - Simplification des préférences de latitude et longitude, uniquement en valeurs décimales
+
+Version 0.6.5.0 - 01/05/2021
+- Ajout d'un éditeur de la liste des villes (expérimental) : bouton à droite des
+  champs de latitude et de longitude dans le dailogue des préférences
+- Dialogue de confirmation lors de la suppression d'une image de semestre
+- Changement d'année possible dans la boite d'édition dans la barre de statut
+- Utilisation de TLabel pour l'affichage du jour, du jour sélectionné et des saisons
+- Suppression des limites horizontales entre les jours
 

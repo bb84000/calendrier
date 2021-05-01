@@ -18,6 +18,7 @@ type
     EFilename: TEdit;
     ImgOrig: TImage;
     Image2: TImage;
+    LInfos: TLabel;
     OPD1: TOpenPictureDialog;
     PanImgOrig: TPanel;
     PanImgRsizd: TPanel;
@@ -38,7 +39,6 @@ type
     rec1: Trect;
     sizratio: Double;
     bmp: Tbitmap;
-    rec: Trect;
     InitImgWidth, initImgHeight: Integer;
   public
     jpeg:TJPEGImage;

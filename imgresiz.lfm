@@ -83,12 +83,21 @@ object FImgResiz: TFImgResiz
     TabOrder = 3
   end
   object EFilename: TEdit
-    Left = 16
+    Left = 10
     Height = 23
     Top = 360
-    Width = 400
+    Width = 406
     ReadOnly = True
     TabOrder = 4
+  end
+  object LInfos: TLabel
+    Left = 10
+    Height = 15
+    Top = 330
+    Width = 406
+    AutoSize = False
+    Caption = 'Déplacez le rectangle rouge pour recadrer l''image'
+    ParentColor = False
   end
   object OPD1: TOpenPictureDialog
     Left = 576
