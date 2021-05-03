@@ -9,10 +9,11 @@ uses
     Win32Proc,
   {$ENDIF}
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
-  Grids, StdCtrls, lazbbcontrols, Suntime, csvdocument, Types, DateUtils,
-  lazbbastro, LResources, Buttons, Menus, UniqueInstance, registry, lazbbutils,
-  lazbbautostart, LazUTF8, lazbbosver, laz2_DOM, laz2_XMLRead, laz2_XMLWrite,
-  calsettings, ImgResiz, lazbbaboutupdate, lazbbinifiles, Towns1, Clipbrd;
+  Grids, StdCtrls, lazbbcontrols, Suntime, Moonphases, csvdocument, Types,
+  DateUtils, lazbbastro, LResources, Buttons, Menus, UniqueInstance, registry,
+  lazbbutils, lazbbautostart, LazUTF8, lazbbosver, laz2_DOM, laz2_XMLRead,
+  laz2_XMLWrite, calsettings, ImgResiz, lazbbaboutupdate, lazbbinifiles, Towns1,
+  Clipbrd;
 
 
 type
@@ -68,6 +69,7 @@ type
     LTodayDesc: TLabel;
     LTodayTime: TLabel;
     LImageInsert: TLabel;
+    Moonphases1: TMoonphases;
     PTMnuPrint: TMenuItem;
     PMnuPrint: TMenuItem;
     PMnuCopy: TMenuItem;
@@ -1330,7 +1332,6 @@ var
   PaqDay, DepDay, MerDay: TDateTime;
   DOY: Integer;
   vacbeg, vacend: TDateTime;
-  LuneYr: TMoonDays;
   dt: TDateTime;
   dSpr, dSum, DAut, dWin: TDateTime;
 begin
@@ -1340,6 +1341,7 @@ begin
     if Annee < 1583 then Annee := 1583;
     // Ni après l'année 9998
     if Annee > 9998 then Annee := 9998;
+    Moonphases1.Moonyear:= Annee;
     // Bissextile ?
     if Isleapyear(Annee) then
     begin
@@ -1425,15 +1427,17 @@ begin
     end;
     // Update moon phases
     s:='NLPQDQPL';
-    LuneYr:= Get_MoonDays(BegYear-10);
-    for i:= 1 to length(LuneYr) do
+    //LuneYr:= Get_MoonDays(BegYear-10);
+    // for i:= 1 to length(LuneYr) do
+    for i:= 1 to length(Moonphases1.Moondays) do
     begin
-      DOY:= trunc(LuneYr[i].MDays-BegYear);
+     // DOY:= trunc(LuneYr[i].MDays-BegYear);
+      DOY:= trunc( Moonphases1.Moondays[i].MDays-BegYear);
       if (DOY >=0) and (DOY<length(days)-1) then
       begin
         Days[DOY].bMoon:= true;
-        Days[DOY].sMoon:= LuneYr[i].MType;
-        dt:= LuneYr[i].MDays;
+        Days[DOY].sMoon:= Moonphases1.Moondays[i].MType;
+        dt:= Moonphases1.Moondays[i].MDays;
         dt:= IncMinute(dt, Settings.TimeZone+60*Int64(IsDST(dt)));
         Days[DOY].dMoon:= dt;
         Days[DOY].sMoonDesc:= MoonDescs[Pos(Days[DOY].sMoon, s) div 2];

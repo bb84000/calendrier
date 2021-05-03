@@ -1932,4 +1932,9 @@ object FCalendrier: TFCalendrier
     Left = 480
     Top = 117
   end
+  object Moonphases1: TMoonphases
+    Moonyear = 0
+    Left = 544
+    Top = 120
+  end
 end

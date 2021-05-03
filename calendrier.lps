@@ -18,18 +18,20 @@
         <ComponentName Value="FCalendrier"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <TopLine Value="1036"/>
-        <CursorPos X="24" Y="1063"/>
+        <TopLine Value="1423"/>
+        <CursorPos X="33" Y="1439"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="..\lazbbunits\lazbbastro.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="353"/>
-        <CursorPos X="6" Y="370"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="8"/>
+        <CursorPos X="3" Y="26"/>
         <UsageCount Value="200"/>
+        <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="calsettings.pas"/>
@@ -40,7 +42,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="659"/>
         <CursorPos X="52" Y="676"/>
-        <UsageCount Value="185"/>
+        <UsageCount Value="188"/>
       </Unit3>
       <Unit4>
         <Filename Value="imgresiz.pas"/>
@@ -52,7 +54,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="26"/>
         <CursorPos X="44" Y="32"/>
-        <UsageCount Value="149"/>
+        <UsageCount Value="152"/>
       </Unit4>
       <Unit5>
         <Filename Value="..\lazbbunits\lazbbaboutupdate.pas"/>
@@ -63,14 +65,14 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="88"/>
         <CursorPos Y="116"/>
-        <UsageCount Value="115"/>
+        <UsageCount Value="118"/>
       </Unit5>
       <Unit6>
         <Filename Value="calendrier.ini"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="64" Y="5"/>
-        <UsageCount Value="108"/>
+        <UsageCount Value="111"/>
         <DefaultSyntaxHighlighter Value="Ini"/>
       </Unit6>
       <Unit7>
@@ -82,7 +84,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="268"/>
         <CursorPos Y="287"/>
-        <UsageCount Value="80"/>
+        <UsageCount Value="83"/>
       </Unit7>
       <Unit8>
         <Filename Value="..\lazbbunits\phaseslune.pas"/>
@@ -91,7 +93,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="275"/>
         <CursorPos X="152" Y="275"/>
-        <UsageCount Value="61"/>
+        <UsageCount Value="64"/>
       </Unit8>
       <Unit9>
         <Filename Value="soleil1.pas"/>
@@ -99,7 +101,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="37"/>
         <CursorPos X="37" Y="46"/>
-        <UsageCount Value="59"/>
+        <UsageCount Value="62"/>
       </Unit9>
       <Unit10>
         <Filename Value="calendrierres.rc"/>
@@ -238,10 +240,11 @@
       </Unit27>
       <Unit28>
         <Filename Value="history.txt"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="32"/>
-        <CursorPos Y="65"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="30"/>
+        <CursorPos X="10" Y="66"/>
         <UsageCount Value="100"/>
+        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit28>
       <Unit29>
@@ -475,9 +478,11 @@
       </Unit59>
       <Unit60>
         <Filename Value="calendrier.txt"/>
-        <EditorIndex Value="-1"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
         <CursorPos X="29"/>
         <UsageCount Value="39"/>
+        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit60>
       <Unit61>
@@ -504,17 +509,16 @@
       <Unit64>
         <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
         <UnitName Value="Suntime"/>
-        <EditorIndex Value="1"/>
-        <TopLine Value="81"/>
-        <CursorPos X="44" Y="99"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="65"/>
+        <CursorPos X="5" Y="85"/>
         <ExtraEditorCount Value="1"/>
         <ExtraEditor1>
           <EditorIndex Value="-1"/>
-          <TopLine Value="65"/>
-          <CursorPos X="5" Y="85"/>
+          <TopLine Value="142"/>
+          <CursorPos Y="155"/>
         </ExtraEditor1>
-        <UsageCount Value="23"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="25"/>
       </Unit64>
       <Unit65>
         <Filename Value="calendrier.lrs"/>
@@ -538,135 +542,18 @@
       <Unit68>
         <Filename Value="..\Packets\Lazbbcomponents\moonphases.pas"/>
         <UnitName Value="Moonphases"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="2"/>
-        <TopLine Value="31"/>
-        <CursorPos X="60" Y="37"/>
-        <UsageCount Value="11"/>
-        <Loaded Value="True"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="-1"/>
+        <TopLine Value="283"/>
+        <CursorPos X="21" Y="312"/>
+        <UsageCount Value="13"/>
       </Unit68>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="1">
       <Position1>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="56" Column="14" TopLine="39"/>
+        <Filename Value="calendrier1.pas"/>
+        <Caret Line="1087" TopLine="1024"/>
       </Position1>
-      <Position2>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="145" Column="44" TopLine="123"/>
-      </Position2>
-      <Position3>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="139" Column="83" TopLine="122"/>
-      </Position3>
-      <Position4>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="56" Column="14" TopLine="41"/>
-      </Position4>
-      <Position5>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="145" Column="83" TopLine="129"/>
-      </Position5>
-      <Position6>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="230" Column="36" TopLine="217"/>
-      </Position6>
-      <Position7>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="249" Column="44" TopLine="221"/>
-      </Position7>
-      <Position8>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="257" Column="44" TopLine="229"/>
-      </Position8>
-      <Position9>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="225" Column="51" TopLine="205"/>
-      </Position9>
-      <Position10>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="230" Column="40" TopLine="205"/>
-      </Position10>
-      <Position11>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="249" Column="45" TopLine="221"/>
-      </Position11>
-      <Position12>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="257" Column="45" TopLine="229"/>
-      </Position12>
-      <Position13>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="230" Column="48" TopLine="223"/>
-      </Position13>
-      <Position14>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="254" Column="96" TopLine="223"/>
-      </Position14>
-      <Position15>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="236" Column="20" TopLine="221"/>
-      </Position15>
-      <Position16>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="241" Column="15" TopLine="221"/>
-      </Position16>
-      <Position17>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="242" Column="25" TopLine="221"/>
-      </Position17>
-      <Position18>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="251" Column="17" TopLine="223"/>
-      </Position18>
-      <Position19>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="259" Column="17" TopLine="232"/>
-      </Position19>
-      <Position20>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="56" Column="19" TopLine="38"/>
-      </Position20>
-      <Position21>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="79" Column="49" TopLine="63"/>
-      </Position21>
-      <Position22>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="56" Column="40" TopLine="36"/>
-      </Position22>
-      <Position23>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="139" Column="50" TopLine="123"/>
-      </Position23>
-      <Position24>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="145" Column="46" TopLine="122"/>
-      </Position24>
-      <Position25>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="230" Column="50" TopLine="223"/>
-      </Position25>
-      <Position26>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="250" Column="65" TopLine="223"/>
-      </Position26>
-      <Position27>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="258" Column="65" TopLine="230"/>
-      </Position27>
-      <Position28>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="80" Column="56" TopLine="64"/>
-      </Position28>
-      <Position29>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="145" Column="46" TopLine="123"/>
-      </Position29>
-      <Position30>
-        <Filename Value="..\Packets\Lazbbcomponents\suntime.pas"/>
-        <Caret Line="135" TopLine="129"/>
-      </Position30>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>

@@ -60,6 +60,8 @@ Version 0.6.5.0 - 01/05/2021
 - Utilisation de TLabel pour l'affichage du jour, du jour sélectionné et des saisons
 - Suppression des limites horizontales entre les jours
 
-Version 0.6.5.1 - ??/05/2021
+Version 0.6.5.1 - 03/05/2021
 - Optimisation de l'installeur
+- Utilisation des composants lazbbAstroComponents pour les horaires du soleil et de
+  la lune
 
