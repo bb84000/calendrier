@@ -1,5 +1,5 @@
 ;Installation script for Calendrier
-; bb - sdtp - april 2021
+; bb - sdtp - may 2021
 ;--------------------------------
 
   !include "MUI2.nsh"
@@ -43,6 +43,7 @@
   !define MUI_FINISHPAGE_SHOWREADME
   !define MUI_FINISHPAGE_SHOWREADME_TEXT "$(Check_box)"
   !define MUI_FINISHPAGE_SHOWREADME_FUNCTION inst_shortcut
+
 ; Pages
 
   !insertmacro MUI_PAGE_WELCOME
@@ -102,12 +103,19 @@
 ;--------------------------------
 
   !getdllversion  "${source_dir}\calendrierwin64.exe" expv_
-   VIProductVersion "${expv_1}.${expv_2}.${expv_3}.${expv_4}"
-   VIAddVersionKey "FileVersion" "${expv_1}.${expv_2}.${expv_3}.${expv_4}"
+  !define FileVersion "${expv_1}.${expv_2}.${expv_3}.${expv_4}"
+
+  VIProductVersion "${FileVersion}"
+   VIAddVersionKey "FileVersion" "${FileVersion}"
    VIAddVersionKey "ProductName" "Installcalendrier.exe"
    VIAddVersionKey "FileDescription" "Calendar Installer"
    VIAddVersionKey "LegalCopyright" "sdtp - bb"
-   VIAddVersionKey "ProductVersion" "${expv_1}.${expv_2}.${expv_3}.${expv_4}"
+   VIAddVersionKey "ProductVersion" "${FileVersion}"
+   
+
+  ; Change nsis brand line
+  BrandingText "$(ProgramDescStr) version ${FileVersion} - bb - sdtp"
+  
 ; The stuff to install
 Section "" ;No components page, name is not important
   SetShellVarContext all
@@ -120,7 +128,6 @@ Section "" ;No components page, name is not important
   Var /GLOBAL prg_to_del
   
   ${If} ${RunningX64}  ; change registry entries and install dir for 64 bit
-     !getdllversion  "${source_dir}\calendrierwin64.exe" expv_
      StrCpy "$prg_to_inst" "$INSTDIR\calendrierwin64.exe"
      StrCpy "$prg_to_del" "$INSTDIR\calendrierwin32.exe"
      IfFileExists "$WINDIR\sysnative\libeay32.dll" ssl_lib64_found ssl_lib64_not_found
@@ -130,7 +137,6 @@ Section "" ;No components page, name is not important
        File "${lazarus_dir}\openssl\OpenSSL License.txt"
      ssl_lib64_found:
   ${Else}
-     !getdllversion  "${source_dir}\calendrierwin32.exe" expv_
      StrCpy "$prg_to_inst" "$INSTDIR\calendrierwin32.exe"
      StrCpy "$prg_to_del" "$INSTDIR\calendrierwin64.exe"
      IfFileExists "$WINDIR\system32\libeay32.dll" ssl_lib32_found ssl_lib32_not_found
@@ -163,9 +169,9 @@ Section "" ;No components page, name is not important
   WriteRegStr HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\calendrier" "UninstallString" "$INSTDIR\uninst.exe"
   WriteRegStr HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\calendrier" "DisplayIcon" "$INSTDIR\uninst.exe"
   WriteRegStr HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\calendrier" "DisplayName" "$(RemoveStr)"
-  WriteRegStr HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\calendrier" "DisplayVersion" "${expv_1}.${expv_2}.${expv_3}.${expv_4}"
+  WriteRegStr HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\calendrier" "DisplayVersion" "${FileVersion}"
   WriteRegDWORD HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\calendrier" "EstimatedSize" "$0"
-  WriteRegStr HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\calendrier" "Publisher" "SDTP"
+  WriteRegStr HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\calendrier" "Publisher" "bb - sdtp"
   WriteRegStr HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\calendrier" "URLInfoAbout" "www.sdtp.com"
   WriteRegStr HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\calendrier" "HelpLink" "www.sdtp.com"
   ;Store install folder

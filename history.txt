@@ -54,9 +54,12 @@ Version 0.6.4.3 - 29/04/2021
 
 Version 0.6.5.0 - 01/05/2021
 - Ajout d'un éditeur de la liste des villes (expérimental) : bouton à droite des
-  champs de latitude et de longitude dans le dailogue des préférences
+  champs de latitude et de longitude dans le dialogue des préférences
 - Dialogue de confirmation lors de la suppression d'une image de semestre
 - Changement d'année possible dans la boite d'édition dans la barre de statut
 - Utilisation de TLabel pour l'affichage du jour, du jour sélectionné et des saisons
 - Suppression des limites horizontales entre les jours
+
+Version 0.6.5.1 - ??/05/2021
+- Optimisation de l'installeur
 

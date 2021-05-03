@@ -733,7 +733,8 @@ var
   chNode: TDOMNode;
   k: PFichier;
 begin
-  chNode := iNode.FirstChild;
+ result:= false;
+ chNode := iNode.FirstChild;
   while (chNode <> nil) and (chnode.NodeName='file')  do
   begin
     Try
@@ -745,6 +746,7 @@ begin
       K^.Path := TDOMElement(chNode).GetAttribute('path');
       K^.LocalCopy:= TDOMElement(chNode).GetAttribute('localcopy');
       add(K);
+      Result:= true;
     finally
       chNode := chNode.NextSibling;
     end;
