@@ -9,11 +9,11 @@ uses
     Win32Proc,
   {$ENDIF}
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
-  Grids, StdCtrls, lazbbcontrols, Suntime, Moonphases, csvdocument, Types,
-  DateUtils, lazbbastro, LResources, Buttons, Menus, UniqueInstance, registry,
-  lazbbutils, lazbbautostart, LazUTF8, lazbbosver, laz2_DOM, laz2_XMLRead,
-  laz2_XMLWrite, calsettings, ImgResiz, lazbbaboutupdate, lazbbinifiles, Towns1,
-  Clipbrd;
+  Grids, StdCtrls, lazbbcontrols, Suntime, Moonphases, Seasons, csvdocument,
+  Types, DateUtils, lazbbastro, LResources, Buttons, Menus, UniqueInstance,
+  registry, lazbbutils, lazbbautostart, LazUTF8, lazbbosver, laz2_DOM,
+  laz2_XMLRead, laz2_XMLWrite, calsettings, ImgResiz, lazbbaboutupdate,
+  lazbbinifiles, Towns1, Clipbrd;
 
 
 type
@@ -36,6 +36,7 @@ type
     sFeDesc: string;
     sHoliday: string;       //A, B, C, K
     sMoon: String;
+    iMoonIndex: Integer;
     sMoonDesc: String;
     dMoon: TDateTime;
     bSunday: boolean;
@@ -62,7 +63,6 @@ type
     EYear: TEdit;
     ILMenus: TImageList;
     ImageHalf: TImage;
-    ImgLMoon: TImageList;
     LSeasons1: TLabel;
     LSelDay: TLabel;
     LSeasons2: TLabel;
@@ -78,6 +78,7 @@ type
     MnuSep1: TMenuItem;
     MnuSep2: TMenuItem;
     SBPrint: TSpeedButton;
+    Seasons1: TSeasons;
     Suntime1: TSuntime;
     TabHalf1: TPanel;
     TabHalf2: TPanel;
@@ -121,6 +122,7 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure ImageHalfClick(Sender: TObject);
     procedure PanStatusClick(Sender: TObject);
     procedure PMnuAddImgClick(Sender: TObject);
     procedure PMnuCopyClick(Sender: TObject);
@@ -168,7 +170,7 @@ type
     WState: String;
     WinState: TWindowState;
     PrevLeft, PrevTop: Integer;
-    MoonDescs: array [0..3] of string;
+    MoonDescs: array [0..7] of string;
     csvsaints, csvferies,csvvacs: TCSVDocument;
     FeriesTxt: String;
     ColorDay, ColorSunday, ColorFerie: TColor;
@@ -694,6 +696,11 @@ begin
   if assigned(csvsaints) then FreeAndNil(csvsaints);
   if assigned(csvferies) then FreeAndNil(csvferies);
   if assigned(csvvacs) then FreeAndNil(csvvacs);
+end;
+
+procedure TFCalendrier.ImageHalfClick(Sender: TObject);
+begin
+
 end;
 
 procedure TFCalendrier.PanStatusClick(Sender: TObject);
@@ -1274,13 +1281,12 @@ begin;
         // Affiche les phases de la lune
         if (CBLune.Checked) and (curDay.bMoon) then
         begin
-          aRect.Top:= aRect.Top+(aRect.Bottom-aRect.Top-10) div 2;    // L'image doit faire 10 px
-          aRect.Bottom:= aRect.Top+ 10;
+          aRect.Top:= aRect.Top+(aRect.Bottom-aRect.Top-12) div 2;    // L'image va faire 12 px
+          aRect.Bottom:= aRect.Top+ 12;
           aRect.Right:= aRect.Right-2;                                 // Espace de 2 px à droite
-          aRect.Left:= aRect.Right-10;
-          s:='NLPQDQPL';
-          ImgNum:= Pos(curDay.sMoon, s) div 2;
-          ImgLMoon.StretchDraw(SGCur.Canvas, ImgNum, aRect);
+          aRect.Left:= aRect.Right-12;
+          ImgNum:= curDay.iMoonIndex;
+          Moonphases1.MoonImages.StretchDraw(SGCur.Canvas, ImgNum, aRect);
         end;
       end else
       begin
@@ -1341,8 +1347,7 @@ begin
     if Annee < 1583 then Annee := 1583;
     // Ni après l'année 9998
     if Annee > 9998 then Annee := 9998;
-    Moonphases1.Moonyear:= Annee;
-    // Bissextile ?
+     // Bissextile ?
     if Isleapyear(Annee) then
     begin
       aMonths := leapyear;
@@ -1426,51 +1431,54 @@ begin
       end;
     end;
     // Update moon phases
-    s:='NLPQDQPL';
-    //LuneYr:= Get_MoonDays(BegYear-10);
-    // for i:= 1 to length(LuneYr) do
-    for i:= 1 to length(Moonphases1.Moondays) do
+    Moonphases1.Moonyear:= Annee;
+    for i:= 0 to length(Moonphases1.Moondays)-1 do
     begin
-     // DOY:= trunc(LuneYr[i].MDays-BegYear);
-      DOY:= trunc( Moonphases1.Moondays[i].MDays-BegYear);
-      if (DOY >=0) and (DOY<length(days)-1) then
-      begin
-        Days[DOY].bMoon:= true;
-        Days[DOY].sMoon:= Moonphases1.Moondays[i].MType;
-        dt:= Moonphases1.Moondays[i].MDays;
-        dt:= IncMinute(dt, Settings.TimeZone+60*Int64(IsDST(dt)));
-        Days[DOY].dMoon:= dt;
-        Days[DOY].sMoonDesc:= MoonDescs[Pos(Days[DOY].sMoon, s) div 2];
+      try
+        DOY:= trunc( Moonphases1.Moondays[i].MDays-BegYear);
+        if (DOY >=0) and (DOY<length(days)-1) then
+        begin
+          Days[DOY].bMoon:= true;
+          //Days[DOY].sMoon:= Moonphases1.Moondays[i].MType;
+          dt:= Moonphases1.Moondays[i].MDays;
+          //dt:= IncMinute(dt, Settings.TimeZone+60*Integer(IsDST(dt)));
+          Days[DOY].dMoon:= dt;
+          Days[DOY].iMoonIndex:= Moonphases1.Moondays[i].MIndex;
+          Days[DOY].sMoonDesc:= MoonDescs[Days[DOY].iMoonIndex];
+        end;
+      except
+
       end;
     end;
     // Saisons
-    dSpr:= GetSeasonDate(Annee, 0);
-    dSum:= GetSeasonDate(Annee, 1);
-    dAut:= GetSeasonDate(Annee, 2);
-    dWin:= GetSeasonDate(Annee, 3);
+    Seasons1.Seasyear:= Annee;
+    dSpr:= Seasons1.SpringDate; //GetSeasonDate(Annee, 0);
+    dSpr:= IncMinute(dSpr, Settings.TimeZone+60*Int64(IsDST(dSpr)));
     DOY:= trunc(dSpr-BegYear);
     Days[DOY].bSeason:= true;
     Days[DOY].dSeason:= dSpr;
     Days[DOY].sSeasonDesc:= sSeasonSpring;
-    dSpr:= IncMinute(dSpr, Settings.TimeZone+60*Int64(IsDST(dSpr)));
     s:= Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', Days[DOY].dSeason)+LineEnding;
+    dSum:= Seasons1.SummerDate; //GetSeasonDate(Annee, 1);
+    dSum:= IncMinute(dSum, Settings.TimeZone+60*Int64(IsDST(dSum)));
     DOY:= trunc(dSum-BegYear);
     Days[DOY].bSeason:= true;
     Days[DOY].dSeason:= dSum;
     Days[DOY].sSeasonDesc:= sSeasonSummer;
-    dSum:= IncMinute(dSum, Settings.TimeZone+60*Int64(IsDST(dSum)));
     LSeasons1.Caption:=s+Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dSum);
+    dAut:= Seasons1.AutumnDate; //GetSeasonDate(Annee, 2);
+    dAut:= IncMinute(dAut, Settings.TimeZone+60*Int64(IsDST(dAut)));
     DOY:= trunc(dAut-BegYear);
     Days[DOY].bSeason:= true;
     Days[DOY].dSeason:= dAut;
     Days[DOY].sSeasonDesc:= sSeasonAutumn;
-    dAut:= IncMinute(dAut, Settings.TimeZone+60*Int64(IsDST(dAut)));
     s:= Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dAut)+LineEnding;
+    dWin:= Seasons1.WinterDate; //GetSeasonDate(Annee, 3);
+    dWin:= IncMinute(dWin, Settings.TimeZone+60*Int64(IsDST(dWin)));
     DOY:= trunc(dWin-BegYear);
     Days[DOY].bSeason:= true;
     Days[DOY].dSeason:= dWin;
     Days[DOY].sSeasonDesc:= sSeasonWinter;
-    dWin:= IncMinute(dWin, Settings.TimeZone+60*Int64(IsDST(dWin)));
     LSeasons2.Caption:=s+Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dWin);
     Application.ProcessMessages;
     SG1.OnDrawCell:= @SGDrawCell ;
@@ -1490,9 +1498,13 @@ begin
   With LangFile do
   begin
     MoonDescs[0]:= ReadString(LangStr, 'MoonDescs0', 'Nouvelle Lune');
-    MoonDescs[1]:= ReadString(LangStr, 'MoonDescs1', 'Premier quartier');
-    MoonDescs[2]:= ReadString(LangStr, 'MoonDescs2', 'Dernier quartier');
-    MoonDescs[3]:= ReadString(LangStr, 'MoonDescs3', 'Pleine lune');
+    MoonDescs[1]:= ReadString(LangStr, 'MoonDescs1', 'Premier croissant');
+    MoonDescs[2]:= ReadString(LangStr, 'MoonDescs2', 'Premier quartier');
+    MoonDescs[3]:= ReadString(LangStr, 'MoonDescs3', 'Gibbeuse croissante');
+    MoonDescs[4]:= ReadString(LangStr, 'MoonDescs4', 'Pleine lune');
+    MoonDescs[5]:= ReadString(LangStr, 'MoonDescs5', 'Gibbeuse décroissante');
+    MoonDescs[6]:= ReadString(LangStr, 'MoonDescs6', 'Dernier quartier');
+    MoonDescs[7]:= ReadString(LangStr, 'MoonDescs7', 'Dernier croissant');
     sHolidayZone:= ReadString(LangStr, 'sHolidayZone', 'Vacances zone');
     CancelBtn:= ReadString(LangStr, 'CancelBtn', 'Annuler');
     YesBtn:= ReadString(LangStr, 'YesBtn', 'Oui');

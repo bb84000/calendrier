@@ -1,4 +1,4 @@
-Calendrier - Version 0.6.5.1
+Calendrier - Version 0.6.5.2
 
 OBJET
 Calendrier perpétuel (1483 à 2100+).

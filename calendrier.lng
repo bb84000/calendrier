@@ -14,10 +14,14 @@
 [en]
 ;General
 sMainCaption=Calendar
-MoonDescs0=New Moon
-MoonDescs1=First Quarter
-MoonDescs2=Last Quarter
-MoonDescs3=Full Moon
+MoonDescs0=New moonn
+MoonDescs1=Waxing crescent
+MoonDescs2=First quarter
+MoonDescs3=Waxing gibbous
+MoonDescs4=Full moon
+MoonDescs5=Waning gibbous
+MoonDescs6=Third quarter
+MoonDescs7=Waning crescent
 CancelBtn=Cancel
 YesBtn=Yes
 NoBtn=No
@@ -117,9 +121,13 @@ FTowns.sConfirmDelTown=Are you sure you want delete
 ;General
 sMainCaption=Calendrier
 MoonDescs0=Nouvelle Lune
-MoonDescs1=Premier quartier
-MoonDescs2=Dernier quartier
-MoonDescs3=Pleine lune
+MoonDescs1=Premier croissant
+MoonDescs2=Premier quartier
+MoonDescs3=Gibbeuse croissante
+MoonDescs4=Pleine lune
+MoonDescs5=Gibbeuse décroissante
+MoonDescs6=Dernier quartier
+MoonDescs7=Dernier croissant
 CancelBtn=Annuler
 YesBtn=Oui
 NoBtn=Non
