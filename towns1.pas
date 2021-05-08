@@ -151,7 +151,7 @@ end;
 
 procedure TFTowns.ECoordKeyPress(Sender: TObject; var Key: char);
 begin
-   if not (Key in ['0'..'9', '.', #8, #9]) then Key := #0;
+   if not (Key in ['0'..'9', '.','-', #8, #9]) then Key := #0;
 end;
 
 procedure TFTowns.ELongitudeChange(Sender: TObject);

@@ -232,7 +232,7 @@ object FTowns: TFTowns
       Top = 20
       Width = 45
       AutoSize = False
-      NumbersOnly = True
+      OnKeyPress = ECoordKeyPress
       ParentFont = False
       TabOrder = 10
     end

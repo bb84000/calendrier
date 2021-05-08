@@ -24,7 +24,6 @@ object FCalendrier: TFCalendrier
     ClientHeight = 41
     ClientWidth = 1276
     TabOrder = 0
-    OnClick = PanStatusClick
     object EYear: TEdit
       Left = 589
       Height = 23
@@ -1004,7 +1003,6 @@ object FCalendrier: TFCalendrier
         Width = 601
         Align = alClient
         Center = True
-        OnClick = ImageHalfClick
         Proportional = True
         Stretch = True
       end
@@ -1879,5 +1877,10 @@ object FCalendrier: TFCalendrier
     Seasyear = 2021
     Left = 584
     Top = 120
+  end
+  object Easter1: TEaster
+    EasterYear = 0
+    Left = 635
+    Top = 121
   end
 end

@@ -14,7 +14,7 @@ type
     depart: string;
     latitude: double;
     longitude: double;
-    timezone: integer;
+    timezone: double;
   end;
 
   {Settings file management }
@@ -36,7 +36,7 @@ type
       flangstr: String;
       ftown: String;
       ftownIndex: Integer;
-      fTimezone: Integer;
+      fTimezone: Double;
       fDaysColors: array [0..4] of TColor;
       fVacsColors: array [0..3] of TColor;
       fChkBoxs: array [0..4] of Boolean;
@@ -55,7 +55,7 @@ type
       procedure SetChkBox (Index: Integer; Value: Boolean);
       function GetCoord (Index: Integer): Double;
       procedure SetCoord (Index: Integer; Value: Double);
-      procedure setTimezone (Value: Integer);
+      procedure setTimezone (Value: Double);
       procedure setTown(value: String);
       procedure setTownIndex(value: Integer);
       procedure setLastupdchk(value: TDateTime);
@@ -85,7 +85,7 @@ type
       property langstr: String read flangstr write setLangstr;
       property town: String read ftown write setTown;
       property townIndex: Integer read ftownIndex write setTownIndex;
-      property timezone: integer read fTimezone write setTimezone;
+      property timezone: Double read fTimezone write setTimezone;
       property latitude: Double index 0 read GetCoord write SetCoord;
       property longitude: Double index 1 read GetCoord write SetCoord;
       property colback: TColor index 0 read GetDaysColor write SetDaysColor;
@@ -219,7 +219,7 @@ var  ClesTri: array[0..Ord(High(TChampsCompare))] of TChampsCompare;
 
 procedure TPrefs.ECoordKeyPress(Sender: TObject; var Key: char);
 begin
-   if not (Key in ['0'..'9', '.', #8, #9]) then Key := #0;
+   if not (Key in ['0'..'9', '.', '-', #8, #9]) then Key := #0;
 end;
 
 procedure TPrefs.FormCreate(Sender: TObject);
@@ -488,7 +488,7 @@ begin
   end;
 end;
 
-procedure TSettings.setTimezone(Value: integer);
+procedure TSettings.setTimezone(Value: Double);
 begin
   if fTimezone<> value then
   begin
@@ -552,7 +552,7 @@ begin
     TDOMElement(iNode).SetAttribute ('langstr', FLangStr);
     TDOMElement(iNode).SetAttribute ('town', fTown);
     TDOMElement(iNode).SetAttribute ('townindex', InttoStr(fTownindex));
-    TDOMElement(iNode).SetAttribute ('timezone', IntToStr(fTimezone));
+    TDOMElement(iNode).SetAttribute ('timezone', FloatToString(fTimezone));
     TDOMElement(iNode).SetAttribute ('latitude', FloatToString(fCoords[0]));     // latitude
     TDOMElement(iNode).SetAttribute ('longitude', FloatToString(fCoords[1]));    // longitude
     TDOMElement(iNode).SetAttribute ('colback', ColorToString(colback));
@@ -597,7 +597,7 @@ begin
     FLangStr:= TDOMElement(iNode).GetAttribute('langstr');
     fTown:= TDOMElement(iNode).GetAttribute('town');
     ftownIndex:= StringToInt(TDOMElement(iNode).GetAttribute('townindex'));
-    fTimezone:= StringToInt(TDOMElement(iNode).GetAttribute('timezone'));
+    fTimezone:= StringToFloat(TDOMElement(iNode).GetAttribute('timezone'));
     fCoords[0]:= StringToFloat(TDOMElement(iNode).GetAttribute('latitude'));
     fCoords[1]:= StringToFloat(TDOMElement(iNode).GetAttribute('longitude'));
     fDaysColors[0]:= StringToColour(TDOMElement(iNode).GetAttribute('colback'));

@@ -1,3 +1,8 @@
+//******************************************************************************
+// Calendrier main form
+// bb- sdtp- May 2021
+//******************************************************************************
+
 unit calendrier1;
 
 {$mode objfpc}{$H+}
@@ -9,11 +14,11 @@ uses
     Win32Proc,
   {$ENDIF}
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
-  Grids, StdCtrls, lazbbcontrols, Suntime, Moonphases, Seasons, csvdocument,
-  Types, DateUtils, lazbbastro, LResources, Buttons, Menus, UniqueInstance,
-  registry, lazbbutils, lazbbautostart, LazUTF8, lazbbosver, laz2_DOM,
-  laz2_XMLRead, laz2_XMLWrite, calsettings, ImgResiz, lazbbaboutupdate,
-  lazbbinifiles, Towns1, Clipbrd;
+  Grids, StdCtrls, lazbbcontrols, Suntime, Moonphases, Seasons, Easter,
+  csvdocument, Types, DateUtils, lazbbastro, LResources, Buttons, Menus,
+  UniqueInstance, registry, lazbbutils, lazbbautostart, LazUTF8, lazbbosver,
+  laz2_DOM, laz2_XMLRead, laz2_XMLWrite, calsettings, ImgResiz,
+  lazbbaboutupdate, lazbbinifiles, Towns1, Clipbrd;
 
 
 type
@@ -60,6 +65,7 @@ type
     CBVC: TCheckBoxX;
     CBVK: TCheckBoxX;
     CBLune: TCheckBoxX;
+    Easter1: TEaster;
     EYear: TEdit;
     ILMenus: TImageList;
     ImageHalf: TImage;
@@ -116,14 +122,11 @@ type
     UniqueInstance1: TUniqueInstance;
 
     procedure CBXClick(Sender: TObject);
-    procedure ETodayTimeChange(Sender: TObject);
     procedure EYearChange(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure ImageHalfClick(Sender: TObject);
-    procedure PanStatusClick(Sender: TObject);
     procedure PMnuAddImgClick(Sender: TObject);
     procedure PMnuCopyClick(Sender: TObject);
     procedure PMnuDelImgClick(Sender: TObject);
@@ -213,7 +216,7 @@ type
     procedure CheckUpdate(ndays: iDays);
     procedure ModLangue;
   public
-   // csvtowns: TCSVDocument;
+
   end;
 
 const
@@ -397,11 +400,14 @@ begin
     Settings.colvacb:= CBVB.CheckColor;
     Settings.colvacc:= CBVC.CheckColor;
     Settings.colvack:= CBVK.CheckColor;
-    Settings.Timezone:= 60; // Paris tz
+    Settings.Timezone:= 1; // Paris tz
     Settings.latitude:= 43.94284;
     Settings.longitude:= 4.8089;
     Prefs.CalAppDataPath:= CalAppDataPath;
+    InitAboutBox;
+    LoadSettings(cfgfilename);
     // load towns from resources in prefs form
+    // Todo Localize towns list
     if FileExists(CalAppDataPath+'fr_villes.csv')then Prefs.csvtowns.LoadFromFile(CalAppDataPath+'fr_villes.csv') else
     begin
       r:= LazarusResources.Find('fr_villes');
@@ -410,9 +416,6 @@ begin
     for i:= 0 to Prefs.csvtowns.RowCount-1 do
       Prefs.CBTowns.Items.Add(Prefs.csvtowns.Cells[0,i]);
     Prefs.CBTowns.ItemIndex:= 0;
-    InitAboutBox;
-    LoadSettings(cfgfilename);
-    //LangStr:= Settings.langstr;
     ModLangue;
     Settings.OnChange:= @SettingsOnChange;
     HalfImgsList.OnChange:= @SettingsOnChange;
@@ -572,6 +575,7 @@ begin
     except
       result:= false;
     end;
+    if Settings.timezone > 12 then Settings.timezone:= Settings.timezone/60;  // Old timezone
     if Settings.startwin then SetAutostart(ProgName, Application.exename)  else UnsetAutostart(ProgName);
     TrayCal.visible:= Settings.miniintray;
     CanClose:= not Settings.miniintray;
@@ -696,16 +700,6 @@ begin
   if assigned(csvsaints) then FreeAndNil(csvsaints);
   if assigned(csvferies) then FreeAndNil(csvferies);
   if assigned(csvvacs) then FreeAndNil(csvvacs);
-end;
-
-procedure TFCalendrier.ImageHalfClick(Sender: TObject);
-begin
-
-end;
-
-procedure TFCalendrier.PanStatusClick(Sender: TObject);
-begin
-
 end;
 
 // The three following procedures mimics tabs
@@ -893,7 +887,6 @@ begin
     half:= 1;
     CurYear:= CurYear+1;
     UpdateCal(CurYear);
-    //Application.ProcessMessages;
     Invalidate;
   end;
   showHalf(half);
@@ -908,9 +901,7 @@ begin
      Half:=2;
     CurYear:= CurYear-1;
     UpdateCal(CurYear);
-    //Application.ProcessMessages;
     Invalidate;
-
   end else Half:= 1;
   showHalf(half);
   loadimage;
@@ -953,7 +944,7 @@ begin
   Prefs.CBTowns.ItemIndex:= Prefs.CBFind(Settings.town);
   Prefs.ELatitude.Text:= FloatToString(Settings.latitude, '.');
   Prefs.ELongitude.Text:= FloatToString(Settings.longitude, '.');
-  Prefs.ETimeZone.Text:= InttoStr(Settings.timezone);
+  Prefs.ETimeZone.Text:= FloattoString(Settings.timezone);
   if Prefs.ShowModal<>mrOK then exit;              // Pas OK ? on ne change rien
   Settings.startwin:= Prefs.CBStartwin.Checked;
   Settings.savsizepos:= Prefs.CBSaveSizPos.Checked;
@@ -1066,10 +1057,11 @@ begin
   Suntime1.Sundate:= dDate;
   Suntime1.Latitude:= Settings.latitude;
   Suntime1.Longitude:= Settings.longitude;
-  Suntime1.TimeZone:= Settings.TimeZone div 60;
-  Suntime1.DST:= Int64(IsDST(dDate));
+  Suntime1.TimeZone:= Settings.TimeZone;
   dtr:= Suntime1.Sunrise;
+  dtr:= IncMinute(dtr, 60*Int64(IsDST(dDate)));
   dts:= Suntime1.Sunset;
+  dts:= IncMinute(dts, 60*Int64(IsDST(dDate)));
   s:= Format(sSunRiseAndSet,
                [Settings.town, FormatDateTime ('hh'+TimeSepar+'mm', dtr),
                                FormatDateTime ('hh'+TimeSepar+'mm', dts)]);
@@ -1077,7 +1069,7 @@ begin
   if curDay.bSeason then
   begin
     dtsz:= curDay.dSeason;
-    dtsz:= IncMinute(dtsz, Settings.TimeZone+60*Int64(IsDST(dDate)));
+    dtsz:= IncMinute(dtsz, 60*Int64(IsDST(dDate)));
     s:= curDay.sSeasonDesc+' à '+FormatDateTime ('hh'+TimeSepar+'mm', dtsz);
     Result:= Result+LineEnding+s
   end;
@@ -1129,13 +1121,6 @@ procedure TFCalendrier.CBXClick(Sender: TObject);
 begin
   SettingsChanged:= true;
   Invalidate;
-end;
-
-
-
-procedure TFCalendrier.ETodayTimeChange(Sender: TObject);
-begin
-  //ETodayTime2.text:= ETodayTime.text;
 end;
 
 procedure TFCalendrier.EYearChange(Sender: TObject);
@@ -1335,7 +1320,7 @@ var
   DaysCnt: word;
   i, j: integer;
   Currentday: TDateTime;
-  PaqDay, DepDay, MerDay: TDateTime;
+  DepDay, MerDay: TDateTime;
   DOY: Integer;
   vacbeg, vacend: TDateTime;
   dt: TDateTime;
@@ -1387,16 +1372,16 @@ begin
       else Days[i - 1].bSunday := False;
       Inc(j);
     end;
-    PaqDay:= GetPaques(Annee);
+    Easter1.EasterYear:= Annee;;
     DepDay:= GetDeportes(Annee);
     MerDay:= GetFetMeres(Annee);
     // reLoad and Update csvFerie
     csvferies.CSVText:= Copy(FeriesTxt, 1, length(FeriesTxt));
     csvferies.CSVText:= StringReplace(csvferies.CSVText, 'YYYY', InttoStr(Annee), [rfReplaceAll]);
-    csvferies.CSVText:= StringReplace(csvferies.CSVText, 'DIPAQ', DateToStr(PaqDay), []);
-    csvferies.CSVText:= StringReplace(csvferies.CSVText, 'LUPAQ', DateToStr(PaqDay+1), [rfIgnoreCase]);
-    csvferies.CSVText:= StringReplace(csvferies.CSVText, 'JEASC', DateToStr(PaqDay+39), [rfIgnoreCase]);
-    csvferies.CSVText:= StringReplace(csvferies.CSVText, 'DIPEN', DateToStr(PaqDay+49), [rfIgnoreCase]);
+    csvferies.CSVText:= StringReplace(csvferies.CSVText, 'DIPAQ', DateToStr(Easter1.Easterdate), []);
+    csvferies.CSVText:= StringReplace(csvferies.CSVText, 'LUPAQ', DateToStr(Easter1.EasterMondaydate), [rfIgnoreCase]);
+    csvferies.CSVText:= StringReplace(csvferies.CSVText, 'JEASC', DateToStr(Easter1.Ascensdate), [rfIgnoreCase]);
+    csvferies.CSVText:= StringReplace(csvferies.CSVText, 'DIPEN', DateToStr(Easter1.Pentecdate), [rfIgnoreCase]);
     csvferies.CSVText:= StringReplace(csvferies.CSVText, 'SOUDEP', DateToStr(DepDay), [rfIgnoreCase]);
     csvferies.CSVText:= StringReplace(csvferies.CSVText, 'FETMER', DateToStr(MerDay), [rfIgnoreCase]);
    for i:= 0 to csvferies.RowCount-1 do
@@ -1432,6 +1417,7 @@ begin
     end;
     // Update moon phases
     Moonphases1.Moonyear:= Annee;
+    Moonphases1.Timezone:=  Settings.TimeZone; // Here timezone is in minutes
     for i:= 0 to length(Moonphases1.Moondays)-1 do
     begin
       try
@@ -1439,9 +1425,8 @@ begin
         if (DOY >=0) and (DOY<length(days)-1) then
         begin
           Days[DOY].bMoon:= true;
-          //Days[DOY].sMoon:= Moonphases1.Moondays[i].MType;
           dt:= Moonphases1.Moondays[i].MDays;
-          //dt:= IncMinute(dt, Settings.TimeZone+60*Integer(IsDST(dt)));
+          dt:= IncMinute(dt, 60*Integer(IsDST(dt)));
           Days[DOY].dMoon:= dt;
           Days[DOY].iMoonIndex:= Moonphases1.Moondays[i].MIndex;
           Days[DOY].sMoonDesc:= MoonDescs[Days[DOY].iMoonIndex];
@@ -1452,29 +1437,30 @@ begin
     end;
     // Saisons
     Seasons1.Seasyear:= Annee;
+    Seasons1.Timezone:= Settings.TimeZone;
     dSpr:= Seasons1.SpringDate; //GetSeasonDate(Annee, 0);
-    dSpr:= IncMinute(dSpr, Settings.TimeZone+60*Int64(IsDST(dSpr)));
+    dSpr:= IncMinute(dSpr, 60*Int64(IsDST(dSpr)));
     DOY:= trunc(dSpr-BegYear);
     Days[DOY].bSeason:= true;
     Days[DOY].dSeason:= dSpr;
     Days[DOY].sSeasonDesc:= sSeasonSpring;
     s:= Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', Days[DOY].dSeason)+LineEnding;
     dSum:= Seasons1.SummerDate; //GetSeasonDate(Annee, 1);
-    dSum:= IncMinute(dSum, Settings.TimeZone+60*Int64(IsDST(dSum)));
+    dSum:= IncMinute(dSum, 60*Int64(IsDST(dSum)));
     DOY:= trunc(dSum-BegYear);
     Days[DOY].bSeason:= true;
     Days[DOY].dSeason:= dSum;
     Days[DOY].sSeasonDesc:= sSeasonSummer;
     LSeasons1.Caption:=s+Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dSum);
     dAut:= Seasons1.AutumnDate; //GetSeasonDate(Annee, 2);
-    dAut:= IncMinute(dAut, Settings.TimeZone+60*Int64(IsDST(dAut)));
+    dAut:= IncMinute(dAut, 60*Int64(IsDST(dAut)));
     DOY:= trunc(dAut-BegYear);
     Days[DOY].bSeason:= true;
     Days[DOY].dSeason:= dAut;
     Days[DOY].sSeasonDesc:= sSeasonAutumn;
     s:= Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dAut)+LineEnding;
-    dWin:= Seasons1.WinterDate; //GetSeasonDate(Annee, 3);
-    dWin:= IncMinute(dWin, Settings.TimeZone+60*Int64(IsDST(dWin)));
+    dWin:= Seasons1.WinterDate;
+    dWin:= IncMinute(dWin, 60*Int64(IsDST(dWin)));
     DOY:= trunc(dWin-BegYear);
     Days[DOY].bSeason:= true;
     Days[DOY].dSeason:= dWin;

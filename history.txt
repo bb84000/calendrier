@@ -69,5 +69,14 @@ Version 0.6.5.2 - 05/05/2021
 - Optimisation du composant TMoonPhases (8 phases au lieu de 4) et adaptation du calendrier en ce sens
 - Utilisation du composant TSeasons
 
+Version 0.6.6.0 - 08/05/2021
+- Unification des composantrs astro : propriété timezone ajoutée. L'heure d'été
+  est à définir dans l'application, elle peut être modifiée ou supprimée par décision
+  politique
+- Timezone est désormais définie enn heures et non en minutes. Effacer le fichier fr_villes
+  dans le dossier "utilisateur" s'il a été créé
+- Utilisation du composant TEaster pour Paques et la suite
+
+
 
 
