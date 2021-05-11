@@ -722,10 +722,10 @@ object FCalendrier: TFCalendrier
       ParentShowHint = False
     end
     object SBPrint: TSpeedButton
-      Left = 60
+      Left = 64
       Height = 32
       Hint = 'Imprimer le calendrier'
-      Top = 5
+      Top = 8
       Width = 32
       Glyph.Data = {
         36120000424D3612000000000000360000002800000030000000180000000100
@@ -1882,5 +1882,9 @@ object FCalendrier: TFCalendrier
     EasterYear = 0
     Left = 635
     Top = 121
+  end
+  object PrintDialog1: TPrintDialog
+    Left = 683
+    Top = 122
   end
 end

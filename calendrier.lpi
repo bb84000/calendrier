@@ -17,9 +17,8 @@
     </General>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
-      <MinorVersionNr Value="6"/>
-      <RevisionNr Value="6"/>
-      <StringTable Comments="Calendrier universel français" CompanyName="sdtp - bb" FileDescription="Calendrier universel" InternalName="calendrier" LegalCopyright="sdtp - bb -May 2021" LegalTrademarks="sdtp - bb -May 2021" OriginalFilename="calendrier.exe" ProductName="calendrier" ProductVersion="0.6.6.0"/>
+      <MinorVersionNr Value="7"/>
+      <StringTable Comments="Calendrier universel français" CompanyName="sdtp - bb" FileDescription="Calendrier universel" InternalName="calendrier" LegalCopyright="sdtp - bb -May 2021" LegalTrademarks="sdtp - bb -May 2021" OriginalFilename="calendrier.exe" ProductName="calendrier" ProductVersion="0.7.0.0"/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
@@ -32,21 +31,24 @@
       <FormatVersion Value="2"/>
       <Modes Count="0"/>
     </RunParams>
-    <RequiredPackages Count="4">
+    <RequiredPackages Count="5">
       <Item1>
-        <PackageName Value="lazbbastrocomponents"/>
+        <PackageName Value="Printer4Lazarus"/>
       </Item1>
       <Item2>
-        <PackageName Value="uniqueinstance_package"/>
+        <PackageName Value="lazbbastrocomponents"/>
       </Item2>
       <Item3>
-        <PackageName Value="lazbbcomponents"/>
+        <PackageName Value="uniqueinstance_package"/>
       </Item3>
       <Item4>
-        <PackageName Value="LCL"/>
+        <PackageName Value="lazbbcomponents"/>
       </Item4>
+      <Item5>
+        <PackageName Value="LCL"/>
+      </Item5>
     </RequiredPackages>
-    <Units Count="10">
+    <Units Count="9">
       <Unit0>
         <Filename Value="calendrier.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -96,14 +98,12 @@
         <ResourceBaseClass Value="Form"/>
       </Unit7>
       <Unit8>
-        <Filename Value="..\lazbbunits\phaseslune.pas"/>
+        <Filename Value="printcal.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="PhasesLune"/>
+        <ComponentName Value="FPrintCal"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
       </Unit8>
-      <Unit9>
-        <Filename Value="soleil1.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit9>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

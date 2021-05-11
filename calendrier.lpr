@@ -7,7 +7,8 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, calendrier1, calsettings, ImgResiz, lazbbaboutupdate, towns1;
+  Forms, printer4lazarus, calendrier1, calsettings, ImgResiz, lazbbaboutupdate,
+  towns1, printcal;
 
 {$R *.res}
 
@@ -20,6 +21,7 @@ begin
   Application.CreateForm(TAboutBox, AboutBox);
   Application.CreateForm(TFImgResiz, FImgResiz);
   Application.CreateForm(TFTowns, FTowns);
+  Application.CreateForm(TFPrintCal, FPrintCal);
   Application.Run;
 end.
 

@@ -17,8 +17,8 @@ uses
   Grids, StdCtrls, lazbbcontrols, Suntime, Moonphases, Seasons, Easter,
   csvdocument, Types, DateUtils, lazbbastro, LResources, Buttons, Menus,
   UniqueInstance, registry, lazbbutils, lazbbautostart, LazUTF8, lazbbosver,
-  laz2_DOM, laz2_XMLRead, laz2_XMLWrite, calsettings, ImgResiz,
-  lazbbaboutupdate, lazbbinifiles, Towns1, Clipbrd;
+  laz2_DOM, laz2_XMLRead, laz2_XMLWrite, PrintersDlgs, calsettings, ImgResiz,
+  lazbbaboutupdate, lazbbinifiles, Towns1, Clipbrd, LCLIntf, Printcal;
 
 
 type
@@ -76,6 +76,7 @@ type
     LTodayTime: TLabel;
     LImageInsert: TLabel;
     Moonphases1: TMoonphases;
+    PrintDialog1: TPrintDialog;
     PTMnuPrint: TMenuItem;
     PMnuPrint: TMenuItem;
     PMnuCopy: TMenuItem;
@@ -153,7 +154,7 @@ type
     procedure Timer2Timer(Sender: TObject);
     procedure TrayCalClick(Sender: TObject);
   private
-    Half: Integer;
+
     prevHalfColor: TColor;
     CanClose: Boolean;
     Iconized: Boolean;
@@ -177,15 +178,14 @@ type
     csvsaints, csvferies,csvvacs: TCSVDocument;
     FeriesTxt: String;
     ColorDay, ColorSunday, ColorFerie: TColor;
-    Days: array of TDay;
-    aMonths: array [1..13] of integer;
+
     Today: Integer;
-    curyear: integer;
+
     curRow, curCol : Integer;
     curHint: String;
     TimeSepar: String;
-    Settings: TSettings;
-    HalfImgsList: TFichierList;
+
+
     SettingsChanged: Boolean;
     sUse64bitcaption: string;
     ChkVerInterval: Integer;
@@ -216,7 +216,12 @@ type
     procedure CheckUpdate(ndays: iDays);
     procedure ModLangue;
   public
-
+    Half: Integer;
+    aMonths: array [1..13] of integer;
+    Days: array of TDay;
+    HalfImgsList: TFichierList;
+    curyear: integer;
+    Settings: TSettings;
   end;
 
 const
@@ -242,11 +247,17 @@ const
 var
   FCalendrier: TFCalendrier;
 
+const
+  leapyear: array [1..13] of integer = (0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366);
+  noleapyear: array [1..13] of integer =     (0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365);
 
 implementation
 
 {$R *.lfm}
 
+const
+  SM_CYSIZEFRAME= 32;
+  SM_CYCAPTION= 4;
 
 { TFCalendrier }
 
@@ -340,7 +351,7 @@ begin
   CalImagePath:= CalAppDataPath+'images'+PathDelim;
   if not DirectoryExists(CalImagePath) then CreateDir(CalImagePath);
   cfgfilename:= CalAppDataPath+ProgName+'.xml';
-  // Chargement des cha√Ænes de langue...
+  // Chargement des chaÓnes de langue...
   LangFile:= TBbIniFile.create(CalExecPath+ProgName+'.lng');
   if Langstr<>'fr' then LangStr:='en';
   ColorDay := clDefault;
@@ -469,7 +480,7 @@ var
   alertpos: TPosition;
   alertmsg: string;
 begin
-  //Derni√®re recherche il y a "days" jours ou plus ?
+  //DerniËre recherche il y a "days" jours ou plus ?
   errmsg := '';
   alertmsg:= '';
   if not visible then alertpos:= poDesktopCenter
@@ -546,7 +557,7 @@ begin
       RenameFile(FilNamWoExt+'.bk0', filename);
       For i:= 1 to 5 do
       begin
-        // Renomme les pr√©c√©dentes si elles existent
+        // Renomme les prÈcÈdentes si elles existent
         if FileExists (FilNamWoExt+'.bk'+IntToStr(i))
              then  RenameFile(FilNamWoExt+'.bk'+IntToStr(i), FilNamWoExt+'.bk'+IntToStr(i-1));
       end;
@@ -669,12 +680,12 @@ begin
      FilesNode:= CfgXML.CreateElement('files');
      HalfImgsList.SaveToXMLnode(FilesNode);
      RootNode.Appendchild(FilesNode);
-     // On sauvegarde les versions pr√©c√©dentes
+     // On sauvegarde les versions prÈcÈdentes
      FilNamWoExt:= TrimFileExt(filename);
      if FileExists (FilNamWoExt+'.bk5')                   // Efface la plus ancienne
      then  DeleteFile(FilNamWoExt+'.bk5');                // si elle existe
      For i:= 4 downto 0
-      do if FileExists (FilNamWoExt+'.bk'+IntToStr(i))     // Renomme les pr√©c√©dentes si elles existent
+      do if FileExists (FilNamWoExt+'.bk'+IntToStr(i))     // Renomme les prÈcÈdentes si elles existent
         then  RenameFile(FilNamWoExt+'.bk'+IntToStr(i), FilNamWoExt+'.bk'+IntToStr(i+1));
      if FileExists (filename) then  RenameFile(filename, FilNamWoExt+'.bk0');
      // Et on sauvegarde la nouvelle config
@@ -909,9 +920,10 @@ end;
 
 procedure TFCalendrier.SBPrintClick(Sender: TObject);
 begin
-  // printing routine
-  ShowMessage('En cours de r√©alisation');
+  // printing routine I prefer use a bitmap instead draw directly to the printer
+  FPrintCal.ShowModal;
 end;
+
 
 procedure TFCalendrier.SBQuitClick(Sender: TObject);
 begin
@@ -1052,7 +1064,7 @@ begin
   Result:= Result+LineEnding+Format(sDayWeekInfo, [doy, WeekOf(dDate)]);
   if curDay.bMoon then
   begin
-    Result:= Result+LineEnding+curDay.sMoonDesc+' √† '+FormatDateTime ('hh'+TimeSepar+'mm', curDay.dMoon);
+    Result:= Result+LineEnding+curDay.sMoonDesc+' ‡ '+FormatDateTime ('hh'+TimeSepar+'mm', curDay.dMoon);
   end;
   Suntime1.Sundate:= dDate;
   Suntime1.Latitude:= Settings.latitude;
@@ -1070,7 +1082,7 @@ begin
   begin
     dtsz:= curDay.dSeason;
     dtsz:= IncMinute(dtsz, 60*Int64(IsDST(dDate)));
-    s:= curDay.sSeasonDesc+' √† '+FormatDateTime ('hh'+TimeSepar+'mm', dtsz);
+    s:= curDay.sSeasonDesc+' ‡ '+FormatDateTime ('hh'+TimeSepar+'mm', dtsz);
     Result:= Result+LineEnding+s
   end;
   if Curday.bHoliday then
@@ -1129,7 +1141,7 @@ var
 begin
   if length(EYear.Text)<>4 then
   begin
-    Timer2.Enabled:=true;       // On remettra la bonne ann√©e un peu plus tard
+    Timer2.Enabled:=true;       // On remettra la bonne annÈe un peu plus tard
     exit;
   end;
   try
@@ -1223,7 +1235,7 @@ begin;
         if curDay.bHoliday then
         begin
           s1:= curDay.sHoliday;
-          DefBrushColor:= Brush.Color;  // pour remettre √† la couleur d'origine
+          DefBrushColor:= Brush.Color;  // pour remettre ‡ la couleur d'origine
           SGCur.Canvas.Pen.Style:=psClear;
           SGCur.Canvas.Brush.Style:=bsSolid;
           if (CBVA.Checked) and (Pos('A', s1) > 0) then
@@ -1268,7 +1280,7 @@ begin;
         begin
           aRect.Top:= aRect.Top+(aRect.Bottom-aRect.Top-12) div 2;    // L'image va faire 12 px
           aRect.Bottom:= aRect.Top+ 12;
-          aRect.Right:= aRect.Right-2;                                 // Espace de 2 px √† droite
+          aRect.Right:= aRect.Right-2;                                 // Espace de 2 px ‡ droite
           aRect.Left:= aRect.Right-12;
           ImgNum:= curDay.iMoonIndex;
           Moonphases1.MoonImages.StretchDraw(SGCur.Canvas, ImgNum, aRect);
@@ -1328,9 +1340,9 @@ var
 begin
   // During compilation+execution in IDE, avoid exception errors (to be confirmed)
   try
-    // Sans objet avant l'ann√©e 1583 (calendrier julien)
+    // Sans objet avant l'annÈe 1583 (calendrier julien)
     if Annee < 1583 then Annee := 1583;
-    // Ni apr√®s l'ann√©e 9998
+    // Ni aprËs l'annÈe 9998
     if Annee > 9998 then Annee := 9998;
      // Bissextile ?
     if Isleapyear(Annee) then
@@ -1358,7 +1370,7 @@ begin
     begin
       CurrentDay:= BegYear + i - 1;
       DecodeDate(CurrentDay, CYear, CMonth, CDay);
-      if (DaysCnt = 365) and (j = 58) then  Inc(j); // on saute le 29 f√©vrier !
+      if (DaysCnt = 365) and (j = 58) then  Inc(j); // on saute le 29 fÈvrier !
       Days[i - 1].index := i;
       Days[i - 1].ddate := CurrentDay;
       Days[i - 1].sday := DefaultFormatSettings.ShortDayNames[DayOfWeek(CurrentDay)];
@@ -1488,7 +1500,7 @@ begin
     MoonDescs[2]:= ReadString(LangStr, 'MoonDescs2', 'Premier quartier');
     MoonDescs[3]:= ReadString(LangStr, 'MoonDescs3', 'Gibbeuse croissante');
     MoonDescs[4]:= ReadString(LangStr, 'MoonDescs4', 'Pleine lune');
-    MoonDescs[5]:= ReadString(LangStr, 'MoonDescs5', 'Gibbeuse d√©croissante');
+    MoonDescs[5]:= ReadString(LangStr, 'MoonDescs5', 'Gibbeuse dÈcroissante');
     MoonDescs[6]:= ReadString(LangStr, 'MoonDescs6', 'Dernier quartier');
     MoonDescs[7]:= ReadString(LangStr, 'MoonDescs7', 'Dernier croissant');
     sHolidayZone:= ReadString(LangStr, 'sHolidayZone', 'Vacances zone');
@@ -1523,9 +1535,9 @@ begin
     PTMnuAbout.Caption:=PMnuAbout.Caption;
     PTMnuQuit.Caption:= PMnuQuit.Caption;
     sDayWeekInfo:= ReadString(LangStr, 'sDayWeekInfo', '%de jour, %de semaine');
-    sSunRiseAndSet:= ReadString(LangStr, 'sSunRiseAndSet','Lever et coucher du soleil √† %s : %s - %s');
+    sSunRiseAndSet:= ReadString(LangStr, 'sSunRiseAndSet','Lever et coucher du soleil ‡ %s : %s - %s');
     sSeasonSpring:= ReadString(LangStr, 'sSeasonSpring', 'Printemps');
-    sSeasonSummer:= ReadString(LangStr, 'sSeasonSummer', 'Et√©');
+    sSeasonSummer:= ReadString(LangStr, 'sSeasonSummer', 'EtÈ');
     sSeasonAutumn:= ReadString(LangStr, 'sSeasonAutumn', 'Automne');
     sSeasonWinter:= ReadString(LangStr, 'sSeasonWinter', 'Hiver');
     TabHalf1.Caption:= ReadString(LangStr, 'TabHalf1.Caption', TabHalf1.Caption);
@@ -1533,7 +1545,7 @@ begin
     PanToday.Caption:= ReadString(LangStr, 'PanToday.Caption', PanToday.Caption);
     PanSelDay.Caption:= ReadString(LangStr, 'PanSelDay.Caption', PanSelDay.Caption);
     PanSeasons.Caption:= ReadString(LangStr, 'PanSeasons.Caption', PanSeasons.Caption);
-    sNoLongerChkUpdates:= ReadString(LangStr, 'NoLongerChkUpdates', 'Ne plus rechercher les mises √† jour');
+    sNoLongerChkUpdates:= ReadString(LangStr, 'NoLongerChkUpdates', 'Ne plus rechercher les mises ‡ jour');
     sUse64bitcaption:=ReadString(LangStr, 'use64bitcaption', 'Utilisez la version 64 bits de ce programme');
     sConfirmDelImg:=ReadString(LangStr, 'sConfirmDelImg', 'Voulez-vous supprimer cette image ?');
     sMainCaption:= ReadString(LangStr, 'sMainCaption', 'Calendrier');
@@ -1547,9 +1559,9 @@ begin
       if AboutBox.NewVersion then AboutBox.LUpdate.Caption:= Format(AboutBox.sUpdateAvailable, [AboutBox.LastVersion])
       else AboutBox.LUpdate.Caption:= AboutBox.sNoUpdateAvailable;
     end;
-    AboutBox.sLastUpdateSearch:=ReadString(LangStr,'AboutBox.LastUpdateSearch','Derni√®re recherche de mise √† jour');
-    AboutBox.sUpdateAvailable:=ReadString(LangStr,'AboutBox.UpdateAvailable','Nouvelle version %s disponible; Cliquer pour la t√©l√©charger');
-    AboutBox.sNoUpdateAvailable:=ReadString(LangStr,'AboutBox.NoUpdateAvailable','Le Calendrier est √† jour');
+    AboutBox.sLastUpdateSearch:=ReadString(LangStr,'AboutBox.LastUpdateSearch','DerniËre recherche de mise ‡ jour');
+    AboutBox.sUpdateAvailable:=ReadString(LangStr,'AboutBox.UpdateAvailable','Nouvelle version %s disponible; Cliquer pour la tÈlÈcharger');
+    AboutBox.sNoUpdateAvailable:=ReadString(LangStr,'AboutBox.NoUpdateAvailable','Le Calendrier est ‡ jour');
     Aboutbox.Caption:=ReadString(LangStr,'Aboutbox.Caption','A propos du Calendrier');
     AboutBox.UrlProgSite:= sUrlProgSite+ ReadString(LangStr,'AboutBox.UrlProgSite','Accueil');
     AboutBox.LWebSite.Caption:= ReadString(LangStr,'AboutBox.LWebSite.Caption', AboutBox.LWebSite.Caption);
