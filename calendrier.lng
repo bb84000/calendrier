@@ -65,6 +65,9 @@ CBVA.Hint=Besançon, Bordeaux, Clermont-Ferrand, Dijon, Grenoble, Limoges, Lyon,
 CBVB.Hint=Aix-Marseille, Amiens, Caen, Lille, Nancy-Metz, Nantes, Nice, Orléans-Tours, Reims, Rennes, Rouen, Strasbourg Academies
 CBVC.Hint=Créteil, Montpellier, Paris, Toulouse, Versailles Academies
 CBVK.Hint=Corsica Academy
+sFirst=1st
+sSecond=2nd
+sPrintHalf=%s half %d
 
 ;About
 AboutBox.LProductName.Caption=Universal Calendar
@@ -170,6 +173,9 @@ CBVA.Hint=Académies de Besançon, Bordeaux, Clermont-Ferrand, Dijon, Grenoble, 
 CBVB.Hint=Académies d'Aix-Marseille, Amiens, Caen, Lille, Nancy-Metz, Nantes, Nice, Orléans-Tours, Reims, Rennes, Rouen, Strasbourg
 CBVC.Hint=Académies de Créteil, Montpellier, Paris, Toulouse, Versailles
 CBVK.Hint=Académie de Corse
+sFirst=1er
+sSecond=2ème
+sPrintHalf=%s semestre %d
 
 ;About
 AboutBox.LProductName.Caption=Calendrier universel

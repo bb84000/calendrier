@@ -80,6 +80,11 @@ Version 0.6.6.0 - 08/05/2021
 Version 0.7.0.0 - 11/05/2021
 - Mise en place de la fonction d'impression du calendrier
 
+Version 0.7.1.0 - 13/05/2021
+- Ajout des vacances scolaires à l'impression (l'impression des académies a un bug
+  sous Win32)
+
+
 
 
 

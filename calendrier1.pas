@@ -121,7 +121,6 @@ type
     Timer2: TTimer;
     TrayCal: TTrayIcon;
     UniqueInstance1: TUniqueInstance;
-
     procedure CBXClick(Sender: TObject);
     procedure EYearChange(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -154,7 +153,7 @@ type
     procedure Timer2Timer(Sender: TObject);
     procedure TrayCalClick(Sender: TObject);
   private
-
+    Half: Integer;
     prevHalfColor: TColor;
     CanClose: Boolean;
     Iconized: Boolean;
@@ -178,14 +177,10 @@ type
     csvsaints, csvferies,csvvacs: TCSVDocument;
     FeriesTxt: String;
     ColorDay, ColorSunday, ColorFerie: TColor;
-
     Today: Integer;
-
     curRow, curCol : Integer;
     curHint: String;
     TimeSepar: String;
-
-
     SettingsChanged: Boolean;
     sUse64bitcaption: string;
     ChkVerInterval: Integer;
@@ -200,7 +195,6 @@ type
     sSeasonSpring, sSeasonSummer, sSeasonAutumn, sSeasonWinter: String;
     sUrlProgSite: String;
     sConfirmDelImg: String;
-    sMainCaption: String;
     sHolidayZone: String;
     procedure OnAppMinimize(Sender: TObject);
     procedure OnQueryendSession(var Cancel: Boolean);
@@ -216,12 +210,14 @@ type
     procedure CheckUpdate(ndays: iDays);
     procedure ModLangue;
   public
-    Half: Integer;
     aMonths: array [1..13] of integer;
     Days: array of TDay;
     HalfImgsList: TFichierList;
     curyear: integer;
     Settings: TSettings;
+    SPrintHalf: String;
+    sMainCaption: String;
+    sFirst, sSecond: String;
   end;
 
 const
@@ -921,6 +917,7 @@ end;
 procedure TFCalendrier.SBPrintClick(Sender: TObject);
 begin
   // printing routine I prefer use a bitmap instead draw directly to the printer
+  FPrintCal.Half:= half;
   FPrintCal.ShowModal;
 end;
 
@@ -1549,8 +1546,10 @@ begin
     sUse64bitcaption:=ReadString(LangStr, 'use64bitcaption', 'Utilisez la version 64 bits de ce programme');
     sConfirmDelImg:=ReadString(LangStr, 'sConfirmDelImg', 'Voulez-vous supprimer cette image ?');
     sMainCaption:= ReadString(LangStr, 'sMainCaption', 'Calendrier');
-    LImageInsert.Caption:= ReadString(LangStr, 'LImageInsert.Caption', LImageInsert.Caption); ;
-
+    LImageInsert.Caption:= ReadString(LangStr, 'LImageInsert.Caption', LImageInsert.Caption);
+    sFirst:= ReadString(LangStr, 'sFirst', '1er');
+    sSecond:= ReadString(LangStr, 'sSecond', '2ème');
+    sPrintHalf:= ReadString(LangStr, 'sPrintHalf', '%s semestre %d');
 
     // About
     AboutBox.LProductName.Caption:= ReadString(LangStr, 'AboutBox.LProductName.Caption', 'Calendrier universel');
@@ -1621,6 +1620,7 @@ begin
     FTowns.sConfirmDelTown:= ReadString(LangStr, 'FTowns.sConfirmDelTown', 'Voulez-vous supprimer');
     FTowns.LTown.Caption:= Prefs.LTown.Caption;
     FTowns.LTimezone.Caption:= Prefs.LTimezone.Caption;
+
 
   end;
 end;
