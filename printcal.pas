@@ -1,3 +1,11 @@
+//******************************************************************************
+// Printcal unit
+// Preview and printing functions for Calendar application
+// bb - sdtp - May 2021
+// Parameters:
+//
+//******************************************************************************
+
 unit printcal;
 
 {$mode objfpc}{$H+}
@@ -6,7 +14,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, PrintersDlgs, Printers,
-  ExtCtrls, StdCtrls, calsettings;
+  ExtCtrls, StdCtrls, calsettings, lazbbutils, BGRABitmap, BGRABitmapTypes;
 
 type
 
@@ -29,10 +37,12 @@ type
   private
 
     myPrinter: Tprinter;
-    myBmp: Tbitmap;
+    myBmp: TBitmap;
     scaleFactor: Double;
     procedure SetBitmap;
     function pSize(value: Integer): Integer;
+    function txtwrap(cnv: TCanvas; sz: integer; s: string): String;
+    procedure TextRect(Canv: TCanvas; Rec: Trect; x, y : Integer; s: String; styl: TTextStyle);
   public
     half: Integer;
   end;
@@ -111,6 +121,52 @@ begin
    result:= trunc(value*scaleFactor);
 end;
 
+// Canvas Text wrap function (wordwrap style partially broken in win32)
+// Works ony with 2 lines, insert '_' at break
+
+function TFPrintCal.txtwrap(cnv: TCanvas; sz: integer; s: string): String;
+var
+  p: Integer;
+  s1: String;
+begin
+  if cnv.TextWidth(s) < sz then
+  begin
+    result:=s;
+    exit
+  end;
+  s1:= s;
+  p:= rpos(' ', s1);
+  s1:= copy(s, 1, p-1);
+  while cnv.TextWidth(s1) > sz do
+  begin
+    p:= RPos(' ', s1);
+    s1:= Copy(s, 1, p-1);
+  end;
+  Result:= s1+'_'+Copy(s, p, length(s));
+end;
+
+// Workaround for win32 where Wordbreak style is broken
+
+procedure TFPrintCal.TextRect(Canv: TCanvas; Rec: Trect; x, y : Integer; s: String; styl: TTextStyle);
+{$IFDEF win32}
+var
+  p: Integer;
+  th: Integer;
+{$ENDIF}
+begin
+  {$IFDEF win32}
+    th:= 95*Canv.TextHeight(s) div 100; // Interline 95 % of text height
+    p:= pos('_', txtwrap(Canv,Rec.Right-x, s));
+    if (p>0) and Styl.Wordbreak then
+    begin
+      Canv.TextRect(Rec, x,y, Copy(s, 1, p-1), Styl);
+      Canv.TextRect(Rec, x,y+th, Copy(s, p+1, length(s)), Styl);
+    end else Canv.TextRect(Rec, x,y, s, Styl);
+ {$ELSE}
+    Canv.TextRect(Rec, x,y, s, Styl);
+ {$ENDIF}
+end;
+
 procedure TFPrintCal.SetBitmap;
 var
   pw, ph: Integer;
@@ -145,13 +201,16 @@ begin
   ClientHeight:= PanPreview.Height+PanBtns.Height;
   colw:= pSize(FCalendrier.SG1.DefaultColWidth);
   rowh:= pSize(FCalendrier.SG1.DefaultRowHeight);
-  myBmp:= TBitmap.create;
+  myBmp:= TBitmap.Create;
   myBmp.Width:= pw;
   myBmp.Height:= ph;
-  myBmp.Canvas.Brush.Color:= clWhite;
+  myBmp.Canvas.Brush.Color:= clWhite;//
   myBmp.Canvas.FillRect(0,0,pw, ph) ;
-  myBmp.Canvas.Pen.Width:=2;
+  myBmp.Canvas.Pen.Width:=pSize(1);
   leftMargin:= 20;
+  // Important to get proper win32 Textrect
+  tStyle.SystemFont:= false;
+  tstyle.RightToLeft:= false;
   // center vertically
   topMargin:= (myBmp.Height-(33*rowh)) div 2;
   yb:= topMargin;
@@ -167,6 +226,7 @@ begin
         s[1]:= Upcase(s[1]);
         myBmp.Canvas.Font.Name:= 'Arial';
         myBmp.Canvas.Font.size:= pSize(10);
+        myBmp.Canvas.Font.Style:= [fsBold];
         txtwidth:= myBmp.Canvas.TextWidth(s);
         txtheight:=myBmp.Canvas.TextHeight(s);
         x:= colw*acol+leftMargin+(colw-txtWidth)div 2;
@@ -181,9 +241,11 @@ begin
         yB:= yT+ RowH;
         y:= yt+(RowH-TxtHeight) div 2;
         // First line
-         myBmp.Canvas.Brush.Color:= clBtnFace;
+        myBmp.Canvas.Brush.Color:= clBtnFace;
         myBmp.Canvas.Rectangle (xl,yt,xr,yb);
-        myBmp.Canvas.TextOut(x,y,s);
+        tStyle.Alignment:= taCenter;
+        tstyle.Layout:= tlCenter;
+        TextRect(myBmp.Canvas, Rect(xl,yt,xr,yb), 0,0, s, tStyle);
         myBmp.Canvas.Brush.Style := bsClear;
         // Draw months rectangles
         yt:= yb;
@@ -193,6 +255,7 @@ begin
       begin
         myBmp.Canvas.Font.Name:= 'Arial Narrow';
         myBmp.Canvas.Font.size:= pSize(9);
+        myBmp.Canvas.Font.Style:= [];
         x:= leftMargin+acol*Colw;
         if acol >2 then  x:= pw-(colw*3)-leftMargin+colw*(acol-3);
         y:= yt+Rowh*(aRow-1);
@@ -217,14 +280,17 @@ begin
           s1 := curDay.sferie;
         end;
         if numday >= max then break;
-        MyBmp.Canvas.FillRect(Rect(x+pSize(1),y,x+colw-pSize(1),y+rowh-pSize(1)));
+        // avoid day colors to reduce top line and bottom line
+        // Fill with proper colors
+        if (arow=1) then mRect.Top:= y+pSize(1) else mRect.Top:= y;
+        if (arow=31) then mRect.Bottom:= y+rowh-pSize(1) else mRect.Bottom:= y+rowh;
+        MyBmp.Canvas.FillRect(Rect(x+pSize(1),mRect.top,x+colw-pSize(1),mRect.Bottom));
         myBmp.Canvas.Brush.Style:=bsClear;
-        tStyle.SystemFont:= false;
-        tstyle.RightToLeft:= false;
         tstyle.Alignment:= taLeftJustify;
         tStyle.Layout:= tlCenter;
-        //        myBmp.Canvas.TextOut(x+pSize(1),y+(rowh-myBmp.Canvas.TextHeight(s))div 2,s+' '+s1);
-        myBmp.Canvas.TextRect(Rect(x,y,x+colw,y+rowh),x+pSize(1), 0, s+' '+s1, tStyle);
+        tstyle.Wordbreak:= False;
+        // draw day text
+        TextRect(myBmp.Canvas, Rect(x,y,x+colw,y+rowh),x+pSize(1), 0, s+' '+s1, tStyle);
         // Holidays
         if curDay.bHoliday then
         begin
@@ -232,8 +298,6 @@ begin
           DefBrushColor:= Brush.Color;  // pour remettre à la couleur d'origine
           myBmp.Canvas.Pen.Style:=psClear;
           myBmp.Canvas.Brush.Style:=bsSolid;
-          mRect.Top:= y;
-          mRect.Bottom:= y+rowh;
           mRect.Right:=x+colw-pSize(1);
           if (FCalendrier.CBVA.Checked) and (Pos('A', s1) > 0) then
           begin
@@ -300,70 +364,71 @@ begin
   else s:= Format(FCalendrier.SPrintHalf, [FCalendrier.sSecond, FCalendrier.curyear]) ;
   myBmp.Canvas.Font.Name:= 'Arial';
   myBmp.Canvas.Font.size:= pSize(12);
-  tsTyle.SystemFont:= false;
+  myBmp.Canvas.Font.Style:= [fsBold];
   tStyle.Alignment:= taCenter;
   myBmp.Canvas.TextRect(Rect(xl, yt+rowh, xr, yb), x,yt+rowh, s, tStyle);
-  // Place holidays legend and season panels
-  myBmp.Canvas.Font.Name:= 'Arial Narrow';
-  myBmp.Canvas.Font.size:= pSize(9);
-  txtheight:= myBmp.Canvas.TextHeight('Texte');
   // seasons panel
+  myBmp.Canvas.Font.Name:= 'Arial';
+  myBmp.Canvas.Font.size:= pSize(9);
+  myBmp.Canvas.Font.Style:= [];
+  txtheight:= myBmp.Canvas.TextHeight('Texte');
   yb:= topMargin+32*rowh;
-  yt:= yb-txtheight*4;
+  yt:= yb-txtheight*5;
   myBmp.Canvas.Rectangle(xl, yt, xr, yb);
+  tStyle.Alignment:= taCenter;
+  tStyle.Layout:= tlTop;
   i:= pos(LineEnding, FCalendrier.LSeasons1.Caption);
-  s:= Copy(FCalendrier.LSeasons1.Caption, 1, i);
-  myBmp.Canvas.TextOut(xl+pSize(4), yt+(txtheight div 2), s);
-  s:= Copy(FCalendrier.LSeasons1.Caption, i, 75);
-  myBmp.Canvas.TextOut(xl+pSize(4), yt+(txtheight*2), s);
+  s:= Copy(FCalendrier.LSeasons1.Caption, 1, i-1);
+  TextRect(myBmp.Canvas, Rect(xl, yt, xr, yb), xl, yt+txtHeight div 2, s, tStyle);
+  s:= Copy(FCalendrier.LSeasons1.Caption, i+length(LineEnding), 75);
+  TextRect(myBmp.Canvas, Rect(xl, yt, xr, yb), xl, yt+txtHeight+txtHeight div 2, s, tStyle);
   i:= pos(LineEnding, FCalendrier.LSeasons2.Caption);
-  s:= Copy(FCalendrier.LSeasons2.Caption, 1, i);
-  myBmp.Canvas.TextOut(xl+(xr-xl) div 2, yt+(txtheight div 2), s);
-  s:= Copy(FCalendrier.LSeasons2.Caption, i, 75);
-  myBmp.Canvas.TextOut(xl+(xr-xl) div 2, yt+(txtheight*2), s);
+  s:= Copy(FCalendrier.LSeasons2.Caption, 1, i-1);
+  TextRect(myBmp.Canvas, Rect(xl, yt, xr, yb), xl, yt+txtHeight*2+txtHeight div 2, s, tStyle);
+  s:= Copy(FCalendrier.LSeasons2.Caption, i+length(LineEnding), 75);
+  TextRect(myBmp.Canvas, Rect(xl, yt, xr, yb), xl, yt+txtHeight*3+txtHeight div 2, s, tStyle);
   yb:= yt+pSize(5);
   yt:= yb-pSize(120);
-  tstyle.SystemFont:= false;
-  tstyle.RightToLeft:= false;
+  myBmp.Canvas.Font.Name:= 'Arial Narrow';
+  myBmp.Canvas.Font.size:= pSize(9);
   tStyle.Alignment:= taLeftJustify;
-  tStyle.Layout:= tlTop;
   tStyle.Wordbreak:= true;
-  //myBmp.Canvas.font.Name:= 'Arial';
+  tStyle.Layout:= tlTop;
   i:= 10;
   if (FCalendrier.CBVA.Checked)  then
   begin
     myBmp.Canvas.Brush.Color:= FCalendrier.CBVA.CheckColor;   ;
     MyBmp.Canvas.Rectangle(xl+pSize(5), yt+pSize(i),xl+pSize(15),yt+pSize(i+10));
-    s:= FCalendrier.CBVA.Caption+' ('+FCalendrier.CBVA.Hint+')';
     myBmp.Canvas.Brush.style:= bsClear;
-    myBmp.Canvas.TextRect(Rect(xl, yt, xr, yb), xl+pSize(20),yt+pSize(i-2), s, tStyle);
+    s:= FCalendrier.CBVA.Caption+' ('+FCalendrier.CBVA.Hint+')';
+    TextRect(MyBmp.Canvas, Rect(xl, yt, xr, yb), xl+pSize(20),yt+pSize(i-3), s, tStyle);
     i:= i+27;
   end;
   if (FCalendrier.CBVB.Checked)  then
   begin
     myBmp.Canvas.Brush.color:= FCalendrier.CBVB.CheckColor;
     MyBmp.Canvas.Rectangle(xl+pSize(5), yt+pSize(i),xl+pSize(15),yt+pSize(i+10)  );
-    s:= FCalendrier.CBVB.Caption+' ('+FCalendrier.CBVB.Hint+')';
     myBmp.Canvas.Brush.style:= bsClear;
-    myBmp.Canvas.TextRect(Rect(xl, yt, xr, yb), xl+pSize(20),yt+pSize(i-2), s, tStyle);
+    s:= FCalendrier.CBVB.Caption+' ('+FCalendrier.CBVB.Hint+')';
+    TextRect(MyBmp.Canvas, Rect(xl, yt, xr, yb), xl+pSize(20),yt+pSize(i-3), s, tStyle);
     i:= i+27;
   end;
   if (FCalendrier.CBVC.Checked)  then
   begin
     myBmp.Canvas.Brush.Color:= FCalendrier.CBVC.CheckColor;   ;
     MyBmp.Canvas.Rectangle(xl+pSize(5), yt+pSize(i),xl+pSize(15),yt+pSize(i+10)  );
-    s:= FCalendrier.CBVC.Caption+' ('+FCalendrier.CBVC.Hint+')';
     myBmp.Canvas.Brush.style:= bsClear;
-    myBmp.Canvas.TextRect(Rect(xl, yt, xr, yb), xl+pSize(20),yt+pSize(i-2), s, tStyle);
+    s:= FCalendrier.CBVC.Caption+' ('+FCalendrier.CBVC.Hint+')';
+    TextRect(MyBmp.Canvas, Rect(xl, yt, xr, yb), xl+pSize(20),yt+pSize(i-3), s, tStyle);
     i:= i+27;
   end;
   if (FCalendrier.CBVK.Checked)  then
   begin
     myBmp.Canvas.Brush.color:= FCalendrier.CBVK.CheckColor;
     MyBmp.Canvas.Rectangle(xl+pSize(5), yt+pSize(i),xl+pSize(15),yt+pSize(i+10)  );
-    s:= FCalendrier.CBVK.Caption+' ('+FCalendrier.CBVK.Hint+')';
     myBmp.Canvas.Brush.style:= bsClear;
-    myBmp.Canvas.TextRect(Rect(xl, yt, xr, yb), xl+pSize(20),yt+pSize(i-2), s, tStyle);
+    s:= FCalendrier.CBVK.Caption+' ('+FCalendrier.CBVK.Hint+')';
+    TextRect(MyBmp.Canvas, Rect(xl, yt, xr, yb), xl+pSize(20),yt+pSize(i-3), s, tStyle);
   end;
   // Display preview
   ImgPreview.Canvas.CopyRect(Rect(0, 0, ImgPreview.width, ImgPreview.height), myBmp.Canvas, Rect(0, 0, pw, mybmp.Height));

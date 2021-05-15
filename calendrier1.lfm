@@ -1,7 +1,7 @@
 object FCalendrier: TFCalendrier
-  Left = 483
+  Left = 405
   Height = 687
-  Top = 150
+  Top = 217
   Width = 1280
   Caption = 'FCalendrier'
   ClientHeight = 687
@@ -722,10 +722,10 @@ object FCalendrier: TFCalendrier
       ParentShowHint = False
     end
     object SBPrint: TSpeedButton
-      Left = 64
+      Left = 60
       Height = 32
       Hint = 'Imprimer le calendrier'
-      Top = 8
+      Top = 5
       Width = 32
       Glyph.Data = {
         36120000424D3612000000000000360000002800000030000000180000000100

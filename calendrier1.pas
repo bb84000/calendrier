@@ -1,6 +1,6 @@
 //******************************************************************************
 // Calendrier main form
-// bb- sdtp- May 2021
+// bb - sdtp - May 2021
 //******************************************************************************
 
 unit calendrier1;
@@ -250,10 +250,6 @@ const
 implementation
 
 {$R *.lfm}
-
-const
-  SM_CYSIZEFRAME= 32;
-  SM_CYCAPTION= 4;
 
 { TFCalendrier }
 

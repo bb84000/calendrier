@@ -84,6 +84,10 @@ Version 0.7.1.0 - 13/05/2021
 - Ajout des vacances scolaires à l'impression (l'impression des académies a un bug
   sous Win32)
 
+Version 0.7.1.1 - 15/05/2021
+- Contournement de bugs dus aux différences de fonctionnement de TextRect entre les
+  versions Win32 et Win64 (style wordbreak nom prtis en compte en Win32)
+
 
 
 

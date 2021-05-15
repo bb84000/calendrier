@@ -1,24 +1,24 @@
 object FPrintCal: TFPrintCal
-  Left = 406
-  Height = 734
-  Top = 116
-  Width = 993
+  Left = 551
+  Height = 702
+  Top = 117
+  Width = 995
   BorderStyle = bsDialog
   Caption = 'Calendrier - Impression'
-  ClientHeight = 734
-  ClientWidth = 993
+  ClientHeight = 702
+  ClientWidth = 995
   OnShow = FormShow
   Position = poMainFormCenter
   LCLVersion = '2.0.12.0'
   object PanBtns: TPanel
     Left = 0
     Height = 65
-    Top = 669
-    Width = 993
+    Top = 637
+    Width = 995
     Align = alBottom
     BevelInner = bvLowered
     ClientHeight = 65
-    ClientWidth = 993
+    ClientWidth = 995
     TabOrder = 0
     object BtnPrint: TButton
       Left = 384
@@ -70,18 +70,18 @@ object FPrintCal: TFPrintCal
   end
   object PanPreview: TPanel
     Left = 0
-    Height = 669
+    Height = 637
     Top = 0
-    Width = 993
+    Width = 995
     Align = alClient
-    ClientHeight = 669
-    ClientWidth = 993
+    ClientHeight = 637
+    ClientWidth = 995
     TabOrder = 1
     object ImgPreview: TImage
       Left = 1
-      Height = 667
+      Height = 635
       Top = 1
-      Width = 991
+      Width = 993
       Align = alClient
     end
   end
