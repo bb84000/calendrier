@@ -30,8 +30,11 @@ object FCalendrier: TFCalendrier
       Top = 12
       Width = 40
       Alignment = taCenter
+      Font.Height = -12
+      Font.Name = 'Arial'
       MaxLength = 4
       NumbersOnly = True
+      ParentFont = False
       TabOrder = 0
       Text = '2020'
     end
@@ -48,6 +51,9 @@ object FCalendrier: TFCalendrier
       CheckColor = 4705528
       Checked = False
       Color = clDefault
+      Font.Height = -12
+      Font.Name = 'Arial'
+      ParentFont = False
       ParentShowHint = False
       ShowHint = True
       State = cbUnchecked
@@ -56,7 +62,7 @@ object FCalendrier: TFCalendrier
       OnClick = CBXClick
     end
     object CBVB: TCheckBoxX
-      Left = 802
+      Left = 812
       Height = 17
       Hint = 'Académies d''Aix-Marseille, Amiens, Caen, Lille, Nancy-Metz, Nantes, Nice, Orléans-Tours, Reims, Rennes, Rouen, Strasbourg'
       Top = 14
@@ -68,6 +74,9 @@ object FCalendrier: TFCalendrier
       CheckColor = clRed
       Checked = False
       Color = clDefault
+      Font.Height = -12
+      Font.Name = 'Arial'
+      ParentFont = False
       ParentShowHint = False
       ShowHint = True
       State = cbUnchecked
@@ -76,7 +85,7 @@ object FCalendrier: TFCalendrier
       OnClick = CBXClick
     end
     object CBVC: TCheckBoxX
-      Left = 922
+      Left = 942
       Height = 17
       Hint = 'Académies de Créteil, Montpellier, Paris, Toulouse, Versailles'
       Top = 14
@@ -88,6 +97,9 @@ object FCalendrier: TFCalendrier
       CheckColor = clGreen
       Checked = False
       Color = clDefault
+      Font.Height = -12
+      Font.Name = 'Arial'
+      ParentFont = False
       ParentShowHint = False
       ShowHint = True
       State = cbUnchecked
@@ -188,11 +200,11 @@ object FCalendrier: TFCalendrier
       ParentShowHint = False
     end
     object CBVK: TCheckBoxX
-      Left = 1040
+      Left = 1072
       Height = 17
       Hint = 'Académie de Corse'
       Top = 14
-      Width = 105
+      Width = 120
       Alignment = taRightJustify
       AllowGrayed = False
       Caption = 'Vacances  Corse'
@@ -200,6 +212,9 @@ object FCalendrier: TFCalendrier
       CheckColor = clMenuHighlight
       Checked = False
       Color = clDefault
+      Font.Height = -12
+      Font.Name = 'Arial'
+      ParentFont = False
       ParentShowHint = False
       ShowHint = True
       State = cbUnchecked
@@ -208,11 +223,11 @@ object FCalendrier: TFCalendrier
       OnClick = CBXClick
     end
     object CBLune: TCheckBoxX
-      Left = 416
+      Left = 408
       Height = 17
       Hint = 'Afficher les phases de la Lune'
       Top = 13
-      Width = 113
+      Width = 121
       Alignment = taLeftJustify
       AllowGrayed = False
       Caption = 'Phases de la lune'
@@ -220,6 +235,9 @@ object FCalendrier: TFCalendrier
       CheckColor = clBlack
       Checked = False
       Color = clDefault
+      Font.Height = -12
+      Font.Name = 'Arial'
+      ParentFont = False
       ParentShowHint = False
       ShowHint = True
       State = cbUnchecked
@@ -1014,7 +1032,10 @@ object FCalendrier: TFCalendrier
         Alignment = taCenter
         AutoSize = False
         Caption = 'Cliquez avec le bouton droit de la souris pour insérer une image'
+        Font.Height = -12
+        Font.Name = 'Arial'
         ParentColor = False
+        ParentFont = False
       end
     end
     object PanInfos: TPanel
@@ -1040,6 +1061,8 @@ object FCalendrier: TFCalendrier
         Caption = 'Aujourd''hui'
         ClientHeight = 134
         ClientWidth = 298
+        Font.Height = -12
+        Font.Name = 'Arial'
         Font.Style = [fsBold]
         ParentFont = False
         PopupMenu = PMnuMain
@@ -1050,6 +1073,8 @@ object FCalendrier: TFCalendrier
           Top = 14
           Width = 288
           AutoSize = False
+          Font.Height = -12
+          Font.Name = 'Arial'
           ParentColor = False
           ParentFont = False
         end
@@ -1059,6 +1084,8 @@ object FCalendrier: TFCalendrier
           Top = 29
           Width = 288
           AutoSize = False
+          Font.Height = -12
+          Font.Name = 'Arial'
           ParentColor = False
           ParentFont = False
           WordWrap = True
@@ -1075,6 +1102,8 @@ object FCalendrier: TFCalendrier
         Caption = 'Jour sélectionné'
         ClientHeight = 134
         ClientWidth = 298
+        Font.Height = -12
+        Font.Name = 'Arial'
         Font.Style = [fsBold]
         ParentFont = False
         PopupMenu = PMnuMain
@@ -1085,6 +1114,8 @@ object FCalendrier: TFCalendrier
           Top = 14
           Width = 288
           AutoSize = False
+          Font.Height = -12
+          Font.Name = 'Arial'
           ParentColor = False
           ParentFont = False
           WordWrap = True
@@ -1101,6 +1132,8 @@ object FCalendrier: TFCalendrier
         Caption = 'Saisons'
         ClientHeight = 50
         ClientWidth = 604
+        Font.Height = -12
+        Font.Name = 'Arial'
         Font.Style = [fsBold]
         ParentFont = False
         PopupMenu = PMnuMain
@@ -1111,6 +1144,8 @@ object FCalendrier: TFCalendrier
           Top = 15
           Width = 288
           AutoSize = False
+          Font.Height = -12
+          Font.Name = 'Arial'
           ParentColor = False
           ParentFont = False
           WordWrap = True
@@ -1121,6 +1156,8 @@ object FCalendrier: TFCalendrier
           Top = 15
           Width = 288
           AutoSize = False
+          Font.Height = -12
+          Font.Name = 'Arial'
           ParentColor = False
           ParentFont = False
           WordWrap = True

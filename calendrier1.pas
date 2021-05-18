@@ -13,6 +13,9 @@ uses
   {$IFDEF WINDOWS}
     Win32Proc,
   {$ENDIF}
+  {$IFDEF linux}
+    clocale, // Needed to get proper localized dates
+  {$ENDIF}
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
   Grids, StdCtrls, lazbbcontrols, Suntime, Moonphases, Seasons, Easter,
   csvdocument, Types, DateUtils, lazbbastro, LResources, Buttons, Menus,
@@ -173,7 +176,9 @@ type
     WState: String;
     WinState: TWindowState;
     PrevLeft, PrevTop: Integer;
-    MoonDescs: array [0..7] of string;
+    MoonDescs: TStringArray;
+    sMoonphase: String;
+    sSeason: String;
     csvsaints, csvferies,csvvacs: TCSVDocument;
     FeriesTxt: String;
     ColorDay, ColorSunday, ColorFerie: TColor;
@@ -196,6 +201,7 @@ type
     sUrlProgSite: String;
     sConfirmDelImg: String;
     sHolidayZone: String;
+    ImageLoaded: Boolean;
     procedure OnAppMinimize(Sender: TObject);
     procedure OnQueryendSession(var Cancel: Boolean);
     procedure UpdateCal(Annee: word);
@@ -246,6 +252,8 @@ var
 const
   leapyear: array [1..13] of integer = (0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366);
   noleapyear: array [1..13] of integer =     (0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365);
+  Moonphs='Nouvelle Lune,Premier croissant,Premier quartier,Gibbeuse croissante,Pleine lune,'+
+          'Gibbeuse dÃ©croissante,Dernier quartier,Dernier croissant';
 
 implementation
 
@@ -268,11 +276,11 @@ begin
 end;
 
 procedure TFCalendrier.OnQueryendSession(var Cancel: Boolean);
+{$IFDEF WINDOWS}
 var
-  {$IFDEF WINDOWS}
-    reg: TRegistry;
-    RunRegKeyVal, RunRegKeySz: string;
-  {$ENDIF}
+  reg: TRegistry;
+  RunRegKeyVal, RunRegKeySz: string;
+{$ENDIF}
 begin
   if not Settings.startwin then
   begin
@@ -325,7 +333,7 @@ begin
     LangStr := GetEnvironmentVariable('LANG');
     x := pos('.', LangStr);
     LangStr := Copy(LangStr, 0, 2);
-    wxbitsrun := 0;
+    //wxbitsrun := 0;
     UserAppsDataPath := GetUserDir;
   {$ENDIF}
   OSVersion:= TOSVersion.Create();
@@ -343,7 +351,7 @@ begin
   CalImagePath:= CalAppDataPath+'images'+PathDelim;
   if not DirectoryExists(CalImagePath) then CreateDir(CalImagePath);
   cfgfilename:= CalAppDataPath+ProgName+'.xml';
-  // Chargement des chaînes de langue...
+  // Chargement des chaÃ®nes de langue...
   LangFile:= TBbIniFile.create(CalExecPath+ProgName+'.lng');
   if Langstr<>'fr' then LangStr:='en';
   ColorDay := clDefault;
@@ -370,6 +378,8 @@ begin
   LSelDay.Caption:='';
   LSeasons1.Caption:='';
   LSeasons2.Caption:='';
+  // initialize MoonDescs;
+  MoonDescs:= Moonphs.Split(',');
 end;
 
 procedure TFCalendrier.FormActivate(Sender: TObject);
@@ -438,6 +448,7 @@ begin
     SG2.OnDrawCell:= @SGDrawCell;
     SG2.Invalidate;
   end;
+  DefaultFormatSettings.LongDateFormat:='dddd dd mmmm yyyy';
 end;
 
 // About Box initialization
@@ -472,7 +483,7 @@ var
   alertpos: TPosition;
   alertmsg: string;
 begin
-  //Dernière recherche il y a "days" jours ou plus ?
+  //DerniÃ¨re recherche il y a "days" jours ou plus ?
   errmsg := '';
   alertmsg:= '';
   if not visible then alertpos:= poDesktopCenter
@@ -549,7 +560,7 @@ begin
       RenameFile(FilNamWoExt+'.bk0', filename);
       For i:= 1 to 5 do
       begin
-        // Renomme les précédentes si elles existent
+        // Renomme les prÃ©cÃ©dentes si elles existent
         if FileExists (FilNamWoExt+'.bk'+IntToStr(i))
              then  RenameFile(FilNamWoExt+'.bk'+IntToStr(i), FilNamWoExt+'.bk'+IntToStr(i-1));
       end;
@@ -614,6 +625,7 @@ var
   i: Integer;
   imgname: string;
 begin
+  ImageLoaded:= false;
   ImageHalf.Picture:= nil;
   LImageInsert.Visible:= true;
   PMnuAddImg.Caption:= sPMnuAddImgCaption;
@@ -627,7 +639,8 @@ begin
     ImgHalf:= HalfImgsList.GetItem(i);
     if FileExists(ImgHalf.LocalCopy) then imgname:= ImgHalf.LocalCopy
     else imgname:= ImgHalf.name;
-    ImageHalf.Picture.LoadFromFile(imgname)
+    ImageHalf.Picture.LoadFromFile(imgname);
+    ImageLoaded:= true;
   end;
 end;
 
@@ -672,12 +685,12 @@ begin
      FilesNode:= CfgXML.CreateElement('files');
      HalfImgsList.SaveToXMLnode(FilesNode);
      RootNode.Appendchild(FilesNode);
-     // On sauvegarde les versions précédentes
+     // On sauvegarde les versions prÃ©cÃ©dentes
      FilNamWoExt:= TrimFileExt(filename);
      if FileExists (FilNamWoExt+'.bk5')                   // Efface la plus ancienne
      then  DeleteFile(FilNamWoExt+'.bk5');                // si elle existe
      For i:= 4 downto 0
-      do if FileExists (FilNamWoExt+'.bk'+IntToStr(i))     // Renomme les précédentes si elles existent
+      do if FileExists (FilNamWoExt+'.bk'+IntToStr(i))     // Renomme les prÃ©cÃ©dentes si elles existent
         then  RenameFile(FilNamWoExt+'.bk'+IntToStr(i), FilNamWoExt+'.bk'+IntToStr(i+1));
      if FileExists (filename) then  RenameFile(filename, FilNamWoExt+'.bk0');
      // Et on sauvegarde la nouvelle config
@@ -832,7 +845,7 @@ begin
   if PMnuMain.PopupComponent=PanImg then
   begin
     PMnuAddImg.visible:= true;
-    PMnuDelImg.Visible:= true;
+    PMnuDelImg.Visible:= ImageLoaded;
     PmnuCopy.visible:= False;
   end;
 
@@ -1057,7 +1070,8 @@ begin
   Result:= Result+LineEnding+Format(sDayWeekInfo, [doy, WeekOf(dDate)]);
   if curDay.bMoon then
   begin
-    Result:= Result+LineEnding+curDay.sMoonDesc+' à '+FormatDateTime ('hh'+TimeSepar+'mm', curDay.dMoon);
+    s:= Format(sMoonphase, [curDay.sMoonDesc, FormatDateTime ('hh'+TimeSepar+'mm', curDay.dMoon)]);
+    Result:= Result+LineEnding+s;
   end;
   Suntime1.Sundate:= dDate;
   Suntime1.Latitude:= Settings.latitude;
@@ -1075,7 +1089,7 @@ begin
   begin
     dtsz:= curDay.dSeason;
     dtsz:= IncMinute(dtsz, 60*Int64(IsDST(dDate)));
-    s:= curDay.sSeasonDesc+' à '+FormatDateTime ('hh'+TimeSepar+'mm', dtsz);
+    s:= Format(sSeason, [curDay.sSeasonDesc, FormatDateTime ('hh'+TimeSepar+'mm', dtsz)]);
     Result:= Result+LineEnding+s
   end;
   if Curday.bHoliday then
@@ -1134,7 +1148,7 @@ var
 begin
   if length(EYear.Text)<>4 then
   begin
-    Timer2.Enabled:=true;       // On remettra la bonne année un peu plus tard
+    Timer2.Enabled:=true;       // On remettra la bonne annÃ©e un peu plus tard
     exit;
   end;
   try
@@ -1228,7 +1242,7 @@ begin;
         if curDay.bHoliday then
         begin
           s1:= curDay.sHoliday;
-          DefBrushColor:= Brush.Color;  // pour remettre à la couleur d'origine
+          DefBrushColor:= Brush.Color;  // pour remettre Ã  la couleur d'origine
           SGCur.Canvas.Pen.Style:=psClear;
           SGCur.Canvas.Brush.Style:=bsSolid;
           if (CBVA.Checked) and (Pos('A', s1) > 0) then
@@ -1273,7 +1287,7 @@ begin;
         begin
           aRect.Top:= aRect.Top+(aRect.Bottom-aRect.Top-12) div 2;    // L'image va faire 12 px
           aRect.Bottom:= aRect.Top+ 12;
-          aRect.Right:= aRect.Right-2;                                 // Espace de 2 px à droite
+          aRect.Right:= aRect.Right-2;                                 // Espace de 2 px Ã  droite
           aRect.Left:= aRect.Right-12;
           ImgNum:= curDay.iMoonIndex;
           Moonphases1.MoonImages.StretchDraw(SGCur.Canvas, ImgNum, aRect);
@@ -1333,9 +1347,9 @@ var
 begin
   // During compilation+execution in IDE, avoid exception errors (to be confirmed)
   try
-    // Sans objet avant l'année 1583 (calendrier julien)
+    // Sans objet avant l'annÃ©e 1583 (calendrier julien)
     if Annee < 1583 then Annee := 1583;
-    // Ni après l'année 9998
+    // Ni aprÃ¨s l'annÃ©e 9998
     if Annee > 9998 then Annee := 9998;
      // Bissextile ?
     if Isleapyear(Annee) then
@@ -1363,7 +1377,7 @@ begin
     begin
       CurrentDay:= BegYear + i - 1;
       DecodeDate(CurrentDay, CYear, CMonth, CDay);
-      if (DaysCnt = 365) and (j = 58) then  Inc(j); // on saute le 29 février !
+      if (DaysCnt = 365) and (j = 58) then  Inc(j); // on saute le 29 fÃ©vrier !
       Days[i - 1].index := i;
       Days[i - 1].ddate := CurrentDay;
       Days[i - 1].sday := DefaultFormatSettings.ShortDayNames[DayOfWeek(CurrentDay)];
@@ -1383,15 +1397,15 @@ begin
     // reLoad and Update csvFerie
     csvferies.CSVText:= Copy(FeriesTxt, 1, length(FeriesTxt));
     csvferies.CSVText:= StringReplace(csvferies.CSVText, 'YYYY', InttoStr(Annee), [rfReplaceAll]);
-    csvferies.CSVText:= StringReplace(csvferies.CSVText, 'DIPAQ', DateToStr(Easter1.Easterdate), []);
-    csvferies.CSVText:= StringReplace(csvferies.CSVText, 'LUPAQ', DateToStr(Easter1.EasterMondaydate), [rfIgnoreCase]);
-    csvferies.CSVText:= StringReplace(csvferies.CSVText, 'JEASC', DateToStr(Easter1.Ascensdate), [rfIgnoreCase]);
-    csvferies.CSVText:= StringReplace(csvferies.CSVText, 'DIPEN', DateToStr(Easter1.Pentecdate), [rfIgnoreCase]);
-    csvferies.CSVText:= StringReplace(csvferies.CSVText, 'SOUDEP', DateToStr(DepDay), [rfIgnoreCase]);
-    csvferies.CSVText:= StringReplace(csvferies.CSVText, 'FETMER', DateToStr(MerDay), [rfIgnoreCase]);
-   for i:= 0 to csvferies.RowCount-1 do
+    csvferies.CSVText:= StringReplace(csvferies.CSVText, 'DIPAQ', TimeDateToString(Easter1.Easterdate, 'dd/mm/yyyy'), []);
+    csvferies.CSVText:= StringReplace(csvferies.CSVText, 'LUPAQ', TimeDateToString(Easter1.EasterMondaydate, 'dd/mm/yyyy'), []);
+    csvferies.CSVText:= StringReplace(csvferies.CSVText, 'JEASC', TimeDateToString(Easter1.Ascensdate, 'dd/mm/yyyy'), [rfIgnoreCase]);
+    csvferies.CSVText:= StringReplace(csvferies.CSVText, 'DIPEN', TimeDateToString(Easter1.Pentecdate, 'dd/mm/yyyy'), [rfIgnoreCase]);
+    csvferies.CSVText:= StringReplace(csvferies.CSVText, 'SOUDEP', TimeDateToString(DepDay, 'dd/mm/yyyy'), [rfIgnoreCase]);
+    csvferies.CSVText:= StringReplace(csvferies.CSVText, 'FETMER', TimeDateToString(MerDay, 'dd/mm/yyyy'), [rfIgnoreCase]);
+    for i:= 0 to csvferies.RowCount-1 do
     begin
-      DOY:= Trunc(StrToDate(csvferies.Cells[0,i])-BegYear);
+      DOY:= Trunc(StringToTimeDate(csvferies.Cells[0,i], 'dd/mm/yyyy')-BegYear);
       if annee >= StrToInt(csvferies.Cells[3,i]) then
       begin
         Days[DOY].sFerie := csvferies.Cells[1,i];
@@ -1402,8 +1416,8 @@ begin
     // Update holidays
     for i:= 0 to csvvacs.RowCount-1 do
     begin
-      vacbeg:= StrToDate(csvvacs.cells[0,i]);
-      vacend:= StrToDate(csvvacs.cells[1,i]);
+      vacbeg:= StringToTimeDate(csvvacs.Cells[0,i], 'dd/mm/yyyy'); //StrToDate(csvvacs.cells[0,i]);
+      vacend:= StringToTimeDate(csvvacs.Cells[1,i], 'dd/mm/yyyy');  //StrToDate(csvvacs.cells[1,i]);
       s:= csvvacs.cells[3,i];
       if (vacend>= BegYear) then
       begin
@@ -1485,17 +1499,14 @@ procedure TFCalendrier.ModLangue;
 var
   i, j: integer;
   cmp: TControl;
+  s: String;
 begin
   With LangFile do
   begin
-    MoonDescs[0]:= ReadString(LangStr, 'MoonDescs0', 'Nouvelle Lune');
-    MoonDescs[1]:= ReadString(LangStr, 'MoonDescs1', 'Premier croissant');
-    MoonDescs[2]:= ReadString(LangStr, 'MoonDescs2', 'Premier quartier');
-    MoonDescs[3]:= ReadString(LangStr, 'MoonDescs3', 'Gibbeuse croissante');
-    MoonDescs[4]:= ReadString(LangStr, 'MoonDescs4', 'Pleine lune');
-    MoonDescs[5]:= ReadString(LangStr, 'MoonDescs5', 'Gibbeuse décroissante');
-    MoonDescs[6]:= ReadString(LangStr, 'MoonDescs6', 'Dernier quartier');
-    MoonDescs[7]:= ReadString(LangStr, 'MoonDescs7', 'Dernier croissant');
+    s:= ReadString(LangStr, 'MoonDescs', Moonphs);
+    MoonDescs:= s.Split(',');
+    sMoonphase:= ReadString(LangStr, 'sMoonphase', '%s Ã  %s');
+    sSeason:= sMoonphase;
     sHolidayZone:= ReadString(LangStr, 'sHolidayZone', 'Vacances zone');
     CancelBtn:= ReadString(LangStr, 'CancelBtn', 'Annuler');
     YesBtn:= ReadString(LangStr, 'YesBtn', 'Oui');
@@ -1528,9 +1539,10 @@ begin
     PTMnuAbout.Caption:=PMnuAbout.Caption;
     PTMnuQuit.Caption:= PMnuQuit.Caption;
     sDayWeekInfo:= ReadString(LangStr, 'sDayWeekInfo', '%de jour, %de semaine');
-    sSunRiseAndSet:= ReadString(LangStr, 'sSunRiseAndSet','Lever et coucher du soleil à %s : %s - %s');
+    sMoonphase:= ReadString(LangStr, 'sMoonphase','%s Ã  %s');
+    sSunRiseAndSet:= ReadString(LangStr, 'sSunRiseAndSet','Lever et coucher du soleil Ã  %s : %s - %s');
     sSeasonSpring:= ReadString(LangStr, 'sSeasonSpring', 'Printemps');
-    sSeasonSummer:= ReadString(LangStr, 'sSeasonSummer', 'Eté');
+    sSeasonSummer:= ReadString(LangStr, 'sSeasonSummer', 'EtÃ©');
     sSeasonAutumn:= ReadString(LangStr, 'sSeasonAutumn', 'Automne');
     sSeasonWinter:= ReadString(LangStr, 'sSeasonWinter', 'Hiver');
     TabHalf1.Caption:= ReadString(LangStr, 'TabHalf1.Caption', TabHalf1.Caption);
@@ -1538,13 +1550,13 @@ begin
     PanToday.Caption:= ReadString(LangStr, 'PanToday.Caption', PanToday.Caption);
     PanSelDay.Caption:= ReadString(LangStr, 'PanSelDay.Caption', PanSelDay.Caption);
     PanSeasons.Caption:= ReadString(LangStr, 'PanSeasons.Caption', PanSeasons.Caption);
-    sNoLongerChkUpdates:= ReadString(LangStr, 'NoLongerChkUpdates', 'Ne plus rechercher les mises à jour');
+    sNoLongerChkUpdates:= ReadString(LangStr, 'NoLongerChkUpdates', 'Ne plus rechercher les mises Ã  jour');
     sUse64bitcaption:=ReadString(LangStr, 'use64bitcaption', 'Utilisez la version 64 bits de ce programme');
     sConfirmDelImg:=ReadString(LangStr, 'sConfirmDelImg', 'Voulez-vous supprimer cette image ?');
     sMainCaption:= ReadString(LangStr, 'sMainCaption', 'Calendrier');
     LImageInsert.Caption:= ReadString(LangStr, 'LImageInsert.Caption', LImageInsert.Caption);
     sFirst:= ReadString(LangStr, 'sFirst', '1er');
-    sSecond:= ReadString(LangStr, 'sSecond', '2ème');
+    sSecond:= ReadString(LangStr, 'sSecond', '2Ã¨me');
     sPrintHalf:= ReadString(LangStr, 'sPrintHalf', '%s semestre %d');
 
     // About
@@ -1554,9 +1566,9 @@ begin
       if AboutBox.NewVersion then AboutBox.LUpdate.Caption:= Format(AboutBox.sUpdateAvailable, [AboutBox.LastVersion])
       else AboutBox.LUpdate.Caption:= AboutBox.sNoUpdateAvailable;
     end;
-    AboutBox.sLastUpdateSearch:=ReadString(LangStr,'AboutBox.LastUpdateSearch','Dernière recherche de mise à jour');
-    AboutBox.sUpdateAvailable:=ReadString(LangStr,'AboutBox.UpdateAvailable','Nouvelle version %s disponible; Cliquer pour la télécharger');
-    AboutBox.sNoUpdateAvailable:=ReadString(LangStr,'AboutBox.NoUpdateAvailable','Le Calendrier est à jour');
+    AboutBox.sLastUpdateSearch:=ReadString(LangStr,'AboutBox.LastUpdateSearch','DerniÃ¨re recherche de mise Ã  jour');
+    AboutBox.sUpdateAvailable:=ReadString(LangStr,'AboutBox.UpdateAvailable','Nouvelle version %s disponible; Cliquer pour la tÃ©lÃ©charger');
+    AboutBox.sNoUpdateAvailable:=ReadString(LangStr,'AboutBox.NoUpdateAvailable','Le Calendrier est Ã  jour');
     Aboutbox.Caption:=ReadString(LangStr,'Aboutbox.Caption','A propos du Calendrier');
     AboutBox.UrlProgSite:= sUrlProgSite+ ReadString(LangStr,'AboutBox.UrlProgSite','Accueil');
     AboutBox.LWebSite.Caption:= ReadString(LangStr,'AboutBox.LWebSite.Caption', AboutBox.LWebSite.Caption);

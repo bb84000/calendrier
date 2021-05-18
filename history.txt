@@ -88,6 +88,12 @@ Version 0.7.1.1 - 15/05/2021
 - Contournement de bugs dus aux différences de fonctionnement de TextRect entre les
   versions Win32 et Win64 (style wordbreak nom prtis en compte en Win32)
 
+Version 0.7.1.2 - 18/05/2021
+- Adaptations du code pour la compilation sous Linux
+- Amélioration de certaines traductions
+- Correction du menu d'effacement d'une image
+
+
 
 
 
