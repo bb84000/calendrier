@@ -1,9 +1,9 @@
 ;Installation script for Calendrier
 ; bb - sdtp - may 2021
 ;--------------------------------
+   Unicode true
 
   !include "MUI2.nsh"
-  !include "${NSISDIR}\Contrib\Modern UI\BB.nsh"
   !include x64.nsh
   !include FileFunc.nsh
   
@@ -74,7 +74,7 @@
   LangString ProgramLnkStr ${LANG_ENGLISH} "Calendar.lnk"
   LangString ProgramLnkStr ${LANG_FRENCH} "Calendrier.lnk"
   LangString UninstLnkStr ${LANG_ENGLISH} "Calendar uninstall.lnk"
-  LangString UninstLnkStr ${LANG_FRENCH} "Désinstallation de Calendrier.lnk"
+  LangString UninstLnkStr ${LANG_FRENCH} "DÃ©sinstallation de Calendrier.lnk"
 
   LangString ProgramDescStr ${LANG_ENGLISH} "Calendar"
   LangString ProgramDescStr ${LANG_FRENCH} "Calendrier"
@@ -92,7 +92,7 @@
 
   ;Cannot install
   LangString No_Install ${LANG_ENGLISH} "The application cannot be installed on a 32bit system"
-  LangString No_Install ${LANG_FRENCH} "Cette application ne peut pas être installée sur un système 32bits"
+  LangString No_Install ${LANG_FRENCH} "Cette application ne peut pas Ãªtre installÃ©e sur un systÃ¨me 32bits"
   
   ; Language string for remove old install
   LangString Remove_Old ${LANG_ENGLISH} "Install will remove a previous installation."
@@ -223,9 +223,8 @@ Delete "$INSTDIR\uninst.exe"
 DeleteRegKey HKCU "Software\SDTP\calendrier"
 DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\calendrier"
 ; remove also autostart settings if any
-DeleteRegKey HKCU "Software\Microsoft\Windows\CurentVersion\Run\calendrier"
-DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\RunOnce\calendrier"
-
+DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Run\" "calendrier"
+DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\RunOnce\" "calendrier"
 SectionEnd ; end of uninstall section
 
 Function inst_shortcut

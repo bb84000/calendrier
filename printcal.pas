@@ -14,7 +14,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, PrintersDlgs, Printers,
-  ExtCtrls, StdCtrls, calsettings, lazbbutils, BGRABitmap, BGRABitmapTypes;
+  ExtCtrls, StdCtrls, calsettings, lazbbutils;
 
 type
 

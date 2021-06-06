@@ -336,12 +336,11 @@ begin
     //wxbitsrun := 0;
     UserAppsDataPath := GetUserDir;
   {$ENDIF}
-  OSVersion:= TOSVersion.Create();
   {$IFDEF WINDOWS}
     OS := 'Windows ';
     // get user data folder
     s := ExtractFilePath(ExcludeTrailingPathDelimiter(GetAppConfigDir(False)));
-    if OSVersion.VerMaj < 7 then UserAppsDataPath := s                     // NT to XP
+    if Ord(WindowsVersion) < 7 then UserAppsDataPath := s                     // NT to XP
     else UserAppsDataPath := ExtractFilePath(ExcludeTrailingPathDelimiter(s)) + 'Roaming'; // Vista to W10
     LazGetShortLanguageID(LangStr);
   {$ENDIF}
@@ -354,6 +353,7 @@ begin
   // Chargement des chaînes de langue...
   LangFile:= TBbIniFile.create(CalExecPath+ProgName+'.lng');
   if Langstr<>'fr' then LangStr:='en';
+  OSVersion:= TOSVersion.Create(LangStr, LangFile);
   ColorDay := clDefault;
   ColorSunday := RGBToColor(128, 255, 255);
   ColorFerie:= RGBToColor(128, 255, 255);
@@ -783,7 +783,6 @@ begin
   end;
   FImgResiz.ImgWidth:= ImageHalf.Width;
   FImgResiz.ImgHeight:= ImageHalf.Height;
-
   if FImgResiz.showModal=mrOK then
   begin
     CurImg.Year:= CurYear;
@@ -801,6 +800,7 @@ begin
     ImageHalf.Picture.assign(FImgResiz.jpeg);
     Application.ProcessMessages;
     FImgResiz.jpeg.SaveToFile(CurImg.LocalCopy);
+    LImageInsert.Visible:= False;
     if SettingsChanged then SaveSettings(cfgfilename);
   end;
 end;
@@ -1031,7 +1031,8 @@ begin
     curCol:= aCol;
     try
       MyDate:= EncodeDate (CurYear, Month, aRow);
-      s:= FormatDateTime (DefaultFormatSettings.LongDateFormat, MyDate);
+      //s:= FormatDateTime (DefaultFormatSettings.LongDateFormat, MyDate);
+      s:= FormatDateTime ('dddd dd mmmm yyyy', myDate);
       s[1]:= UpCase(s[1]);
       SGCur.Hint:= s+LineEnding+DayInfos(MyDate);
       CurHint:= SGCur.Hint;
@@ -1122,7 +1123,8 @@ begin
     if half= 1 then Month := ACol + 1 + 3 * (GridNum - 1)
     else Month:= ACol + 7 + 3 * (GridNum - 1) ;
     SelDate:= EncodeDate(CurYear, Month, ARow);
-    s:= FormatDateTime (DefaultFormatSettings.LongDateFormat, SelDate);
+    //s:= FormatDateTime (DefaultFormatSettings.LongDateFormat, SelDate);
+    s:= FormatDateTime ('dddd dd mmmm yyyy', SelDate);
     s[1]:= UpCase(s[1]);
     s:=s+LineEnding+DayInfos(SelDate);
     LSelDay.Caption:=  s;
@@ -1307,7 +1309,8 @@ var
  s: String;
  CurDay: Integer;
 begin
-  s:= FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm'+TimeSepar+'ss', now);
+  //s:= FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm'+TimeSepar+'ss', now);
+  s:= FormatDateTime ('dddd dd mmmm yyyy - hh'+TimeSepar+'mm'+TimeSepar+'ss', now);
   s[1]:= UpCase(s[1]);
   LTodayTime.Caption:= s;
   Curday:= DayofTheYear(now);
@@ -1463,28 +1466,32 @@ begin
     Days[DOY].bSeason:= true;
     Days[DOY].dSeason:= dSpr;
     Days[DOY].sSeasonDesc:= sSeasonSpring;
-    s:= Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', Days[DOY].dSeason)+LineEnding;
+    //s:= Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', Days[DOY].dSeason)+LineEnding;
+    s:= Days[DOY].sSeasonDesc+' : '+FormatDateTime ('dddd dd mmmm yyyy - hh'+TimeSepar+'mm', Days[DOY].dSeason)+LineEnding;
     dSum:= Seasons1.SummerDate; //GetSeasonDate(Annee, 1);
     dSum:= IncMinute(dSum, 60*Int64(IsDST(dSum)));
     DOY:= trunc(dSum-BegYear);
     Days[DOY].bSeason:= true;
     Days[DOY].dSeason:= dSum;
     Days[DOY].sSeasonDesc:= sSeasonSummer;
-    LSeasons1.Caption:=s+Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dSum);
+    //LSeasons1.Caption:=s+Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+'
+    LSeasons1.Caption:=s+Days[DOY].sSeasonDesc+' : '+FormatDateTime ('dddd dd mmmm yyyy - hh'+TimeSepar+'mm', dSum);
     dAut:= Seasons1.AutumnDate; //GetSeasonDate(Annee, 2);
     dAut:= IncMinute(dAut, 60*Int64(IsDST(dAut)));
     DOY:= trunc(dAut-BegYear);
     Days[DOY].bSeason:= true;
     Days[DOY].dSeason:= dAut;
     Days[DOY].sSeasonDesc:= sSeasonAutumn;
-    s:= Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dAut)+LineEnding;
+    //s:= Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dAut)+LineEnding;
+    s:= Days[DOY].sSeasonDesc+' : '+FormatDateTime ('dddd dd mmmm yyyy - hh'+TimeSepar+'mm', dAut)+LineEnding;
     dWin:= Seasons1.WinterDate;
     dWin:= IncMinute(dWin, 60*Int64(IsDST(dWin)));
     DOY:= trunc(dWin-BegYear);
     Days[DOY].bSeason:= true;
     Days[DOY].dSeason:= dWin;
     Days[DOY].sSeasonDesc:= sSeasonWinter;
-    LSeasons2.Caption:=s+Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dWin);
+    //LSeasons2.Caption:=s+Days[DOY].sSeasonDesc+' : '+FormatDateTime (DefaultFormatSettings.LongDateFormat+' - hh'+TimeSepar+'mm', dWin);
+    LSeasons2.Caption:=s+Days[DOY].sSeasonDesc+' : '+FormatDateTime ('dddd dd mmmm yyyy - hh'+TimeSepar+'mm', dWin);
     Application.ProcessMessages;
     SG1.OnDrawCell:= @SGDrawCell ;
     SG2.OnDrawCell:= @SGDrawCell ;

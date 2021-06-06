@@ -92,7 +92,7 @@ Prefs.PanCoords.Caption=Coordinates for sunrise and sunset times
 Prefs.LTown.Caption=Town
 Prefs.LLatitude.Caption=Latitude
 Prefs.LLongitude.Caption=Longitude
-Prefs.LTimezone.Caption=Timezone offset (mn)
+Prefs.LTimezone.Caption=Timezone offset
 Prefs.PanSystem.Caption=System
 Prefs.CBStartwin.Caption=Launch at startup
 Prefs.CBStartmini.Caption=Strart minimized
@@ -112,6 +112,24 @@ FTowns.BtnAdd.Caption=Add
 FTowns.BtnDelete.Caption=Delete
 FTowns.PanCoords.Caption=Details
 FTowns.sConfirmDelTown=Are you sure you want delete
+
+;lazbbosver
+Home=Home
+Professional=Professional
+Server=Server
+00000=Unknown version
+10240=v 1507 "July 2015 update"
+10586=v 1511 "November 2015 update"
+14393=v 1607 "July 2016 (Anniversary update)"
+15063=v 1703 "April 2017 (Creators update)"
+16299=v 1709 "October 2017 (Fall Creators update)"
+17134=v 1803 "April 2018 update"
+17763=v 1809 "October 2018 update"
+18362=v 1903 "May 2019 update"
+18363=v 1909 "November 2019 update"
+19041=v 2004 "May 2020 update"
+19042=v 20H2 "October 2020 update"
+19043=v 21H1 "May 2021 updsate"
 
 ;Français
 [fr]
@@ -194,7 +212,7 @@ Prefs.PanCoords.Caption=Coordonnées pour le lever et le coucher du soleil
 Prefs.LTown.Caption=Ville
 Prefs.LLatitude.Caption=Latitude
 Prefs.LLongitude.Caption=Longitude
-Prefs.LTimezone.Caption=Décalage horaire (mn)
+Prefs.LTimezone.Caption=Décalage horaire
 Prefs.PanSystem.Caption=Système
 Prefs.CBStartwin.Caption=Lancer au démarrage
 Prefs.CBStartmini.Caption=Démarrer minimisé
@@ -215,3 +233,20 @@ FTowns.BtnDelete.Caption=Supprimer
 FTowns.PanCoords.Caption=Détails
 FTowns.sConfirmDelTown=Voulez-vous supprimer
 
+;lazbbosver
+Home=Famille
+Professional=Entreprise
+Server=Serveur
+00000=Version inconnue
+10240=v 1507 "Juillet 2015"
+10586=v 1511 "Novembre 2015"
+14393=v 1607 "Juillet 2016 (Màj Anniversaire)"
+15063=v 1703 "Avril 2017 (Màj Createurs)"
+16299=v 1709 "Octobre 2017(Màj Fall Créateurs)"
+17134=v 1803 "Avril 2018"
+17763=v 1809 "Octobre 2018"
+18362=v 1903 "Mai 2019"
+18363=v 1909 "Novembre 2019"
+19041=v 2004 "Mai 2020"
+19042=v 20H2 "Octobre 2020"
+19043=v 21H1 "Mai 2021"
