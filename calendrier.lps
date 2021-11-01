@@ -18,10 +18,10 @@
         <ComponentName Value="FCalendrier"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="330"/>
-        <CursorPos Y="343"/>
+        <CursorPos X="24" Y="3"/>
         <UsageCount Value="200"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="..\lazbbunits\lazbbastro.pas"/>
@@ -70,7 +70,7 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="64" Y="5"/>
-        <UsageCount Value="199"/>
+        <UsageCount Value="200"/>
         <DefaultSyntaxHighlighter Value="Ini"/>
       </Unit6>
       <Unit7>
@@ -81,7 +81,7 @@
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="39" Y="154"/>
-        <UsageCount Value="171"/>
+        <UsageCount Value="172"/>
       </Unit7>
       <Unit8>
         <Filename Value="printcal.pas"/>
@@ -92,7 +92,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="5"/>
         <CursorPos X="46" Y="17"/>
-        <UsageCount Value="62"/>
+        <UsageCount Value="63"/>
       </Unit8>
       <Unit9>
         <Filename Value="..\lazbbunits\phaseslune.pas"/>
@@ -233,10 +233,11 @@
       </Unit26>
       <Unit27>
         <Filename Value="fr_holidays.csv"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="167"/>
-        <CursorPos X="27" Y="184"/>
-        <UsageCount Value="1"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="176"/>
+        <CursorPos X="22" Y="200"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit27>
       <Unit28>
@@ -246,10 +247,11 @@
       </Unit28>
       <Unit29>
         <Filename Value="history.txt"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="71"/>
-        <CursorPos X="55" Y="98"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="75"/>
+        <CursorPos X="19" Y="83"/>
         <UsageCount Value="100"/>
+        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit29>
       <Unit30>
@@ -460,10 +462,11 @@
       </Unit57>
       <Unit58>
         <Filename Value="calendrier.lng"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="83"/>
-        <CursorPos X="40" Y="95"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="119"/>
+        <CursorPos X="149" Y="131"/>
         <UsageCount Value="92"/>
+        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit58>
       <Unit59>
@@ -482,10 +485,10 @@
       </Unit60>
       <Unit61>
         <Filename Value="calendrier.txt"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="-1"/>
+        <EditorIndex Value="4"/>
         <CursorPos X="29"/>
         <UsageCount Value="74"/>
+        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit61>
       <Unit62>
@@ -523,8 +526,10 @@
       </Unit65>
       <Unit66>
         <Filename Value="calendrier.lrs"/>
-        <EditorIndex Value="-1"/>
-        <UsageCount Value="9"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
       </Unit66>
       <Unit67>
         <Filename Value="C:\lazarus\fpc\3.2.0\source\rtl\win\wininc\ascfun.inc"/>
@@ -584,7 +589,8 @@
         <Filename Value="..\Packets\Lazbbcomponents\easter.pas"/>
         <UnitName Value="Easter"/>
         <EditorIndex Value="-1"/>
-        <CursorPos Y="15"/>
+        <WindowIndex Value="-1"/>
+        <TopLine Value="76"/>
         <UsageCount Value="41"/>
       </Unit75>
       <Unit76>
@@ -603,9 +609,6 @@
         <DefaultSyntaxHighlighter Value="XML"/>
       </Unit77>
     </Units>
-    <General>
-      <ActiveWindowIndexAtStart Value="-1"/>
-    </General>
     <JumpHistory HistoryIndex="-1"/>
     <RunParams>
       <FormatVersion Value="2"/>

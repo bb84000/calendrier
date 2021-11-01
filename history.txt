@@ -97,6 +97,10 @@ Version 0.7.1.3 - 31/05/2021
 - Effacement du message d'insertion d'image après cette insertion
 - Correction du bug de LazbbOSver avec Windows 10 21H1
 
+Version 0.7.1.4 - 01/11/2021
+- Prise en compte de Windows 11 dans LazbbOsver
+- Mise à jour des vacances scolaires 2022/2023 (Corse non disponible à ce jour)
+
 
 
 

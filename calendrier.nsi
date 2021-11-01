@@ -1,5 +1,5 @@
 ;Installation script for Calendrier
-; bb - sdtp - may 2021
+; bb - sdtp - June 2021
 ;--------------------------------
    Unicode true
 
