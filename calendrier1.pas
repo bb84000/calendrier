@@ -18,8 +18,8 @@ uses
   {$ENDIF}
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
   Grids, StdCtrls, lazbbcontrols, Suntime, Moonphases, Seasons, Easter,
-  csvdocument, Types, DateUtils, lazbbastro, LResources, Buttons, Menus,
-  UniqueInstance, registry, lazbbutils, lazbbautostart, LazUTF8, lazbbosver,
+  lazbbOsVersion, csvdocument, Types, DateUtils, lazbbastro, LResources,
+  Buttons, Menus, UniqueInstance, registry, lazbbutils, lazbbautostart, LazUTF8,
   laz2_DOM, laz2_XMLRead, laz2_XMLWrite, PrintersDlgs, calsettings, ImgResiz,
   lazbbaboutupdate, lazbbinifiles, Towns1, Clipbrd, LCLIntf, Printcal;
 
@@ -63,6 +63,7 @@ type
   { TFCalendrier }
 
   TFCalendrier = class(TForm)
+    OsVersion: TbbOsVersion;
     CBVA: TCheckBoxX;
     CBVB: TCheckBoxX;
     CBVC: TCheckBoxX;
@@ -163,7 +164,6 @@ type
     Initialized: Boolean;
     OS: String;
     OSTarget: String;
-    OSVersion: TOSVersion;
     ProgName: String;
     CompileDateTime: TDateTime;
     CalExecPath: String;
@@ -353,7 +353,6 @@ begin
   // Chargement des chaînes de langue...
   LangFile:= TBbIniFile.create(CalExecPath+ProgName+'.lng');
   if Langstr<>'fr' then LangStr:='en';
-  OSVersion:= TOSVersion.Create(LangStr, LangFile);
   ColorDay := clDefault;
   ColorSunday := RGBToColor(128, 255, 255);
   ColorFerie:= RGBToColor(128, 255, 255);
@@ -417,8 +416,8 @@ begin
     Settings.latitude:= 43.94284;
     Settings.longitude:= 4.8089;
     Prefs.CalAppDataPath:= CalAppDataPath;
-    InitAboutBox;
     LoadSettings(cfgfilename);
+
     // load towns from resources in prefs form
     // Todo Localize towns list
     if FileExists(CalAppDataPath+'fr_villes.csv')then Prefs.csvtowns.LoadFromFile(CalAppDataPath+'fr_villes.csv') else
@@ -430,6 +429,7 @@ begin
       Prefs.CBTowns.Items.Add(Prefs.csvtowns.Cells[0,i]);
     Prefs.CBTowns.ItemIndex:= 0;
     ModLangue;
+    InitAboutBox;
     Settings.OnChange:= @SettingsOnChange;
     HalfImgsList.OnChange:= @SettingsOnChange;
     UpdateCal(curyear);
@@ -1636,6 +1636,16 @@ begin
     FTowns.LTown.Caption:= Prefs.LTown.Caption;
     FTowns.LTimezone.Caption:= Prefs.LTimezone.Caption;
 
+   with OsVersion do
+   begin
+     ProdStr[1]:= ReadString(LangStr,'Home','Famille');
+     ProdStr[2]:= ReadString(LangStr,'Professional','Entreprise');
+     ProdStr[3]:= ReadString(LangStr,'Server','Serveur');
+     for i:= 0 to high(Win10Build) do Win10Build[i,1]:= ReadString(LangStr,Win10Build[i,0],Win10Build[i,1]);
+     for i:= 0 to high(Win11Build) do Win11Build[i,1]:= ReadString(LangStr,Win11Build[i,0],Win11Build[i,1]);
+     GetSysInfo;
+     //AboutBox.LVersion.Hint:= OSVersion.VerDetail;
+   end;
 
   end;
 end;

@@ -1,5 +1,5 @@
 ;Installation script for Calendrier
-; bb - sdtp - June 2021
+; bb - sdtp - september 2022
 ;--------------------------------
    Unicode true
 
@@ -27,6 +27,13 @@
 
   ; The default installation directory
   InstallDir "$PROGRAMFILES\Calendrier"
+  
+    ; Variables to properly manage X64 or X32
+  var exe_to_inst       ; "32.exe" or "64.exe"
+  var exe_to_del
+  var dll_to_inst       ; "32.dll" or "64.dll"
+  var dll_to_del
+  var sysfolder         ; system 32 folder
 
 ;--------------------------------
 ; Interface Settings
@@ -106,11 +113,11 @@
   !define FileVersion "${expv_1}.${expv_2}.${expv_3}.${expv_4}"
 
   VIProductVersion "${FileVersion}"
-   VIAddVersionKey "FileVersion" "${FileVersion}"
-   VIAddVersionKey "ProductName" "Installcalendrier.exe"
-   VIAddVersionKey "FileDescription" "Calendar Installer"
-   VIAddVersionKey "LegalCopyright" "sdtp - bb"
-   VIAddVersionKey "ProductVersion" "${FileVersion}"
+  VIAddVersionKey "FileVersion" "${FileVersion}"
+  VIAddVersionKey "ProductName" "Installcalendrier.exe"
+  VIAddVersionKey "FileDescription" "Calendar Installer"
+  VIAddVersionKey "LegalCopyright" "sdtp - bb"
+  VIAddVersionKey "ProductVersion" "${FileVersion}"
    
 
   ; Change nsis brand line
@@ -124,41 +131,60 @@ Section "" ;No components page, name is not important
   ${If} ${RunningX64}
     SetRegView 64    ; change registry entries and install dir for 64 bit
   ${EndIf}
-  Var /GLOBAL prg_to_inst
-  Var /GLOBAL prg_to_del
-  
+
+  ;Copy all files, files whhich have the same name in 32 and 64 bit are copied
+  ; with 64 or 32 in their name, the renamed
+  File  "${source_dir}\calendrierwin64.exe"
+  File  "${source_dir}\calendrierwin32.exe"
+  File "/oname=libeay3264.dll" "${lazarus_dir}\openssl\win64\libeay32.dll"
+  File "/oname=ssleay3264.dll" "${lazarus_dir}\openssl\win64\ssleay32.dll"
+  File "/oname=libeay3232.dll" "${lazarus_dir}\openssl\win32\libeay32.dll"
+  File "/oname=ssleay3232.dll" "${lazarus_dir}\openssl\win32\ssleay32.dll"
+
   ${If} ${RunningX64}  ; change registry entries and install dir for 64 bit
-     StrCpy "$prg_to_inst" "$INSTDIR\calendrierwin64.exe"
-     StrCpy "$prg_to_del" "$INSTDIR\calendrierwin32.exe"
-     IfFileExists "$WINDIR\sysnative\libeay32.dll" ssl_lib64_found ssl_lib64_not_found
-     ssl_lib64_not_found:
-       File "${lazarus_dir}\openssl\win64\libeay32.dll"
-       File "${lazarus_dir}\openssl\win64\ssleay32.dll"
-       File "${lazarus_dir}\openssl\OpenSSL License.txt"
-     ssl_lib64_found:
+     StrCpy $exe_to_inst "64.exe"
+     StrCpy $dll_to_inst "64.dll"
+     StrCpy $exe_to_del "32.exe"
+     StrCpy $dll_to_del "32.dll"
+     StrCpy $sysfolder "$WINDIR\sysnative"
   ${Else}
-     StrCpy "$prg_to_inst" "$INSTDIR\calendrierwin32.exe"
-     StrCpy "$prg_to_del" "$INSTDIR\calendrierwin64.exe"
-     IfFileExists "$WINDIR\system32\libeay32.dll" ssl_lib32_found ssl_lib32_not_found
-     ssl_lib32_not_found:
-       File "${lazarus_dir}\openssl\win32\libeay32.dll"
-       File "${lazarus_dir}\openssl\win32\ssleay32.dll"
-       File "${lazarus_dir}\openssl\OpenSSL License.txt"
-     ssl_lib32_found:
-   ${EndIf}
-  ; Dans le cas ou on n'aurait pas pu fermer l'application
+     StrCpy $exe_to_inst "32.exe"
+     StrCpy $dll_to_inst "32.dll"
+     StrCpy $exe_to_del "64.exe"
+     StrCpy $dll_to_del "64.dll"
+     StrCpy $sysfolder "$WINDIR\system32"
+  ${EndIf}
+
+  SetOutPath "$INSTDIR"
+  ; Delete old files if they exist as we can not rename if the file exists
   Delete /REBOOTOK "$INSTDIR\calendrier.exe"
-  File "${source_dir}\calendrierwin64.exe"
-  File "${source_dir}\calendrierwin32.exe"
+  Delete /REBOOTOK "$INSTDIR\libeay32.dll"
+  Delete /REBOOTOK "$INSTDIR\\ssleay32.dll"
+
+  ; Rename 32 or 64 files
+  Rename /REBOOTOK "$INSTDIR\calendrierwin$exe_to_inst" "$INSTDIR\calendrier.exe"
+  ; Install ssl libraries if not already in system folder
+  IfFileExists "$sysfolder\libeay32.dll" ssl_lib_found ssl_lib_not_found
+  ssl_lib_not_found:
+    File "${lazarus_dir}\openssl\OpenSSL License.txt"
+    Rename /REBOOTOK "$INSTDIR\libeay32$dll_to_inst" "$INSTDIR\libeay32.dll"
+    Rename /REBOOTOK "$INSTDIR\ssleay32$dll_to_inst" "$INSTDIR\\ssleay32.dll"
+    Goto ssl_lib_set
+  ssl_lib_found:
+    Delete "$INSTDIR\libeay32$dll_to_inst"
+    Delete "$INSTDIR\ssleay32$dll_to_inst"
+  ssl_lib_set:
+  ; delete non used files
+  Delete "$INSTDIR\calendrier$exe_to_del"
+  Delete "$INSTDIR\libeay32$dll_to_del"
+  Delete "$INSTDIR\ssleay32$dll_to_del"
+  ; Install other files
   File "${source_dir}\licensf.txt"
   File "${source_dir}\license.txt"
   File "${source_dir}\history.txt"
   File "${source_dir}\calendrier.txt"
   File "${source_dir}\calendrier.lng"
   File "${source_dir}\calendrier.ini"
-  ;File /r "${source_dir}\help"
-  Rename /REBOOTOK "$prg_to_inst" "$INSTDIR\calendrier.exe"
-  Delete /REBOOTOK "$prg_to_del"
 
   ; write out uninstaller
   WriteUninstaller "$INSTDIR\uninst.exe"

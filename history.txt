@@ -101,6 +101,12 @@ Version 0.7.1.4 - 01/11/2021
 - Prise en compte de Windows 11 dans LazbbOsver
 - Mise à jour des vacances scolaires 2022/2023 (Corse non disponible à ce jour)
 
+Version 0.7.2.0 - 29/09/2022
+- Utilisation du composant TbbOsVersion à la place de l'unité lazbbOsVer
+- Rééécriture de l'installateur pour 32/64 bits
+
+
+
 
 
 
