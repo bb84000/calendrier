@@ -19,8 +19,9 @@
         <ComponentName Value="FCalendrier"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <TopLine Value="1497"/>
-        <CursorPos X="19" Y="1502"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="1617"/>
+        <CursorPos Y="1634"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -258,7 +259,6 @@
       </Unit29>
       <Unit30>
         <Filename Value="history.txt"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="11"/>
         <TopLine Value="85"/>
         <CursorPos Y="112"/>

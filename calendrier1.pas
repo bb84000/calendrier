@@ -1518,10 +1518,7 @@ begin
         A:= Win11Strs.Strings[i].split('=');
         Win11Strs.Strings[i]:= A[0]+'='+ReadString(LangStr,A[0],A[1]);
       end;
-      AboutBox.LVersion.Hint:= OSVersion.VerDetail;
-      Prefs.PanStatus.Caption:= OSVersion.VerDetail ;
     end;
-
     s:= ReadString(LangStr, 'MoonDescs', Moonphs);
     MoonDescs:= s.Split(',');
     sMoonphase:= ReadString(LangStr, 'sMoonphase', '%s à %s');
@@ -1594,6 +1591,7 @@ begin
     AboutBox.LProgPage.Caption:= ReadString(LangStr,'AboutBox.LProgPage.Caption', AboutBox.LProgPage.Caption);      ;
     AboutBox.LSourceCode.Caption:= ReadString(LangStr,'AboutBox.LSourceCode.Caption', AboutBox.LSourceCode.Caption);
     AboutBox.LSourceCode.Caption:= ReadString(LangStr,'AboutBox.LSourceCode.Caption', 'Page Web du code source');
+    AboutBox.LVersion.Hint:= OSVersion.VerDetail;
 
     // Settings
     // Enumerate controls to change captions
@@ -1633,6 +1631,7 @@ begin
     Prefs.SBEditTowns.Hint:= ReadString(LangStr, 'Prefs.SBEditTowns.Hint', Prefs.SBEditTowns.Hint);
     Prefs.BtnCancel.Caption:= CancelBtn;
     Prefs.Caption:= sMainCaption+ ' - '+PMnuSettings.Caption;
+    Prefs.PanStatus.Caption:= OSVersion.VerDetail ;
 
     FImgResiz.Caption:= sMainCaption+' - '+ReadString(LangStr, 'sFImgResiz.Caption', 'Choix d''une image');
     FImgResiz.BtnCancel.Caption:= CancelBtn;
