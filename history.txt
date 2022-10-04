@@ -105,6 +105,10 @@ Version 0.7.2.0 - 29/09/2022
 - Utilisation du composant TbbOsVersion à la place de l'unité lazbbOsVer
 - Rééécriture de l'installateur pour 32/64 bits
 
+Version 0.7.2.1 - 04/10/2022
+- Report des listes dans la ressource du projet
+- Report de l'image "A propos" dans la ressource du projet
+- Modification du code suite à modification du composant TbbOsVersion
 
 
 

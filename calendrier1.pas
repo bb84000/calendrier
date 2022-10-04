@@ -1,6 +1,6 @@
 //******************************************************************************
 // Calendrier main form
-// bb - sdtp - November 2021
+// bb - sdtp - October 2022
 //******************************************************************************
 
 unit calendrier1;
@@ -18,11 +18,10 @@ uses
   {$ENDIF}
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
   Grids, StdCtrls, lazbbcontrols, Suntime, Moonphases, Seasons, Easter,
-  lazbbOsVersion, csvdocument, Types, DateUtils, lazbbastro, LResources,
-  Buttons, Menus, UniqueInstance, registry, lazbbutils, lazbbautostart, LazUTF8,
+  lazbbOsVersion, csvdocument, Types, DateUtils, lazbbastro, Buttons, Menus,
+  UniqueInstance, registry, lazbbutils, lazbbautostart, LazUTF8, lazbbResources,
   laz2_DOM, laz2_XMLRead, laz2_XMLWrite, PrintersDlgs, calsettings, ImgResiz,
   lazbbaboutupdate, lazbbinifiles, Towns1, Clipbrd, LCLIntf, Printcal;
-
 
 type
    { int64 or longint type for Application.QueueAsyncCall }
@@ -305,13 +304,12 @@ end;
 
 procedure TFCalendrier.FormCreate(Sender: TObject);
 var
-  r: TLResource;
+  //r: TLResource;
   s: String;
   {$IFDEF Linux}
      x: Integer;
   {$ENDIF}
 begin
-  {$I calendrier.lrs}
   // Intercept system commands
   Application.OnMinimize:=@OnAppMinimize;
   Application.OnQueryEndSession:= @OnQueryendSession;
@@ -358,20 +356,15 @@ begin
   ColorFerie:= RGBToColor(128, 255, 255);
   // load saints list from resource
   csvsaints := TCSVDocument.Create;
-  r:= LazarusResources.Find('fr_saints');
-  csvsaints.CSVText:= r.value;
+  bbLoadfromResource(csvsaints, 'FR_SAINTS');
    //load feries from resource
   csvferies := TCSVDocument.Create;
-  r:= LazarusResources.Find('fr_feries');
-  FeriesTxt:= r.value;
-  csvferies.CSVText:= FeriesTxt;
+  bbLoadfromResource(csvferies, 'FR_FERIES');
+  FeriesTxt:= csvferies.CSVText;
   // load Holidays from resource
   csvvacs:= TCSVDocument.Create;
-  if FileExists(CalAppDataPath+'fr_holidays.csv')then csvvacs.LoadFromFile(CalAppDataPath+'fr_holidays.csv') else
-  begin
-    r:= LazarusResources.Find('fr_holidays');
-    csvvacs.CSVText:= r.value;
-  end;
+  if FileExists(CalAppDataPath+'fr_holidays.csv')then csvvacs.LoadFromFile(CalAppDataPath+'fr_holidays.csv')
+  else bbLoadfromResource(csvvacs, 'FR_HOLIDAYS');
   TimeSepar:= DefaultFormatSettings.TimeSeparator;
   LTodayDesc.Caption:='';
   LSelDay.Caption:='';
@@ -384,7 +377,7 @@ end;
 procedure TFCalendrier.FormActivate(Sender: TObject);
 var
   i: Integer;
-  r: TLResource;
+  //r: TLResource;
   s: String;
 begin
   if not Initialized then
@@ -416,15 +409,15 @@ begin
     Settings.latitude:= 43.94284;
     Settings.longitude:= 4.8089;
     Prefs.CalAppDataPath:= CalAppDataPath;
-    LoadSettings(cfgfilename);
-
     // load towns from resources in prefs form
     // Todo Localize towns list
-    if FileExists(CalAppDataPath+'fr_villes.csv')then Prefs.csvtowns.LoadFromFile(CalAppDataPath+'fr_villes.csv') else
+    //if FileExists(CalAppDataPath+'fr_villes.csv')then Prefs.csvtowns.LoadFromFile(CalAppDataPath+'fr_villes.csv') else
     begin
-      r:= LazarusResources.Find('fr_villes');
-      Prefs.csvtowns.CSVText:= r.value;
+      bbLoadfromResource(Prefs.csvtowns, 'FR_VILLES');
+      //r:= LazarusResources.Find('fr_villes');
+      //Prefs.csvtowns.CSVText:= r.value;
     end;
+    LoadSettings(cfgfilename);
     for i:= 0 to Prefs.csvtowns.RowCount-1 do
       Prefs.CBTowns.Items.Add(Prefs.csvtowns.Cells[0,i]);
     Prefs.CBTowns.ItemIndex:= 0;
@@ -456,6 +449,7 @@ end;
 procedure TFCalendrier.InitAboutBox;
 var
   IniFile: TBbInifile;
+  png: TPortableNetworkGraphic;
 begin
    // Check inifile with URLs, if not present, then use default
   IniFile:= TBbInifile.Create(ProgName+'.ini');
@@ -465,11 +459,10 @@ begin
   sUrlProgSite:= IniFile.ReadString('urls','UrlProgSite','https://github.com/bb84000/calendrier');   // Link Localized in modlangue
   ChkVerInterval:= IniFile.ReadInt64('urls', 'ChkVerInterval', 3);
   if Assigned(IniFile) then FreeAndNil(IniFile);
-  AboutBox.Image1.Picture.LoadFromLazarusResource('calendrier32');
+  bbLoadFromResource(AboutBox.Image1, 'CALENDRIER32');
   AboutBox.LProductName.Caption := GetVersionInfo.FileDescription;
   AboutBox.LCopyright.Caption := GetVersionInfo.CompanyName + ' - ' + DateTimeToStr(CompileDateTime);
   AboutBox.LVersion.Caption := 'Version: ' + Version + ' (' + OS + OSTarget + ')';
-  AboutBox.LVersion.Hint:= OSVersion.VerDetail;
   AboutBox.LUpdate.Hint := AboutBox.sLastUpdateSearch + ': ' + DateToStr(Settings.LastUpdChk);
   AboutBox.Version:= Version;
   AboutBox.ProgName:= ProgName;
@@ -939,7 +932,6 @@ end;
 
 procedure TFCalendrier.SBSettingsClick(Sender: TObject);
 begin
-  Prefs.PanStatus.Caption:= OSVersion.VerDetail ;
   Prefs.CBStartwin.Checked:= Settings.startwin;
   Prefs.CBSaveSizPos.Checked:= Settings.savsizepos;
   Prefs.CBStartmini.Checked:= Settings.startmini;
@@ -1507,9 +1499,29 @@ var
   i, j: integer;
   cmp: TControl;
   s: String;
+  A: TStringArray;
 begin
   With LangFile do
   begin
+    with OsVersion do
+    begin
+      ProdStrs.Strings[1]:= ReadString(LangStr,'Home','Famille'); ;
+      ProdStrs.Strings[2]:= ReadString(LangStr,'Professional','Entreprise');
+      ProdStrs.Strings[3]:= ReadString(LangStr,'Server','Serveur');
+      for i:= 0 to Win10Strs.count-1 do
+      begin
+        A:= Win10Strs.Strings[i].split('=');
+        Win10Strs.Strings[i]:= A[0]+'='+ReadString(LangStr,A[0],A[1]);
+      end;
+      for i:= 0 to Win11Strs.count-1 do
+      begin
+        A:= Win11Strs.Strings[i].split('=');
+        Win11Strs.Strings[i]:= A[0]+'='+ReadString(LangStr,A[0],A[1]);
+      end;
+      AboutBox.LVersion.Hint:= OSVersion.VerDetail;
+      Prefs.PanStatus.Caption:= OSVersion.VerDetail ;
+    end;
+
     s:= ReadString(LangStr, 'MoonDescs', Moonphs);
     MoonDescs:= s.Split(',');
     sMoonphase:= ReadString(LangStr, 'sMoonphase', '%s à %s');
@@ -1636,16 +1648,6 @@ begin
     FTowns.LTown.Caption:= Prefs.LTown.Caption;
     FTowns.LTimezone.Caption:= Prefs.LTimezone.Caption;
 
-   with OsVersion do
-   begin
-     ProdStr[1]:= ReadString(LangStr,'Home','Famille');
-     ProdStr[2]:= ReadString(LangStr,'Professional','Entreprise');
-     ProdStr[3]:= ReadString(LangStr,'Server','Serveur');
-     for i:= 0 to high(Win10Build) do Win10Build[i,1]:= ReadString(LangStr,Win10Build[i,0],Win10Build[i,1]);
-     for i:= 0 to high(Win11Build) do Win11Build[i,1]:= ReadString(LangStr,Win11Build[i,0],Win11Build[i,1]);
-     GetSysInfo;
-     //AboutBox.LVersion.Hint:= OSVersion.VerDetail;
-   end;
 
   end;
 end;

@@ -1,3 +1,9 @@
+{*******************************************************************************
+  calsettings unit
+  Used by Calendrier main unit
+  bb - sdtp - october 2022
+********************************************************************************}
+
 unit calsettings;
 
 {$mode objfpc}{$H+}
@@ -6,7 +12,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  LResources, Buttons, laz2_DOM, lazbbutils, lazbbcontrols, csvdocument, towns1;
+  Buttons, laz2_DOM, lazbbutils, lazbbcontrols, csvdocument, towns1;
 
 type
     TTown = record
@@ -223,19 +229,9 @@ begin
 end;
 
 procedure TPrefs.FormCreate(Sender: TObject);
-var
-  r: TLResource;
-  i: Integer;
 begin
-  {$I calendrier.lrs}
   csvtowns:= TCSVDocument.Create;
-  if FileExists(CalAppDataPath+'fr_villes.csv')then csvtowns.LoadFromFile(CalAppDataPath+'fr_villes.csv') else
-  begin
-    r:= LazarusResources.Find('fr_villes');
-    csvtowns.CSVText:= r.value;
-  end;
-  for i:= 0 to csvtowns.RowCount-1 do CBTowns.Items.Add(csvtowns.Cells[0,i]);
-  CBTowns.ItemIndex:= 0;
+  // populate in main program
 end;
 
 procedure TPrefs.FormDestroy(Sender: TObject);
@@ -309,13 +305,6 @@ begin
     end;
   end;
 end;
-
-
-
-
-
-
-
 
 // TSettings
 
@@ -568,16 +557,11 @@ begin
     TDOMElement(iNode).SetAttribute ('cbvacb', BoolToString(cbvacb));
     TDOMElement(iNode).SetAttribute ('cbvacc', BoolToString(cbvacc));
     TDOMElement(iNode).SetAttribute ('cbvack', BoolToString(cbvack));
-
-
     Result:= True;
   except
     result:= False;
   end;
 end;
-
-
-
 
 function TSettings.ReadXMLNode(iNode: TDOMNode): Boolean;
 begin
@@ -619,7 +603,6 @@ begin
     Result:= False;
   end;
 end;
-
 
 // TFichierList
 
@@ -716,8 +699,7 @@ begin
    For i:= 0 to Count-1 do
    Try
      FileNode := iNode.OwnerDocument.CreateElement('file');
-     //TDOMElement(FileNode).SetAttribute('index', IntToStr(TFichier(Items[i]^).Index));
-     TDOMElement(FileNode).SetAttribute('year', IntToStr(TFichier(Items[i]^).Year));
+      TDOMElement(FileNode).SetAttribute('year', IntToStr(TFichier(Items[i]^).Year));
      TDOMElement(FileNode).SetAttribute('half', IntToStr(TFichier(Items[i]^).Half));
      TDOMElement(FileNode).SetAttribute('name', TFichier(Items[i]^).Name);
      TDOMElement(FileNode).SetAttribute('path', TFichier(Items[i]^).Path );
@@ -739,7 +721,6 @@ begin
   begin
     Try
       new(K);
-      //K^.Index:= StringToInt(TDOMElement(chNode).GetAttribute('index'));
       K^.Year:= StringToInt(TDOMElement(chNode).GetAttribute('year'));
       K^.Half := StringToInt(TDOMElement(chNode).GetAttribute('half'));
       K^.Name := TDOMElement(chNode).GetAttribute('name');

@@ -16,12 +16,20 @@
         <DpiAware Value="True"/>
       </XPManifest>
       <Icon Value="0"/>
+      <Resources Count="5">
+        <Resource_0 FileName="fr_villes.csv" Type="RCDATA" ResourceName="FR_VILLES"/>
+        <Resource_1 FileName="fr_saints.csv" Type="RCDATA" ResourceName="FR_SAINTS"/>
+        <Resource_2 FileName="fr_feries.csv" Type="RCDATA" ResourceName="FR_FERIES"/>
+        <Resource_3 FileName="fr_holidays.csv" Type="RCDATA" ResourceName="FR_HOLIDAYS"/>
+        <Resource_4 FileName="images\calendrier32.png" Type="RCDATA" ResourceName="CALENDRIER32"/>
+      </Resources>
     </General>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MinorVersionNr Value="7"/>
       <RevisionNr Value="2"/>
-      <StringTable Comments="Calendrier universel français" CompanyName="sdtp - bb" FileDescription="Calendrier universel" InternalName="calendrier" LegalCopyright="sdtp - bb" LegalTrademarks="sdtp - bb" OriginalFilename="calendrier.exe" ProductName="calendrier" ProductVersion="0.7.2.0"/>
+      <BuildNr Value="1"/>
+      <StringTable Comments="Calendrier universel français" CompanyName="sdtp - bb" FileDescription="Calendrier universel" InternalName="calendrier" LegalCopyright="sdtp - bb" LegalTrademarks="sdtp - bb" OriginalFilename="calendrier.exe" ProductName="calendrier" ProductVersion="0.7.2.1"/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
@@ -50,7 +58,7 @@
         <PackageName Value="LCL"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="9">
+    <Units Count="10">
       <Unit0>
         <Filename Value="calendrier.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -106,6 +114,11 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit8>
+      <Unit9>
+        <Filename Value="..\lazbbunits\lazbbresources.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="lazbbResources"/>
+      </Unit9>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
