@@ -1,6 +1,6 @@
 //******************************************************************************
 // Calendrier main form
-// bb - sdtp - October 2022
+// bb - sdtp - November 2022
 //******************************************************************************
 
 unit calendrier1;
@@ -16,12 +16,16 @@ uses
   {$IFDEF linux}
     clocale, // Needed to get proper localized dates
   {$ENDIF}
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
+  LMessages, Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
   Grids, StdCtrls, lazbbcontrols, Suntime, Moonphases, Seasons, Easter,
   lazbbOsVersion, csvdocument, Types, DateUtils, lazbbastro, Buttons, Menus,
   UniqueInstance, registry, lazbbutils, lazbbautostart, LazUTF8, lazbbResources,
   laz2_DOM, laz2_XMLRead, laz2_XMLWrite, PrintersDlgs, calsettings, ImgResiz,
   lazbbaboutupdate, lazbbinifiles, Towns1, Clipbrd, LCLIntf, Printcal;
+
+const
+  // Message post at the end of activation procedure, processed once the form is shown
+  WM_FORMSHOWN = WM_USER + 1;
 
 type
    { int64 or longint type for Application.QueueAsyncCall }
@@ -201,6 +205,7 @@ type
     sConfirmDelImg: String;
     sHolidayZone: String;
     ImageLoaded: Boolean;
+    StartMini: Boolean;
     procedure OnAppMinimize(Sender: TObject);
     procedure OnQueryendSession(var Cancel: Boolean);
     procedure UpdateCal(Annee: word);
@@ -214,6 +219,7 @@ type
     procedure InitAboutBox;
     procedure CheckUpdate(ndays: iDays);
     procedure ModLangue;
+    procedure OnFormShown(var Msg: TLMessage); message WM_FORMSHOWN;
   public
     aMonths: array [1..13] of integer;
     Days: array of TDay;
@@ -259,6 +265,15 @@ implementation
 {$R *.lfm}
 
 { TFCalendrier }
+
+// Procedure to answer post message at the end of activation procedure
+// so once form is shown
+
+procedure TFCalendrier.OnFormShown(var Msg: TLMessage);
+begin
+  if StartMini then Application.minimize;
+  StartMini:= false;
+end;
 
 // Intercept minimize system system command to correct
 // wrong window placement on restore from tray
@@ -435,13 +450,14 @@ begin
     begin
       ShowMessage(sUse64bitcaption);
     end;
-    Application.QueueAsyncCall(@CheckUpdate, ChkVerInterval);       // async call to let icons loading
     SG1.OnDrawCell:= @SGDrawCell;
     SG1.Invalidate;
     SG2.OnDrawCell:= @SGDrawCell;
     SG2.Invalidate;
   end;
+  Application.QueueAsyncCall(@CheckUpdate, ChkVerInterval);       // async call to let icons loading
   DefaultFormatSettings.LongDateFormat:='dddd dd mmmm yyyy';
+  if StartMini then PostMessage(Handle, WM_FORMSHOWN, 0, 0) ;
 end;
 
 // About Box initialization
@@ -449,7 +465,6 @@ end;
 procedure TFCalendrier.InitAboutBox;
 var
   IniFile: TBbInifile;
-  png: TPortableNetworkGraphic;
 begin
    // Check inifile with URLs, if not present, then use default
   IniFile:= TBbInifile.Create(ProgName+'.ini');
@@ -576,7 +591,7 @@ begin
       self.Left := StrToInt('$' + Copy(Settings.WState, 9, 4));
       self.Height := StrToInt('$' + Copy(Settings.WState, 13, 4));
       self.Width := StrToInt('$' + Copy(Settings.WState, 17, 4));
-      self.WindowState := WinState;
+      //self.WindowState := WinState;
       PrevLeft:= self.left;
       PrevTop:= self.top;
     except
@@ -588,9 +603,10 @@ begin
     CanClose:= not Settings.miniintray;
     if Settings.StartMini or (Settings.SavSizePos and (Winstate=wsMinimized)) then
     begin
-      WindowState:=wsNormal;
-      Application.Minimize;
-    end;
+      //WindowState:=wsNormal;
+      //Application.Minimize;
+      StartMini:= true;
+    end else self.WindowState := WinState;
     CBVA.CheckColor:= Settings.colvaca;
     CBVB.CheckColor:= Settings.colvacb;
     CBVC.CheckColor:= Settings.colvacc;
@@ -1606,28 +1622,6 @@ begin
                 TTitlePanel(cmp).Controls[j].Caption);
       end;
     end;
-    {Prefs.PanColors.Caption:= ReadString(LangStr, 'Prefs.PanColors.Caption', Prefs.PanColors.Caption);
-    Prefs.LColUser.Caption:= ReadString(LangStr, 'Prefs.LColUser.Caption', Prefs.LColUser.Caption);
-    Prefs.LColSund.Caption := ReadString(LangStr, 'Prefs.LColSund.Caption', Prefs.LColSund.Caption);
-    Prefs.LColFerie.Caption := ReadString(LangStr, 'Prefs.LColFerie.Caption', Prefs.LColFerie.Caption);
-    Prefs.LColZa.Caption:= ReadString(LangStr, 'Prefs.LColZa.Caption', Prefs.LColZa.Caption);
-    Prefs.LColZb.Caption:= ReadString(LangStr, 'Prefs.LColZb.Caption', Prefs.LColZb.Caption);
-    Prefs.LColZc.Caption:= ReadString(LangStr, 'Prefs.LColZc.Caption', Prefs.LColZc.Caption);
-    Prefs.LColZk.Caption:= ReadString(LangStr, 'Prefs.LColZk.Caption', Prefs.LColZk.Caption);
-    Prefs.PanCoords.Caption:= ReadString(LangStr, 'Prefs.PanCoords.Caption', Prefs.PanCoords.Caption);
-    Prefs.LTown.Caption:= ReadString(LangStr, 'Prefs.LTown.Caption', Prefs.LTown.Caption);
-    Prefs.LLatitude.Caption:= ReadString(LangStr, 'Prefs.LLatitude.Caption', Prefs.LLatitude.Caption);
-    Prefs.LLongitude.Caption:= ReadString(LangStr, 'Prefs.LLongitude.Caption', Prefs.LLongitude.Caption);
-    Prefs.LTimezone.Caption:= ReadString(LangStr, 'Prefs.LTimezone.Caption', Prefs.LTimezone.Caption);
-    Prefs.PanSystem.Caption:= ReadString(LangStr, 'Prefs.PanSystem.Caption', Prefs.PanSystem.Caption);
-    Prefs.CBStartwin.Caption:= ReadString(LangStr, 'Prefs.CBStartwin.Caption', Prefs.CBStartwin.Caption);
-    Prefs.CBStartmini.Caption:= ReadString(LangStr, 'Prefs.CBStartmini.Caption', Prefs.CBStartmini.Caption);
-    Prefs.CBMiniintray.Caption:= ReadString(LangStr, 'Prefs.CBMiniintray.Caption', Prefs.CBMiniintray.Caption);
-    Prefs.CBHideinTaskBar.Caption:= ReadString(LangStr, 'Prefs.CBHideinTaskBar.Caption', Prefs.CBHideinTaskBar.Caption);
-    Prefs.CBSaveSizPos.Caption:= ReadString(LangStr, 'Prefs.CBSaveSizPos.Caption', Prefs.CBSaveSizPos.Caption);
-    Prefs.CBMoonPhases.Caption:= ReadString(LangStr, 'Prefs.CBMoonPhases.Caption', Prefs.CBMoonPhases.Caption);
-    Prefs.CBSaveVacs.Caption:= ReadString(LangStr, 'Prefs.CBSaveVacs.Caption', Prefs.CBSaveVacs.Caption);
-    Prefs.CBNoChkUpdate.Caption:= ReadString(LangStr, 'Prefs.CBNoChkUpdate.Caption', Prefs.CBNoChkUpdate.Caption); }
     Prefs.SBEditTowns.Hint:= ReadString(LangStr, 'Prefs.SBEditTowns.Hint', Prefs.SBEditTowns.Hint);
     Prefs.BtnCancel.Caption:= CancelBtn;
     Prefs.Caption:= sMainCaption+ ' - '+PMnuSettings.Caption;

@@ -110,9 +110,9 @@ Version 0.7.2.1 - 04/10/2022
 - Report de l'image "A propos" dans la ressource du projet
 - Modification du code suite à modification du composant TbbOsVersion
 
-
-
-
-
-
+Version 0.7.2.2 - 02/11/2022
+- Correction du démarrage minimisé défaillant depuis lazarus 2.2.2. Utilisation
+  d'un message utilisateur à la fin de la procédure d'activationd pourn réduire
+  la forme.
+- Installateur réécrit pour une meilleure gestion des versions
 
