@@ -1,7 +1,7 @@
 //******************************************************************************
 // Printcal unit
 // Preview and printing functions for Calendar application
-// bb - sdtp - May 2021
+// bb - sdtp - May 2023
 // Parameters:
 //
 //******************************************************************************
@@ -14,7 +14,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, PrintersDlgs, Printers,
-  ExtCtrls, StdCtrls, calsettings, lazbbutils;
+  ExtCtrls, StdCtrls, calsettings, lazbbutils, strutils;
 
 type
 
