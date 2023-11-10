@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  ExtDlgs, Buttons;
+  ExtDlgs, Buttons, lazbbinifiles;
 
 type
 
@@ -44,6 +44,7 @@ type
     jpeg:TJPEGImage;
     ImgWidth, ImgHeight: Integer;
     InitialDir, filename: String;
+    procedure Translate(LngFile: TBbInifile);
   end;
 
 var
@@ -191,6 +192,18 @@ begin
 
 end;
 
+procedure TFImgResiz.Translate(LngFile: TBbInifile);
+begin
+  If Assigned(LngFile) then
+  With LngFile do
+  begin
+    BtnOK.Caption:= ReadString('common', 'OKBtn','OK');
+    BtnCancel.Caption:=  ReadString('common','CancelBtn','Annuler');
+    LInfos.Caption:= ReadString('imgresiz', 'FImgResiz.LInfos.Caption', LInfos.Caption);
+    OPD1.Title:= ReadString('imgresiz', 'FImgResiz.OPD1.Title', OPD1.Title);
+
+  end;
+end;
 
 
 end.

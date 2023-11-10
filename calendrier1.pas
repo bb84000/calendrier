@@ -1,6 +1,6 @@
 //******************************************************************************
 // Calendrier main form
-// bb - sdtp - September 2023
+// bb - sdtp - November 2023
 //******************************************************************************
 
 unit calendrier1;
@@ -21,7 +21,7 @@ uses
   lazbbOsVersion, csvdocument, Types, DateUtils, lazbbastro, Buttons, Menus,
   UniqueInstance, registry, lazbbutils, lazbbautostart, LazUTF8, lazbbResources,
   laz2_DOM, laz2_XMLRead, laz2_XMLWrite, PrintersDlgs, calsettings, ImgResiz,
-  lazbbaboutupdate, lazbbinifiles, Towns1, Clipbrd, LCLIntf, Printcal;
+  lazbbaboutdlg, lazbbinifiles, Towns1, Clipbrd, LCLIntf, Printcal;
 
 const
   // Message post at the end of activation procedure, processed once the form is shown
@@ -193,7 +193,7 @@ type
     sUse64bitcaption: string;
     ChkVerInterval: Integer;
     LangFile: TBbInifile;
-    CancelBtn, YesBtn, NoBtn : String;
+    OKBtn, CancelBtn, YesBtn, NoBtn : String;
     sNoLongerChkUpdates: String;
     sCannotGetNewVerList: String;
     sPMnuAddImgCaption: String;
@@ -218,7 +218,7 @@ type
     procedure showHalf(n: integer);
     procedure InitAboutBox;
     procedure CheckUpdate(ndays: iDays);
-    procedure ModLangue;
+    procedure Translate(LngFile: TBbInifile);
     procedure OnFormShown(var Msg: TLMessage); message WM_FORMSHOWN;
   public
     aMonths: array [1..13] of integer;
@@ -364,8 +364,10 @@ begin
   if not DirectoryExists(CalImagePath) then CreateDir(CalImagePath);
   cfgfilename:= CalAppDataPath+ProgName+'.xml';
   // Chargement des chaînes de langue...
-  LangFile:= TBbIniFile.create(CalExecPath+ProgName+'.lng');
+  //LangFile:= TBbIniFile.create(CalExecPath+ProgName+'.lng');
   if Langstr<>'fr' then LangStr:='en';
+  // Chargement des chaînes de langue...
+  LangFile:= TBbIniFile.create(CalExecPath+'lang\'+LangStr+'.lng');
   ColorDay := clDefault;
   ColorSunday := RGBToColor(128, 255, 255);
   ColorFerie:= RGBToColor(128, 255, 255);
@@ -436,8 +438,10 @@ begin
     for i:= 0 to Prefs.csvtowns.RowCount-1 do
       Prefs.CBTowns.Items.Add(Prefs.csvtowns.Cells[0,i]);
     Prefs.CBTowns.ItemIndex:= 0;
-    ModLangue;
+    //ModLangue;
+    //Translate(LangFile);
     InitAboutBox;
+    Translate(LangFile);
     Settings.OnChange:= @SettingsOnChange;
     HalfImgsList.OnChange:= @SettingsOnChange;
     UpdateCal(curyear);
@@ -1510,136 +1514,97 @@ begin
   end;
 end;
 
-procedure TFCalendrier.ModLangue;
+procedure TFCalendrier.Translate(LngFile: TBbInifile);
 var
-  i, j: integer;
-  cmp: TControl;
+  prgName: String;
   s: String;
-  A: TStringArray;
 begin
-  With LangFile do
+  If Assigned(LngFile) then
+  With LngFile do
   begin
-    with OsVersion do
-    begin
-      ProdStrs.Strings[1]:= ReadString(LangStr,'Home','Famille'); ;
-      ProdStrs.Strings[2]:= ReadString(LangStr,'Professional','Entreprise');
-      ProdStrs.Strings[3]:= ReadString(LangStr,'Server','Serveur');
-      for i:= 0 to Win10Strs.count-1 do
-      begin
-        A:= Win10Strs.Strings[i].split('=');
-        Win10Strs.Strings[i]:= A[0]+'='+ReadString(LangStr,A[0],A[1]);
-      end;
-      for i:= 0 to Win11Strs.count-1 do
-      begin
-        A:= Win11Strs.Strings[i].split('=');
-        Win11Strs.Strings[i]:= A[0]+'='+ReadString(LangStr,A[0],A[1]);
-      end;
-    end;
-    s:= ReadString(LangStr, 'MoonDescs', Moonphs);
-    MoonDescs:= s.Split(',');
-    sMoonphase:= ReadString(LangStr, 'sMoonphase', '%s à %s');
+    prgName:= ReadString('common', 'ProgName', 'Erreur');
+    if prgName<>ProgName then ShowMessage(ReadString('common', 'ProgErr',
+                         'Fichier de langue erroné. Réinstallez le programme'));
+    // Translate OSVersion component
+    OsVersion.Translate(LngFile);
+
+    OKBtn:= ReadString('common', 'OKBtn','OK');
+    YesBtn:=ReadString('common','YesBtn','Oui');
+    NoBtn:=ReadString('common','NoBtn','Non');
+    CancelBtn:=ReadString('common','CancelBtn','Annuler');
+    // Main form
+    sMainCaption:= ReadString('main', 'sMainCaption', 'Calendrier');
+    sFirst:= ReadString('main', 'sFirst', '1er');
+    sSecond:= ReadString('main', 'sSecond', '2ème');
+    sPrintHalf:= ReadString('main', 'sPrintHalf', '%s semestre %d');
+    sNoLongerChkUpdates:= ReadString('main', 'NoLongerChkUpdates', 'Ne plus rechercher les mises à jour');
+    sUse64bitcaption:=ReadString('main', 'use64bitcaption', 'Utilisez la version 64 bits de ce programme');
+    sDayWeekInfo:= ReadString('main', 'sDayWeekInfo', '%de jour, %de semaine');
+    sSunRiseAndSet:= ReadString('main', 'sSunRiseAndSet','Lever et coucher du soleil à %s : %s - %s');
+    sSeasonSpring:= ReadString('main', 'sSeasonSpring', 'Printemps');
+    sSeasonSummer:= ReadString('main', 'sSeasonSummer', 'Eté');
+    sSeasonAutumn:= ReadString('main', 'sSeasonAutumn', 'Automne');
+    sSeasonWinter:= ReadString('main', 'sSeasonWinter', 'Hiver');
+    sHolidayZone:= ReadString('main', 'sHolidayZone', 'Vacances zone');
+    sMoonphase:= ReadString('main', 'sMoonphase','%s à %s');
     sSeason:= sMoonphase;
-    sHolidayZone:= ReadString(LangStr, 'sHolidayZone', 'Vacances zone');
-    CancelBtn:= ReadString(LangStr, 'CancelBtn', 'Annuler');
-    YesBtn:= ReadString(LangStr, 'YesBtn', 'Oui');
-    NoBtn:= ReadString(LangStr, 'NoBtn', 'Non');
-    CBVA.Caption:= ReadString(LangStr, 'CBVA.Caption', CBVA.Caption);
-    CBVB.Caption:= ReadString(LangStr, 'CBVB.Caption', CBVB.Caption);
-    CBVC.Caption:= ReadString(LangStr, 'CBVC.Caption', CBVC.Caption);
-    CBVK.Caption:= ReadString(LangStr, 'CBVK.Caption', CBVK.Caption);
-    CBLune.Caption:= ReadString(LangStr, 'CBLune.Caption', CBLune.Caption);
-    SBSettings.Hint:= ReadString(LangStr, 'SBSettings.Hint', SBSettings.Hint);
-    SBAbout.Hint:= ReadString(LangStr, 'SBAbout.Hint', SBAbout.Hint);
-    SBQuit.Hint:= ReadString(LangStr, 'SBQuit.Hint', SBQuit.Hint);
-    SBPrevQ.Hint:= ReadString(LangStr, 'SBPrevQ.Hint', SBPrevQ.Hint);
-    SBNextQ.Hint:= ReadString(LangStr, 'SBNextQ.Hint', SBNextQ.Hint);
-    CBLune.Hint:= ReadString(LangStr, 'CBLune.Hint', CBLune.Hint);
-    CBVA.Hint:= ReadString(LangStr, 'CBVA.Hint', CBVA.Hint);
-    CBVB.Hint:= ReadString(LangStr, 'CBVB.Hint', CBVB.Hint);
-    CBVC.Hint:= ReadString(LangStr, 'CBVC.Hint', CBVC.Hint);
-    CBVK.Hint:= ReadString(LangStr, 'CBVK.Hint', CBVK.Hint);
-    sPMnuAddImgCaption:= ReadString(LangStr, 'sPMnuAddImgCaption', 'Ajouter une image');
-    sPMnuModImgCaption:= ReadString(LangStr, 'sPMnuModImgCaption', 'Modifier l''image');
-    PMnuDelImg.Caption:= ReadString(LangStr, 'PMnuDelImg.Caption', PMnuDelImg.Caption);
-    PMnuSettings.Caption:= ReadString(LangStr, 'PMnuSettings.Caption', PMnuSettings.Caption);
-    PMnuAbout.Caption:= ReadString(LangStr, 'PMnuAbout.Caption', PMnuAbout.Caption);
-    PMnuQuit.Caption:= ReadString(LangStr, 'PMnuQuit.Caption', PMnuQuit.Caption);
-    PTMnuRestore.Caption:= ReadString(LangStr, 'PTMnuRestore.Caption', PTMnuRestore.Caption);
-    PTMnuMaximize.Caption:= ReadString(LangStr, 'PTMnuMaximize.Caption', PTMnuMaximize.Caption);
-    PTMnuIconize.Caption:= ReadString(LangStr, 'PTMnuIconize.Caption', PTMnuIconize.Caption);;
+    s:= ReadString('main', 'MoonDescs', Moonphs);
+    MoonDescs:= s.Split(',');
+    CBVA.Caption:= ReadString('main', 'CBVA.Caption', CBVA.Caption);
+    CBVB.Caption:= ReadString('main', 'CBVB.Caption', CBVB.Caption);
+    CBVC.Caption:= ReadString('main', 'CBVC.Caption', CBVC.Caption);
+    CBVK.Caption:= ReadString('main', 'CBVK.Caption', CBVK.Caption);
+    CBLune.Caption:= ReadString('main', 'CBLune.Caption', CBLune.Caption);
+    CBVA.Hint:= ReadString('main', 'CBVA.Hint', CBVA.Hint);
+    CBVB.Hint:= ReadString('main', 'CBVB.Hint', CBVB.Hint);
+    CBVC.Hint:= ReadString('main', 'CBVC.Hint', CBVC.Hint);
+    CBVK.Hint:= ReadString('main', 'CBVK.Hint', CBVK.Hint);
+    CBLune.Hint:= ReadString('main', 'CBLune.Hint', CBLune.Hint);
+    SBSettings.Hint:= ReadString('main', 'SBSettings.Hint', SBSettings.Hint);
+    SBPrint.Hint:= ReadString('main', 'SBPrint.Hint', SBPrint.Hint);
+    SBAbout.Hint:= ReadString('main', 'SBAbout.Hint', SBAbout.Hint);
+    SBQuit.Hint:= ReadString('main', 'SBQuit.Hint', SBQuit.Hint);
+    SBPrevQ.Hint:= ReadString('main', 'SBPrevQ.Hint', SBPrevQ.Hint);
+    SBNextQ.Hint:= ReadString('main', 'SBNextQ.Hint', SBNextQ.Hint);
+    sPMnuAddImgCaption:= ReadString('main', 'sPMnuAddImgCaption', 'Ajouter une image');
+    sPMnuModImgCaption:= ReadString('main', 'sPMnuModImgCaption', 'Modifier l''image');
+    PMnuDelImg.Caption:= ReadString('main', 'PMnuDelImg.Caption', PMnuDelImg.Caption);
+    PMnuSettings.Caption:= ReadString('main', 'PMnuSettings.Caption', PMnuSettings.Caption);
+    PMnuPrint.Caption:= ReadString('main', 'PMnuPrint.Caption', PMnuPrint.Caption);   ;
+    PMnuAbout.Caption:= ReadString('main', 'PMnuAbout.Caption', PMnuAbout.Caption);
+    PMnuQuit.Caption:= ReadString('main', 'PMnuQuit.Caption', PMnuQuit.Caption);
+    PTMnuRestore.Caption:= ReadString('main', 'PTMnuRestore.Caption', PTMnuRestore.Caption);
+    PTMnuMaximize.Caption:= ReadString('main', 'PTMnuMaximize.Caption', PTMnuMaximize.Caption);
+    PTMnuIconize.Caption:= ReadString('main', 'PTMnuIconize.Caption', PTMnuIconize.Caption);;
     PTMnuSettings.Caption:= PMnuSettings.Caption;
     PTMnuAbout.Caption:=PMnuAbout.Caption;
     PTMnuQuit.Caption:= PMnuQuit.Caption;
-    sDayWeekInfo:= ReadString(LangStr, 'sDayWeekInfo', '%de jour, %de semaine');
-    sMoonphase:= ReadString(LangStr, 'sMoonphase','%s à %s');
-    sSunRiseAndSet:= ReadString(LangStr, 'sSunRiseAndSet','Lever et coucher du soleil à %s : %s - %s');
-    sSeasonSpring:= ReadString(LangStr, 'sSeasonSpring', 'Printemps');
-    sSeasonSummer:= ReadString(LangStr, 'sSeasonSummer', 'Eté');
-    sSeasonAutumn:= ReadString(LangStr, 'sSeasonAutumn', 'Automne');
-    sSeasonWinter:= ReadString(LangStr, 'sSeasonWinter', 'Hiver');
-    TabHalf1.Caption:= ReadString(LangStr, 'TabHalf1.Caption', TabHalf1.Caption);
-    TabHalf2.Caption:= ReadString(LangStr, 'TabHalf2.Caption', TabHalf2.Caption);
-    PanToday.Caption:= ReadString(LangStr, 'PanToday.Caption', PanToday.Caption);
-    PanSelDay.Caption:= ReadString(LangStr, 'PanSelDay.Caption', PanSelDay.Caption);
-    PanSeasons.Caption:= ReadString(LangStr, 'PanSeasons.Caption', PanSeasons.Caption);
-    sNoLongerChkUpdates:= ReadString(LangStr, 'NoLongerChkUpdates', 'Ne plus rechercher les mises à jour');
-    sUse64bitcaption:=ReadString(LangStr, 'use64bitcaption', 'Utilisez la version 64 bits de ce programme');
-    sConfirmDelImg:=ReadString(LangStr, 'sConfirmDelImg', 'Voulez-vous supprimer cette image ?');
-    sMainCaption:= ReadString(LangStr, 'sMainCaption', 'Calendrier');
-    LImageInsert.Caption:= ReadString(LangStr, 'LImageInsert.Caption', LImageInsert.Caption);
-    sFirst:= ReadString(LangStr, 'sFirst', '1er');
-    sSecond:= ReadString(LangStr, 'sSecond', '2ème');
-    sPrintHalf:= ReadString(LangStr, 'sPrintHalf', '%s semestre %d');
+    sConfirmDelImg:=ReadString('main', 'sConfirmDelImg', 'Voulez-vous supprimer cette image ?');
+    LImageInsert.Caption:= ReadString('main', 'LImageInsert.Caption', LImageInsert.Caption);
+    TabHalf1.Caption:= ReadString('main', 'TabHalf1.Caption', TabHalf1.Caption);
+    TabHalf2.Caption:= ReadString('main', 'TabHalf2.Caption', TabHalf2.Caption);
+    PanToday.Caption:= ReadString('main', 'PanToday.Caption', PanToday.Caption);
+    PanSelDay.Caption:= ReadString('main', 'PanSelDay.Caption', PanSelDay.Caption);
+    PanSeasons.Caption:= ReadString('main', 'PanSeasons.Caption', PanSeasons.Caption);
 
-    // About
-    AboutBox.LProductName.Caption:= ReadString(LangStr, 'AboutBox.LProductName.Caption', 'Calendrier universel');
-    if not AboutBox.checked then AboutBox.LUpdate.Caption:=ReadString(LangStr,'AboutBox.LUpdate.Caption',AboutBox.LUpdate.Caption) else
-    begin
-      if AboutBox.NewVersion then AboutBox.LUpdate.Caption:= Format(AboutBox.sUpdateAvailable, [AboutBox.LastVersion])
-      else AboutBox.LUpdate.Caption:= AboutBox.sNoUpdateAvailable;
-    end;
-    AboutBox.sLastUpdateSearch:=ReadString(LangStr,'AboutBox.LastUpdateSearch','Dernière recherche de mise à jour');
-    AboutBox.sUpdateAvailable:=ReadString(LangStr,'AboutBox.UpdateAvailable','Nouvelle version %s disponible; Cliquer pour la télécharger');
-    AboutBox.sNoUpdateAvailable:=ReadString(LangStr,'AboutBox.NoUpdateAvailable','Le Calendrier est à jour');
-    Aboutbox.Caption:=ReadString(LangStr,'Aboutbox.Caption','A propos du Calendrier');
-    AboutBox.UrlProgSite:= sUrlProgSite+ ReadString(LangStr,'AboutBox.UrlProgSite','Accueil');
-    AboutBox.LWebSite.Caption:= ReadString(LangStr,'AboutBox.LWebSite.Caption', AboutBox.LWebSite.Caption);
-    AboutBox.LProgPage.Caption:= ReadString(LangStr,'AboutBox.LProgPage.Caption', AboutBox.LProgPage.Caption);      ;
-    AboutBox.LSourceCode.Caption:= ReadString(LangStr,'AboutBox.LSourceCode.Caption', AboutBox.LSourceCode.Caption);
-    AboutBox.LSourceCode.Caption:= ReadString(LangStr,'AboutBox.LSourceCode.Caption', 'Page Web du code source');
+    // AboutBox
     AboutBox.LVersion.Hint:= OSVersion.VerDetail;
+    AboutBox.Translate(LngFile);
 
     // Settings
-    // Enumerate controls to change captions
-    for i:=0 to Prefs.ControlCount-1 do
-    begin
-      cmp:= Prefs.Controls[i];
-      Prefs.Controls[i].Caption:= ReadString(LangStr, 'Prefs.'+cmp.name+'.Caption', cmp.caption);
-      for j:= 0 to TTitlePanel(cmp).ControlCount-1 do
-      begin
-        TTitlePanel(Prefs.Controls[i]).Controls[j].Caption:= ReadString(LangStr,
-                'Prefs.'+ TTitlePanel(cmp).Controls[j].Name+'.Caption',
-                TTitlePanel(cmp).Controls[j].Caption);
-      end;
-    end;
-    Prefs.SBEditTowns.Hint:= ReadString(LangStr, 'Prefs.SBEditTowns.Hint', Prefs.SBEditTowns.Hint);
-    Prefs.BtnCancel.Caption:= CancelBtn;
-    Prefs.Caption:= sMainCaption+ ' - '+PMnuSettings.Caption;
     Prefs.PanStatus.Caption:= OSVersion.VerDetail ;
+    Prefs.Caption:= sMainCaption+ ' - '+PMnuSettings.Caption;
+    Prefs.Translate(LngFile);
 
-    FImgResiz.Caption:= sMainCaption+' - '+ReadString(LangStr, 'sFImgResiz.Caption', 'Choix d''une image');
-    FImgResiz.BtnCancel.Caption:= CancelBtn;
-    FImgResiz.LInfos.Caption:= ReadString(LangStr, 'FImgResiz.LInfos.Caption', FImgResiz.LInfos.Caption);
-    FImgResiz.OPD1.Title:= ReadString(LangStr, 'FImgResiz.OPD1.Title', FImgResiz.OPD1.Title);
+    //REsize image
+    FImgResiz.Caption:= sMainCaption+' - '+ReadString('imgresiz', 'sFImgResiz.Caption', 'Choix d''une image');
+    FImgResiz.Translate(LngFile);
 
-    FTowns.Caption:= sMainCaption;
-    FTowns.BtnAdd.Caption:= ReadString(LangStr, 'FTowns.BtnAdd.Caption', FTowns.BtnAdd.Caption);
-    FTowns.BtnDelete.Caption:= ReadString(LangStr, 'FTowns.BtnDelete.Caption', FTowns.BtnDelete.Caption);
-    FTowns.BtnCancel.Caption:= CancelBtn;
-    FTowns.PanCoords.Caption:= ReadString(LangStr, 'FTowns.PanCoords.Caption', FTowns.PanCoords.Caption);
-    FTowns.sConfirmDelTown:= ReadString(LangStr, 'FTowns.sConfirmDelTown', 'Voulez-vous supprimer');
+    // Towns
+    FTowns.Caption:= Prefs.SBEditTowns.Hint;
     FTowns.LTown.Caption:= Prefs.LTown.Caption;
     FTowns.LTimezone.Caption:= Prefs.LTimezone.Caption;
+    FTowns.Translate(LngFile);
 
 
   end;

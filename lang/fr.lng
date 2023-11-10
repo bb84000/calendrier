@@ -1,0 +1,149 @@
+Fichier de langues
+;bb - sdtp - novembre 2023
+;Il est possible de créer un fichier de langue en utilisant l'ID de langue comme nom (exemple it.lng)
+;Danois	[da], Néerlandais [nl], Finois [fi], Allemand [de], Grec [el], Hongrois [hu]
+;Islandais [is], Italien [it], Norvégien [no], Polonais [pl], Portugais [pt]
+;Russe [ru], Serbo Croate [sr], Slovaque [sk], Suedois [sv], Turc [tr]
+
+;ProgName doit correspondre à la variable du même nom dans le code de l'application
+
+;Sauvegardez votre fichier, il peut être remplacé ou effacé lors d'une msie à jour !
+;proposez votre traduction sur GitHub
+
+;Français
+
+[common]
+Language=Français
+ProgName=calendrier
+ProgErr=Fichier de langue erroné. Réinstallez le programme
+DefaultCaption=Calendrier
+OKBtn=OK
+YesBtn=Oui
+NoBtn=Non
+CancelBtn=Annuler
+
+[main]
+sMainCaption=Calendrier
+sFirst=1er
+sSecond=2ème
+sPrintHalf=%s semestre %d
+sNoLongerChkUpdates=Ne plus rechercher les mises à jour
+sUse64bitcaption=Utilisez la version 64 bits de ce programme
+sDayWeekInfo=%de jour, %de semaine
+sSunRiseAndSet=Lever et coucher du soleil à %s : %s - %s
+sSeasonSpring=Printemps
+sSeasonSummer=Eté
+sSeasonAutumn=Automne
+sSeasonWinter=Hiver
+sHolidayZone=Vacances zone
+sMoonphase=%s à %s
+MoonDescs=Nouvelle Lune,Premier croissant,Premier quartier,Gibbeuse croissante,Pleine lune,Gibbeuse décroissante,Dernier quartier,Dernier croissant
+CBVA.Caption=Vacances zone A
+CBVB.Caption=Vacances zone B
+CBVC.Caption=Vacances zone C
+CBVK.Caption=Vacances Corse
+CBLune.Caption=Phases de la Lune
+CBVA.Hint=Académies de Besançon, Bordeaux, Clermont-Ferrand, Dijon, Grenoble, Limoges, Lyon, Poitiers
+CBVB.Hint=Académies d'Aix-Marseille, Amiens, Caen, Lille, Nancy-Metz, Nantes, Nice, Orléans-Tours, Reims, Rennes, Rouen, Strasbourg
+CBVC.Hint=Académies de Créteil, Montpellier, Paris, Toulouse, Versailles
+CBVK.Hint=Académie de Corse
+CBLune.Hint=Afficher les phases de la Lune
+SBSettings.Hint=Configuration du Calendrier
+SBPrint.Hint=Imprimer
+SBAbout.Hint=A propos du Calendrier
+SBQuit.Hint=Quitter le Calendrier
+SBPrevQ.Hint=Afficher le semestre précédent
+SBNextQ.Hint=Afficher le semestre suivant
+sPMnuAddImgCaption=Ajouter une image
+sPMnuModImgCaption=Modifier l'image
+PMnuDelImg.Caption=Supprimer l'image
+PMnuSettings.Caption=Préférences
+PMnuPrint.Caption=Imprimer
+PMnuAbout.Caption=A propos
+PMnuQuit.Caption=Quitter
+PTMnuRestore.Caption=Restaurer
+PTMnuMaximize.Caption=Agrandir
+PTMnuIconize.Caption=Réduire
+sConfirmDelImg=Voulez-vous supprimer cette image ?
+LImageInsert.Caption=Cliquez avec le bouton droit de la souris pour insérer une image
+TabHalf1.Caption=1er semestre
+TabHalf2.Caption=2ème semestre
+PanToday.Caption=Aujourd'hui
+PanSelDay.Caption=Jour sélectionné
+PanSeasons.Caption=Saisons
+
+[prefs]
+Prefs.PanColors.Caption=Couleurs
+Prefs.LColBack.Caption=Jour normal
+Prefs.LColUser.Caption=Utilisateur
+Prefs.LColSund.Caption=Dimanches
+Prefs.LColFerie.Caption=Fériés
+Prefs.LColText.Caption=Texte
+Prefs.LColZa.Caption=Zone A
+Prefs.LColZb.Caption=Zone B
+Prefs.LColZc.Caption=Zone C
+Prefs.LColZk.Caption=Corse
+Prefs.PanCoords.Caption=Coordonnées pour le lever et le coucher du soleil
+Prefs.LTown.Caption=Ville
+Prefs.LLatitude.Caption=Latitude
+Prefs.LLongitude.Caption=Longitude
+Prefs.LTimezone.Caption=Décalage horaire
+Prefs.PanSystem.Caption=Système
+Prefs.CBStartwin.Caption=Lancer au démarrage
+Prefs.CBStartmini.Caption=Démarrer minimisé
+Prefs.CBMiniintray.Caption=Minimiser dans la zone de notification
+Prefs.CBHideinTaskBar.Caption=Masquer l'icone dans la barre des tâches
+Prefs.CBSaveSizPos.Caption=Sauvegarde position et taille
+Prefs.CBMoonPhases.Caption=Sauvegarde des phases de la lune
+Prefs.CBSaveVacs.Caption=Sauvegarde des vacances scolaires
+Prefs.CBNoChkUpdate.Caption=Ne pas rechercher de mises à jour
+Prefs.SBEditTowns.Hint:Editer la listes des villes
+
+[imgresiz]
+sFImgResiz.Caption=Selection et recadrage d'une image
+FImgResiz.LInfos.Caption=Déplacez le rectangle rouge pour recadrer l'image
+FImgResiz.OPD1.Title=Ouvrir un fichier existant
+
+[towns]
+FTowns.BtnAdd.Caption=Ajouter
+FTowns.BtnDelete.Caption=Supprimer
+FTowns.PanCoords.Caption=Détails
+FTowns.sConfirmDelTown=Voulez-vous supprimer
+
+[OSVersion]
+;lazbbosver
+Home=Famille
+Professional=Entreprise
+Server=Serveur
+00000=Version inconnue
+10240=v 1507 "Juillet 2015"
+10586=v 1511 "Novembre 2015"
+14393=v 1607 "Juillet 2016 (Màj Anniversaire)"
+15063=v 1703 "Avril 2017 (Màj Createurs)"
+16299=v 1709 "Octobre 2017(Màj Fall Créateurs)"
+17134=v 1803 "Avril 2018"
+17763=v 1809 "Octobre 2018"
+18362=v 1903 "Mai 2019"
+18363=v 1909 "Novembre 2019"
+19041=v 2004 "Mai 2020"
+19042=v 20H2 "Octobre 2020"
+19043=v 21H1 "Mai 2021"
+19044=v 21H2 "Novembre 2021"
+19045=v 22H2 "Octobre 2022"
+19046=v 23H2 "Octobre 2023"
+22000=v 21H2 "Octobre 2021 Version initiale"
+22621=v 22H2 "Septembre 2022"
+22631=v 23H2 "Octobre 2023"
+
+[AboutBox]
+Caption=A propos de %s
+sLastUpdateSearch=Dernière recherche de mise à jour
+sUpdateAvailable=Nouvelle version %s disponible. Cliquer pour la télécharger
+sNoUpdateAvailable=Le %s est à jour.
+LUpdate.Caption=Recherche de mise à jour
+LProgPage.Caption=Page d'accueil du programme
+UrlProgSite=/wiki/Accueil
+LWebSite.Caption=Page d'accueil du site Web
+LSourceCode.Caption=Page Web du code source
+
+

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
-  lazbbcontrols, csvDocument, lazbbutils;
+  lazbbcontrols, csvDocument, lazbbutils, lazbbinifiles;
 
 type
 
@@ -65,6 +65,7 @@ type
     TownsListChanged: Boolean;
     csv: TCSVDocument;
     sConfirmDelTown: String;
+    procedure Translate(LngFile: TBbInifile);
   end;
 
 var
@@ -296,6 +297,21 @@ begin
   end;
 end;
 
+procedure TFTowns.Translate(LngFile: TBbInifile);
+begin
+  If Assigned(LngFile) then
+  With LngFile do
+  begin
+    BtnOK.Caption:= ReadString('common', 'OKBtn','OK');
+    BtnCancel.Caption:=  ReadString('common','CancelBtn','Annuler');
+    BtnAdd.Caption:= ReadString('towns', 'FTowns.BtnAdd.Caption', FTowns.BtnAdd.Caption);
+    BtnDelete.Caption:= ReadString('towns', 'FTowns.BtnDelete.Caption', FTowns.BtnDelete.Caption);
+    PanCoords.Caption:= ReadString('towns', 'FTowns.PanCoords.Caption', FTowns.PanCoords.Caption);
+    sConfirmDelTown:= ReadString('towns', 'FTowns.sConfirmDelTown', 'Voulez-vous supprimer');
+
+
+  end;
+end;
 
 end.
 

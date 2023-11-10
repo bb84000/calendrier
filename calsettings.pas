@@ -12,7 +12,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  Buttons, laz2_DOM, lazbbutils, lazbbcontrols, csvdocument, towns1;
+  Buttons, laz2_DOM, lazbbutils, lazbbcontrols, lazbbinifiles,  csvdocument, towns1;
 
 type
     TTown = record
@@ -203,6 +203,7 @@ type
     TownsListChanged: Boolean;
     function CBFind(tname: String): Integer;
     function findtown(tname: string): Integer;
+    procedure Translate(LngFile: TBbInifile);
   end;
 
 var
@@ -303,6 +304,32 @@ begin
       result:= i;
       break;
     end;
+  end;
+end;
+
+procedure TPrefs.Translate(LngFile: TBbInifile);
+var
+  i, j: integer;
+  cmp: TControl;
+begin
+  If Assigned(LngFile) then
+  With LngFile do
+  begin
+    BtnOK.Caption:= ReadString('common', 'OKBtn','OK');
+    BtnCancel.Caption:= ReadString('common','CancelBtn','Annuler');
+    // Enumerate controls to change captions
+    for i:=0 to ControlCount-1 do
+    begin
+      cmp:= Controls[i];
+      Controls[i].Caption:= ReadString('prefs', 'Prefs.'+cmp.name+'.Caption', cmp.caption);
+      for j:= 0 to TTitlePanel(cmp).ControlCount-1 do
+      begin
+        TTitlePanel(Controls[i]).Controls[j].Caption:= ReadString('prefs',
+                'Prefs.'+ TTitlePanel(cmp).Controls[j].Name+'.Caption',
+                TTitlePanel(cmp).Controls[j].Caption);
+      end;
+    end;
+    SBEditTowns.Hint:= ReadString('prefs', 'Prefs.SBEditTowns.Hint', SBEditTowns.Hint);
   end;
 end;
 
