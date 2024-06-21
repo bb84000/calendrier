@@ -28,14 +28,6 @@ const
   WM_FORMSHOWN = WM_USER + 1;
 
 type
-   { int64 or longint type for Application.QueueAsyncCall }
-  {$IFDEF CPU32}
-    iDays= LongInt;
-  {$ENDIF}
-  {$IFDEF CPU64}
-    iDays= Int64;
-  {$ENDIF}
-
 
   TDay = record
     index: integer;
@@ -217,7 +209,7 @@ type
     procedure loadimage;
     procedure showHalf(n: integer);
     procedure InitAboutBox;
-    procedure CheckUpdate(ndays: iDays);
+    procedure CheckUpdate(ndays: PtrInt);
     procedure Translate(LngFile: TBbInifile);
     procedure OnFormShown(var Msg: TLMessage); message WM_FORMSHOWN;
   public
@@ -368,6 +360,7 @@ begin
   if Langstr<>'fr' then LangStr:='en';
   // Chargement des chaînes de langue...
   LangFile:= TBbIniFile.create(CalExecPath+'lang\'+LangStr+'.lng');
+
   ColorDay := clDefault;
   ColorSunday := RGBToColor(128, 255, 255);
   ColorFerie:= RGBToColor(128, 255, 255);
@@ -487,7 +480,7 @@ begin
   AboutBox.ProgName:= ProgName;
 end;
 
-procedure TFCalendrier.CheckUpdate(ndays: iDays);
+procedure TFCalendrier.CheckUpdate(ndays: PtrInt);
 var
   errmsg: string;
   sNewVer: string;
@@ -1113,9 +1106,15 @@ begin
     s1:= s1+s[i]+', ';
     s1:= StringReplace(s1, 'K,', 'Corse,', []);
     SetLength(s1, length(s1)-2); //remove trailing comma
-    s:= sHolidayZone;
-    if length(curDay.sHoliday)>1 then s:= s+'s';
-    Result:= Result+LineEnding+s+' '+s1;
+    if length(curDay.sHoliday)>0 then          // don't display if empty sholiday
+    begin
+      s:= sHolidayZone;
+      if length(curDay.sHoliday)>1 then
+      begin
+        s:= s+'s';
+      end;
+      Result:= Result+LineEnding+s+' '+s1;
+    end;
   end;
 
 end;
@@ -1405,6 +1404,7 @@ begin
       if (DayOfWeek(CurrentDay)= 1) then Days[i-1].bSunday := True
       else Days[i - 1].bSunday := False;
       Inc(j);
+      Days[i - 1].bHoliday:= false;
     end;
     Easter1.EasterYear:= Annee;;
     DepDay:= GetDeportes(Annee);
@@ -1443,7 +1443,7 @@ begin
           begin
             Days[DOY].bHoliday:= true;
             Days[DOY].sHoliday:= Days[DOY].sHoliday+s;
-          end;
+          end ;
           if (vacbeg=vacend) or (vacbeg>begyear+length(days)-1) then break;
           vacbeg:= vacbeg+1;
         end;
@@ -1519,9 +1519,11 @@ var
   prgName: String;
   s: String;
 begin
+
   If Assigned(LngFile) then
   With LngFile do
   begin
+
     prgName:= ReadString('common', 'ProgName', 'Erreur');
     if prgName<>ProgName then ShowMessage(ReadString('common', 'ProgErr',
                          'Fichier de langue erroné. Réinstallez le programme'));

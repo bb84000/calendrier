@@ -122,3 +122,10 @@ Version 0.7.2.3 - 12/09/2023
 Version 0.7.3.0 - 09/11/2023
 - Utilisation de fichiers de langues séparés
 
+Version 0.7.3.1 - 14/11/2023
+- Correction du bug d'affichage Vacances Zone
+
+Version 0.7.3.2 - 21/06/2024
+- Remplacement du type iDays par PtrInt
+- Modification du composant OSVersion
+

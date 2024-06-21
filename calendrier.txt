@@ -1,10 +1,12 @@
-Calendrier - Version 0.7.3.0
+Calendrier - Version 0.7.3.2
 
 OBJET
 Calendrier perpétuel (1483 à 2100+).
 Saints, jours fériés, saisons, lunaisons, vacances scolaires, lever et coucher du soleil (approx.)
 
 INSTALLATION
+Téléchargez l'archive. Après le téléchargement, débloquer le fichier zip (Clic droit sur le fichier dans l'Explorateur de fichiers, 
+dans le menu, clic gauche sur "Propriétés", cocher la case "Débloquer" puis cliquez sur le bouton "OK".
 Exécuter le  fichier d'installation contenu dans l'archive.
 
 UTILISATION
@@ -44,8 +46,9 @@ Perpetual calendar (1483 to 2100+) with a layout similar to french postmen alman
 Displays French Saints, holidays, seasons, moon phases, school holidays, sunrise and sunset (approx.)
 
 INSTALLATION
-
-Download archive, extract and run Installcalendar.exe, then follow instructions of the setup program.
+Download archive. After the download, unlock the zip file (rigth click on the file in File Explorer, 
+in the menu, left click on "Properties", check the "Unlock" case and click th "OK" button.
+Extract and run Installcalendar.exe, then follow instructions of the setup program.
 
 USAGE
 
