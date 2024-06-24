@@ -145,4 +145,28 @@ UrlProgSite=/wiki
 LWebSite.Caption=Web site home page
 LSourceCode.Caption=Source code Web page
 
+[HttpErr]
+;Http error messages
+SErrInvalidProtocol=Invalid protocol "%s"
+SErrReadingSocket=Error reading data from socket
+SErrInvalidProtocolVersion=Invalid protocol version in response: %s
+SErrInvalidStatusCode=Invalid response status code: %s
+SErrUnexpectedResponse=Unexpected response status code: %s
+SErrChunkTooBig=Chunk too big
+SErrChunkLineEndMissing=Chunk line end missing
+SErrMaxRedirectsReached=Maximum allowed redirects reached: %s
+
+;Socket error messages
+strHostNotFound=Host name resolution for "%s" failed.
+strSocketCreationFailed=Creation of socket failed: %s
+strSocketBindFailed=Binding of socket failed: %s
+strSocketListenFailed=Listening on port #%s failed, error: %s
+strSocketConnectFailed=Connect to %s failed
+strSocketAcceptFailed=Could not accept a client connection on socket: %s, error %s
+strSocketAcceptWouldBlock=Accept would block on socket: %s
+strSocketIOTimeOut=Failed to set IO Timeout to %s
+strErrNoStream=Socket stream not assigned
+
+; SSL
+sNoInstallledSSL=SSL libraries not installed
 

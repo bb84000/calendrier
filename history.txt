@@ -129,3 +129,6 @@ Version 0.7.3.2 - 21/06/2024
 - Remplacement du type iDays par PtrInt
 - Modification du composant OSVersion
 
+Version 0.7.3.3 - 24/06/2024
+- Modification de AboutDlg pour test de SSL
+
