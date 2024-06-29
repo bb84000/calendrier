@@ -132,3 +132,5 @@ Version 0.7.3.2 - 21/06/2024
 Version 0.7.3.3 - 24/06/2024
 - Modification de AboutDlg pour test de SSL
 
+Version 0.7.3.4 - 29/06/2024
+- Modification de OSVersion
