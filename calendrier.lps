@@ -18,8 +18,8 @@
         <ComponentName Value="FCalendrier"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <TopLine Value="354"/>
-        <CursorPos X="15" Y="370"/>
+        <IsVisibleTab Value="True"/>
+        <CursorPos X="25" Y="3"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -256,8 +256,8 @@
       <Unit30>
         <Filename Value="history.txt"/>
         <EditorIndex Value="7"/>
-        <TopLine Value="102"/>
-        <CursorPos X="28" Y="136"/>
+        <TopLine Value="106"/>
+        <CursorPos Y="139"/>
         <UsageCount Value="101"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Text"/>
@@ -491,7 +491,6 @@
       </Unit61>
       <Unit62>
         <Filename Value="calendrier.txt"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <CursorPos X="29"/>
         <UsageCount Value="78"/>
@@ -645,8 +644,8 @@
       <Unit83>
         <Filename Value="lang\en.lng"/>
         <EditorIndex Value="4"/>
-        <TopLine Value="119"/>
-        <CursorPos X="3" Y="135"/>
+        <TopLine Value="122"/>
+        <CursorPos Y="137"/>
         <UsageCount Value="13"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="None"/>
@@ -655,7 +654,7 @@
         <Filename Value="lang\fr.lng"/>
         <EditorIndex Value="5"/>
         <TopLine Value="127"/>
-        <CursorPos X="10" Y="157"/>
+        <CursorPos Y="138"/>
         <UsageCount Value="13"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="None"/>

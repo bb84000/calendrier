@@ -30,8 +30,8 @@
       <UseVersionInfo Value="True"/>
       <MinorVersionNr Value="7"/>
       <RevisionNr Value="3"/>
-      <BuildNr Value="4"/>
-      <StringTable Comments="Calendrier universel français" CompanyName="sdtp - bb" FileDescription="Calendrier universel" InternalName="calendrier" LegalCopyright="sdtp - bb" LegalTrademarks="sdtp - bb" OriginalFilename="calendrier.exe" ProductName="calendrier" ProductVersion="0.7.3.4"/>
+      <BuildNr Value="5"/>
+      <StringTable Comments="Calendrier universel français" CompanyName="sdtp - bb" FileDescription="Calendrier universel" InternalName="calendrier" LegalCopyright="sdtp - bb" LegalTrademarks="sdtp - bb" OriginalFilename="calendrier.exe" ProductName="calendrier" ProductVersion="0.7.3.5"/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
