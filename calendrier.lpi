@@ -29,9 +29,8 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MinorVersionNr Value="7"/>
-      <RevisionNr Value="3"/>
-      <BuildNr Value="5"/>
-      <StringTable Comments="Calendrier universel français" CompanyName="sdtp - bb" FileDescription="Calendrier universel" InternalName="calendrier" LegalCopyright="sdtp - bb" LegalTrademarks="sdtp - bb" OriginalFilename="calendrier.exe" ProductName="calendrier" ProductVersion="0.7.3.5"/>
+      <RevisionNr Value="4"/>
+      <StringTable Comments="Calendrier universel français" CompanyName="sdtp - bb" FileDescription="Calendrier universel" InternalName="calendrier" LegalCopyright="sdtp - bb" LegalTrademarks="sdtp - bb" OriginalFilename="calendrier.exe" ProductName="calendrier" ProductVersion="0.7.4.0"/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
@@ -43,24 +42,30 @@
     <RunParams>
       <FormatVersion Value="2"/>
     </RunParams>
-    <RequiredPackages Count="5">
+    <RequiredPackages Count="7">
       <Item1>
-        <PackageName Value="Printer4Lazarus"/>
+        <PackageName Value="ExCtrlsPkg_dsgn"/>
       </Item1>
       <Item2>
-        <PackageName Value="lazbbastrocomponents"/>
+        <PackageName Value="ExCtrlsPkg"/>
       </Item2>
       <Item3>
-        <PackageName Value="uniqueinstance_package"/>
+        <PackageName Value="Printer4Lazarus"/>
       </Item3>
       <Item4>
-        <PackageName Value="lazbbcomponents"/>
+        <PackageName Value="lazbbastrocomponents"/>
       </Item4>
       <Item5>
-        <PackageName Value="LCL"/>
+        <PackageName Value="uniqueinstance_package"/>
       </Item5>
+      <Item6>
+        <PackageName Value="lazbbcomponents"/>
+      </Item6>
+      <Item7>
+        <PackageName Value="LCL"/>
+      </Item7>
     </RequiredPackages>
-    <Units Count="10">
+    <Units Count="11">
       <Unit0>
         <Filename Value="calendrier.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -92,35 +97,40 @@
         <UnitName Value="ImgResiz"/>
       </Unit4>
       <Unit5>
-        <Filename Value="..\lazbbunits\lazbbaboutupdate.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="AboutBox"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-      </Unit5>
-      <Unit6>
         <Filename Value="calendrier.ini"/>
         <IsPartOfProject Value="True"/>
-      </Unit6>
-      <Unit7>
+      </Unit5>
+      <Unit6>
         <Filename Value="towns1.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FTowns"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-      </Unit7>
-      <Unit8>
+      </Unit6>
+      <Unit7>
         <Filename Value="printcal.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FPrintCal"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-      </Unit8>
-      <Unit9>
+      </Unit7>
+      <Unit8>
         <Filename Value="..\lazbbunits\lazbbresources.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="lazbbResources"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="..\lazbbunits\lazbbaboutdlg.pas"/>
+        <IsPartOfProject Value="True"/>
+        <HasResources Value="True"/>
       </Unit9>
+      <Unit10>
+        <Filename Value="..\lazbbunits\lazbbupdatedlg.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="UpdateDlg"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit10>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

@@ -137,3 +137,6 @@ Version 0.7.3.4 - 29/06/2024
 
 Version 0.7.3.5 - 30/09/2024
 - Support de Windows 11 24H2
+
+Version 0.7.4.0 - 25/03/2025
+- Mise à jour automatique (expérimental)

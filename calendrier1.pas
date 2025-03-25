@@ -16,12 +16,13 @@ uses
   {$IFDEF linux}
     clocale, // Needed to get proper localized dates
   {$ENDIF}
-  LMessages, Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
-  Grids, StdCtrls, lazbbcontrols, Suntime, Moonphases, Seasons, Easter,
-  lazbbOsVersion, csvdocument, Types, DateUtils, lazbbastro, Buttons, Menus,
-  UniqueInstance, registry, lazbbutils, lazbbautostart, LazUTF8, lazbbResources,
-  laz2_DOM, laz2_XMLRead, laz2_XMLWrite, PrintersDlgs, calsettings, ImgResiz,
-  lazbbaboutdlg, lazbbinifiles, Towns1, Clipbrd, LCLIntf, Printcal;
+  LMessages, Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls,
+  ComCtrls, Grids, StdCtrls, lazbbcontrols, Suntime, Moonphases, Seasons,
+  Easter, lazbbOsVersion, csvdocument, Types, DateUtils, lazbbastro, Buttons,
+  Menus, UniqueInstance, registry, lazbbutils, lazbbautostart, LazUTF8,
+  lazbbResources, laz2_DOM, laz2_XMLRead, laz2_XMLWrite, PrintersDlgs,
+  calsettings, ImgResiz, lazbbaboutdlg, lazbbupdatedlg, lazbbinifiles, Towns1, Clipbrd, LCLIntf,
+  Printcal, ExProgressbar;
 
 const
   // Message post at the end of activation procedure, processed once the form is shown
@@ -479,6 +480,11 @@ begin
   AboutBox.LUpdate.Hint := AboutBox.sLastUpdateSearch + ': ' + DateToStr(Settings.LastUpdChk);
   AboutBox.Version:= Version;
   AboutBox.ProgName:= ProgName;
+  // Populate UpdateBox with proper variables
+  UpdateDlg.ProgName:= ProgName;
+  UpdateDlg.UrlInstall:= AboutBox.UrlSourceCode+'/raw/main/calendrier.zip';   // Installer url for the updater
+  UpdateDlg.ExeInstall:= 'Installcalendrier.exe';       // Installer executable
+  UpdateDlg.NewVersion:= false;
 end;
 
 procedure TFCalendrier.CheckUpdate(ndays: PtrInt);
@@ -518,7 +524,13 @@ begin
        Settings.LastVersion:= sNewVer;
        AboutBox.LUpdate.Caption := Format(AboutBox.sUpdateAvailable, [sNewVer]);
        AboutBox.NewVersion:= true;
-       AboutBox.ShowModal;
+       UpdateDlg.sNewVer:= version;
+       UpdateDlg.NewVersion:= true;
+       {$IFDEF WINDOWS}
+         if UpdateDlg.ShowModal = mryes then close;    // New version install experimental
+       {$ELSE}
+         AboutBox.ShowModal;
+       {$ENDIF}
      end else
      begin
        AboutBox.LUpdate.Caption:= AboutBox.sNoUpdateAvailable;
@@ -1593,6 +1605,9 @@ begin
     // AboutBox
     AboutBox.LVersion.Hint:= OSVersion.VerDetail;
     AboutBox.Translate(LngFile);
+
+    // UpdateDlg
+    UpdateDlg.Translate (LangFile);
 
     // Settings
     Prefs.PanStatus.Caption:= OSVersion.VerDetail ;

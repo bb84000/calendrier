@@ -12,7 +12,7 @@ object FCalendrier: TFCalendrier
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '3.4.0.0'
+  LCLVersion = '3.8.0.0'
   object PanStatus: TPanel
     Left = 0
     Height = 45
