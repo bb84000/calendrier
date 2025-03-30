@@ -140,3 +140,9 @@ Version 0.7.3.5 - 30/09/2024
 
 Version 0.7.4.0 - 25/03/2025
 - Mise à jour automatique (expérimental)
+
+Version 0.7.4.1 - 30/03/2025
+- Bug dans le numéro de version lors de la mise à jour
+
+Version 0.7.4.2 - 30/03/2025
+- Tous les URL dans le fichier ini

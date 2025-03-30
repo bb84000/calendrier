@@ -1,6 +1,6 @@
 //******************************************************************************
 // Calendrier main form
-// bb - sdtp - september 2024
+// bb - sdtp - march 2025
 //******************************************************************************
 
 unit calendrier1;
@@ -471,6 +471,8 @@ begin
   AboutBox.UrlWebsite:= IniFile.ReadString('urls', 'UrlWebSite','https://www.sdtp.com');
   AboutBox.UrlSourceCode:=IniFile.ReadString('urls', 'UrlSourceCode','https://github.com/bb84000/calendrier');
   sUrlProgSite:= IniFile.ReadString('urls','UrlProgSite','https://github.com/bb84000/calendrier');   // Link Localized in modlangue
+  UpdateDlg.UrlInstall:= IniFile.ReadString('urls', 'UrlInstall', 'https://github.com/bb84000/calendrier/raw/refs/heads/main/calendrier.zip');
+  UpdateDlg.ExeInstall:= IniFile.ReadString('urls', 'ExeInstall', 'Installcalendrier.exe');
   ChkVerInterval:= IniFile.ReadInt64('urls', 'ChkVerInterval', 3);
   if Assigned(IniFile) then FreeAndNil(IniFile);
   bbLoadFromResource(AboutBox.Image1, 'CALENDRIER32');
@@ -482,8 +484,6 @@ begin
   AboutBox.ProgName:= ProgName;
   // Populate UpdateBox with proper variables
   UpdateDlg.ProgName:= ProgName;
-  UpdateDlg.UrlInstall:= AboutBox.UrlSourceCode+'/raw/main/calendrier.zip';   // Installer url for the updater
-  UpdateDlg.ExeInstall:= 'Installcalendrier.exe';       // Installer executable
   UpdateDlg.NewVersion:= false;
 end;
 
@@ -524,7 +524,7 @@ begin
        Settings.LastVersion:= sNewVer;
        AboutBox.LUpdate.Caption := Format(AboutBox.sUpdateAvailable, [sNewVer]);
        AboutBox.NewVersion:= true;
-       UpdateDlg.sNewVer:= version;
+       UpdateDlg.sNewVer:= sNewVer;
        UpdateDlg.NewVersion:= true;
        {$IFDEF WINDOWS}
          if UpdateDlg.ShowModal = mryes then close;    // New version install experimental
