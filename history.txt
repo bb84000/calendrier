@@ -149,3 +149,7 @@ Version 0.7.4.2 - 30/03/2025
 
 Version 0.7.4.3 - 31/03/2025
 - Récupération de la version via l'api Github
+
+Version 0.7.4.4 - 02/04/2025
+- Auto update activé à partir de la boite A propos
+

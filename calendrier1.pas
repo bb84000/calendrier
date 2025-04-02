@@ -1,6 +1,6 @@
 //******************************************************************************
 // Calendrier main form
-// bb - sdtp - march 2025
+// bb - sdtp - april 2025
 //******************************************************************************
 
 unit calendrier1;
@@ -22,7 +22,7 @@ uses
   Menus, UniqueInstance, registry, lazbbutils, lazbbautostart, LazUTF8,
   lazbbResources, laz2_DOM, laz2_XMLRead, laz2_XMLWrite, PrintersDlgs,
   calsettings, ImgResiz, lazbbaboutdlg, lazbbupdatedlg, lazbbinifiles, Towns1, Clipbrd, LCLIntf,
-  Printcal, ExProgressbar;
+  Printcal;
 
 const
   // Message post at the end of activation procedure, processed once the form is shown
@@ -194,7 +194,6 @@ type
     sDayWeekInfo: String;
     sSunRiseAndSet: String;
     sSeasonSpring, sSeasonSummer, sSeasonAutumn, sSeasonWinter: String;
-    sUrlProgSite: String;
     sConfirmDelImg: String;
     sHolidayZone: String;
     ImageLoaded: Boolean;
@@ -470,7 +469,6 @@ begin
   AboutBox.ChkVerURL := IniFile.ReadString('urls', 'ChkVerURL','https://api.github.com/repos/bb84000/calendrier/releases/latest');
   AboutBox.UrlWebsite:= IniFile.ReadString('urls', 'UrlWebSite','https://www.sdtp.com');
   AboutBox.UrlSourceCode:=IniFile.ReadString('urls', 'UrlSourceCode','https://github.com/bb84000/calendrier');
-  sUrlProgSite:= IniFile.ReadString('urls','UrlProgSite','https://github.com/bb84000/calendrier');   // Link Localized in modlangue
   UpdateDlg.UrlInstall:= IniFile.ReadString('urls', 'UrlInstall', 'https://github.com/bb84000/calendrier/raw/refs/heads/main/calendrier.zip');
   UpdateDlg.ExeInstall:= IniFile.ReadString('urls', 'ExeInstall', 'Installcalendrier.exe');
   ChkVerInterval:= IniFile.ReadInt64('urls', 'ChkVerInterval', 3);
@@ -481,8 +479,10 @@ begin
   AboutBox.LVersion.Caption := 'Version: ' + Version + ' (' + OS + OSTarget + ')';
   AboutBox.LUpdate.Hint := AboutBox.sLastUpdateSearch + ': ' + DateToStr(Settings.LastUpdChk);
   AboutBox.Version:= Version;
+  AboutBox.LastVersion:= Settings.LastVersion;
   AboutBox.ProgName:= ProgName;
-  // Populate UpdateBox with proper variables
+  AboutBox.autoUpdate:= true;                   // Enable auto update from aboutbox
+  // Populate UpdateDlg with proper variables
   UpdateDlg.ProgName:= ProgName;
   UpdateDlg.NewVersion:= false;
 end;
@@ -539,7 +539,10 @@ begin
    end else
    begin
     if VersionToInt(Settings.LastVersion)>VersionToInt(version) then
-       AboutBox.LUpdate.Caption := Format(AboutBox.sUpdateAvailable, [Settings.LastVersion]) else
+       begin
+         AboutBox.LUpdate.Caption := Format(AboutBox.sUpdateAvailable, [Settings.LastVersion]);
+         AboutBox.NewVersion:= true;
+       end else
        AboutBox.LUpdate.Caption:= AboutBox.sNoUpdateAvailable;
    end;
    AboutBox.LUpdate.Hint:= AboutBox.sLastUpdateSearch + ': ' + DateToStr(Settings.LastUpdChk);
@@ -905,8 +908,41 @@ begin
 end;
 
 procedure TFCalendrier.SBAboutClick(Sender: TObject);
+var
+  chked: Boolean;
+  alertmsg: String;
 begin
-  AboutBox.ShowModal;
+  // If main windows is hidden, place the about box at the center of desktop,
+  // else at the center of main windows
+  if (Sender.ClassName= 'TMenuItem') and not visible then AboutBox.Position:= poDesktopCenter
+  else AboutBox.Position:= poMainFormCenter;
+  AboutBox.LastUpdate:= Settings.LastUpdChk;
+  chked:= AboutBox.Checked;
+  AboutBox.ErrorMessage:='';
+  if AboutBox.ShowModal= mrLast then
+    begin
+      UpdateDlg.sNewVer:= AboutBox.LastVersion;
+      UpdateDlg.NewVersion:= true;
+      {$IFDEF WINDOWS}
+        if UpdateDlg.ShowModal = mryes then close;    // New version install experimental
+      {$ELSE}
+        OpenURL(AboutBox.UrlProgSite);
+      {$ENDIF}
+    end;
+    Settings.LastVersion:= AboutBox.LastVersion ;
+    // If we have checked update and got an error
+    if length(AboutBox.ErrorMessage)>0 then
+    begin
+      alertmsg := TranslateHttpErrorMsg(AboutBox.ErrorMessage, HttpErrMsgNames);
+      if AlertDlg(Caption,  alertmsg, [OKBtn, CancelBtn, sNoLongerChkUpdates],
+                      true, mtError)= mrYesToAll then Settings.NoChkNewVer:= true;
+    end;
+    // Truncate date to avoid changes if there is the same day (hh:mm are in the decimal part of the date)
+    if (not chked) and AboutBox.Checked then Settings.LastVersion:= AboutBox.LastVersion;
+    if trunc(AboutBox.LastUpdate) > trunc(Settings.LastUpdChk) then
+    begin
+      Settings.LastUpdChk:= AboutBox.LastUpdate;
+    end;
 end;
 
 procedure TFCalendrier.SettingsOnChange(sender: TObject);
