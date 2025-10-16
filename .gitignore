@@ -1,6 +1,8 @@
 backup/**
 lib/**
 lang/backup/**
+libcrypto-3-x64.dll
+libssl-3-x64.dll
 Installcalendrier.exe
 calendrierwin32.exe
 calendrierwin64.exe

@@ -135,6 +135,7 @@ Server=Serveur
 22621=v 22H2 "Septembre 2022"
 22631=v 23H2 "Octobre 2023"
 26100=v 24H2 "Octobre 2024"
+26200=v 25H2 "Octobre 2025"
 
 [AboutBox]
 Caption=A propos de %s
@@ -146,6 +147,12 @@ LProgPage.Caption=Page d'accueil du programme
 UrlProgSite=/wiki/Accueil
 LWebSite.Caption=Page d'accueil du site Web
 LSourceCode.Caption=Page Web du code source
+
+[idHttpErr]
+idSSLLibraryNotFound=Impossible de charger la bibibliothèque SSL
+IdUnknownProtocol=Protocole inconnu
+IdHostNotFound=Hôte non trouvé
+IdUnknownError=Erreur inconnue: %s
 
 [HttpErr]
 ;Http error messages

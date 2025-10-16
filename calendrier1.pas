@@ -1,6 +1,6 @@
 //******************************************************************************
 // Calendrier main form
-// bb - sdtp - may 2025
+// bb - sdtp - october 2025
 //******************************************************************************
 
 unit calendrier1;
@@ -199,6 +199,7 @@ type
     ImageLoaded: Boolean;
     StartMini: Boolean;
     HttpErrMsgNames: array [0..17] of string;
+    idHttpErrMsgNames: array [0..16] of string;
     procedure OnAppMinimize(Sender: TObject);
     procedure OnQueryendSession(var Cancel: Boolean);
     procedure UpdateCal(Annee: word);
@@ -505,13 +506,12 @@ begin
      Settings.LastUpdChk := Trunc(Now);
      AboutBox.Checked:= true;
      AboutBox.ErrorMessage:='';
-     //AboutBox.version:= '0.1.0.0' ;   // This is to check the procedure works properly
      sNewVer:= AboutBox.ChkNewVersion;
      errmsg:= AboutBox.ErrorMessage;
     if length(sNewVer)=0 then
      begin
        if length(errmsg)=0 then alertmsg:= sCannotGetNewVerList
-       else alertmsg:= TranslateHttpErrorMsg(errmsg, HttpErrMsgNames);
+       else alertmsg:= TranslateidHttpErrorMsg(errmsg, idHttpErrMsgNames);
        if AlertDlg(Caption,  alertmsg, ['OK', CancelBtn, sNoLongerChkUpdates],
                     true, mtError, alertpos)= mrYesToAll then Settings.NoChkNewVer:= true;
      end;
@@ -933,7 +933,7 @@ begin
     // If we have checked update and got an error
     if length(AboutBox.ErrorMessage)>0 then
     begin
-      alertmsg := TranslateHttpErrorMsg(AboutBox.ErrorMessage, HttpErrMsgNames);
+      alertmsg := TranslateidHttpErrorMsg(AboutBox.ErrorMessage, idHttpErrMsgNames);
       if AlertDlg(Caption,  alertmsg, [OKBtn, CancelBtn, sNoLongerChkUpdates],
                       true, mtError)= mrYesToAll then Settings.NoChkNewVer:= true;
     end;
@@ -1659,6 +1659,12 @@ begin
     FTowns.LTown.Caption:= Prefs.LTown.Caption;
     FTowns.LTimezone.Caption:= Prefs.LTimezone.Caption;
     FTowns.Translate(LngFile);
+
+        // indy Error messages
+    idHttpErrMsgNames[0]:= ReadString('idHttpErr','idSSLLibraryNotFound','Bibliothèque SSL introuvable');
+    idHttpErrMsgNames[1]:= ReadString('idHttpErr','IdUnknownProtocol', 'Protocole inconnu');
+    idHttpErrMsgNames[2]:= ReadString('idHttpErr','IdHostNotFound', 'Hôte non trouvé');
+    idHttpErrMsgNames[3]:= ReadString('idHttpErr','IdUnknownError', 'Erreur inconnue: %s');
 
     // HTTP Error messages
     HttpErrMsgNames[0] := ReadString('HttpErr','SErrInvalidProtocol','Protocole "%s" invalide');

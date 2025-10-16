@@ -8,11 +8,11 @@ object FCalendrier: TFCalendrier
   ClientWidth = 1280
   Constraints.MaxHeight = 687
   Constraints.MaxWidth = 1280
+  LCLVersion = '4.2.0.0'
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '3.8.0.0'
   object PanStatus: TPanel
     Left = 0
     Height = 45
@@ -149,9 +149,9 @@ object FCalendrier: TFCalendrier
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
-      OnClick = SBNextQClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = SBNextQClick
     end
     object SBPrevQ: TSpeedButton
       Left = 552
@@ -195,9 +195,9 @@ object FCalendrier: TFCalendrier
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
-      OnClick = SBPrevQClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = SBPrevQClick
     end
     object CBVK: TCheckBoxX
       Left = 1072
@@ -417,9 +417,9 @@ object FCalendrier: TFCalendrier
         0000000000000000000000000000000000000000000000000000
       }
       NumGlyphs = 2
-      OnClick = SBSettingsClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = SBSettingsClick
     end
     object SBAbout: TSpeedButton
       Left = 100
@@ -576,9 +576,9 @@ object FCalendrier: TFCalendrier
         0000000000000000000000000000000000000000000000000000
       }
       NumGlyphs = 2
-      OnClick = SBAboutClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = SBAboutClick
     end
     object SBQuit: TSpeedButton
       Left = 140
@@ -735,9 +735,9 @@ object FCalendrier: TFCalendrier
         0000000000000000000000000000000000000000000000000000
       }
       NumGlyphs = 2
-      OnClick = SBQuitClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = SBQuitClick
     end
     object SBPrint: TSpeedButton
       Left = 60
@@ -894,9 +894,9 @@ object FCalendrier: TFCalendrier
         0000000000000000000000000000000000000000000000000000
       }
       NumGlyphs = 2
-      OnClick = SBPrintClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = SBPrintClick
     end
   end
   object PanHalf: TPanel

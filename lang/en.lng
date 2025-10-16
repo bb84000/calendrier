@@ -134,6 +134,7 @@ Server=Server
 22621=v 22H2 "September 2022 update"
 22631=v 23H2 "October 2023 update"
 26100=v 24H2 "October 2024 update"
+26200=v 25H2 "October 2025 update"
 
 [AboutBox]
 Caption=About %s
@@ -145,6 +146,12 @@ LProgPage.Caption=Program home page
 UrlProgSite=/wiki
 LWebSite.Caption=Web site home page
 LSourceCode.Caption=Source code Web page
+
+[idHttpErr]
+idSSLLibraryNotFound=Could not load SSL library
+IdUnknownProtocol=Unknown Protocol
+IdHostNotFound=Host not found
+IdUnknownError=Unknown error: %s
 
 [HttpErr]
 ;Http error messages
